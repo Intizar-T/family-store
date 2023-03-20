@@ -1,3 +1,3 @@
 export const BASE_URL =
-  "https://4fb400912b5398f06ab4304c13be650a.loophole.site";
+  "https://076efc83084203ddcbbe69ccc62c8640.loophole.site";
 export const PRODUCTS_URL = `${BASE_URL}/store`;

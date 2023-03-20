@@ -1,6 +1,7 @@
 import {
   Avatar,
   Button,
+  CircularProgress,
   Grid,
   IconButton,
   List,
@@ -44,9 +45,13 @@ const fetchProductList = async () => {
 export default function ProductList({ user }: ProductListProps) {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     (async () => {
+      setLoading(true);
       setProducts((await Promise.all([fetchProductList()]))[0]);
+      setLoading(false);
     })();
   }, []);
   return (
@@ -78,10 +83,12 @@ export default function ProductList({ user }: ProductListProps) {
                   sx={{ mr: 1 }}
                   color="error"
                   onClick={async () => {
+                    setLoading(true);
                     await fetch(`${PRODUCTS_URL}/${product.id}`, {
                       method: "delete",
                     });
                     setProducts((await Promise.all([fetchProductList()]))[0]);
+                    setLoading(false);
                   }}
                 >
                   <DeleteIcon />
@@ -119,6 +126,7 @@ export default function ProductList({ user }: ProductListProps) {
         color="success"
         onClick={async () => {
           if (user !== "" && newProduct !== "") {
+            setLoading(true);
             await fetchWithErrorHandler(PRODUCTS_URL, "json", {
               method: "post",
               body: JSON.stringify({
@@ -128,11 +136,23 @@ export default function ProductList({ user }: ProductListProps) {
             });
             setNewProduct("");
             setProducts((await Promise.all([fetchProductList()]))[0]);
+            setLoading(false);
           }
         }}
       >
         Dobaw
       </Button>
+      {loading && (
+        <Grid
+          sx={{
+            position: "absolute",
+            left: "50%",
+            bottom: "50%",
+          }}
+        >
+          <CircularProgress />
+        </Grid>
+      )}
     </Grid>
   );
 }

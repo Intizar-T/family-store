@@ -11,6 +11,5 @@ export const fetchWithErrorHandler = async <Data = any>(
     },
   });
   if (!request.ok) throw new Error(await request.text());
-  console.log(request);
   return request[type]();
 };

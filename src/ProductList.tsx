@@ -3,25 +3,19 @@ import {
   Button,
   Grid,
   IconButton,
-  Input,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { PRODUCTS_URL } from "./APIs";
 import { fetchWithErrorHandler } from "./helpers/fetchWithErrorHandles";
 import ImageIcon from "@mui/icons-material/Image";
-import WorkIcon from "@mui/icons-material/Work";
-import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import React from "react";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CheckIcon from "@mui/icons-material/Check";
 
 interface Products {
   id: number;
@@ -32,7 +26,7 @@ interface Products {
   createdUserName: string;
 }
 
-interface ProductList {
+interface ProductListProps {
   user: string;
 }
 
@@ -47,11 +41,9 @@ const fetchProductList = async () => {
   return products;
 };
 
-export default function ProductList({ user }: ProductList) {
+export default function ProductList({ user }: ProductListProps) {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
-  const [updateList, setUpdateList] = useState<boolean>(false);
-
   useEffect(() => {
     (async () => {
       setProducts((await Promise.all([fetchProductList()]))[0]);
@@ -84,7 +76,7 @@ export default function ProductList({ user }: ProductList) {
               <React.Fragment>
                 <IconButton
                   sx={{ mr: 1 }}
-                  color="success"
+                  color="error"
                   onClick={async () => {
                     await fetch(`${PRODUCTS_URL}/${product.id}`, {
                       method: "delete",
@@ -92,7 +84,7 @@ export default function ProductList({ user }: ProductList) {
                     setProducts((await Promise.all([fetchProductList()]))[0]);
                   }}
                 >
-                  <CheckIcon />
+                  <DeleteIcon />
                 </IconButton>
               </React.Fragment>
             }

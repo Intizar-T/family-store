@@ -66,7 +66,6 @@ export default function ProductList({ user }: ProductListProps) {
       <List
         sx={{
           width: "100%",
-          maxWidth: 360,
           maxHeight: "500px",
           bgcolor: "background.paper",
           overflow: "auto",
@@ -95,6 +94,7 @@ export default function ProductList({ user }: ProductListProps) {
                 </IconButton>
               </React.Fragment>
             }
+            sx={{ width: "100%" }}
           >
             <ListItemAvatar>
               <Avatar>

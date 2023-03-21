@@ -16,6 +16,7 @@ export interface Products {
   createdAt: Date;
   updatedAt: Date;
   createdUserName: string;
+  amount: number;
 }
 
 interface ProductListProps {

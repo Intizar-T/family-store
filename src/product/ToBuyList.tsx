@@ -63,7 +63,7 @@ export default function ToBuyList({
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={`${product.name}`}
+            primary={`${product.name} - ${product.amount} ta/kg`}
             secondary={`${product.createdUserName}`}
           />
         </ListItem>

@@ -70,7 +70,10 @@ export default function ProductList({ user }: ProductListProps) {
               <Tab label="Alyndy" value="Alyndy" />
             </TabList>
           </Box>
-          <TabPanel value="Almaly" sx={{ padding: 1, margin: 0 }}>
+          <TabPanel
+            value="Almaly"
+            sx={{ padding: 1, margin: 0, paddingRight: 0 }}
+          >
             <ToBuyList
               fetchProductList={fetchProductList}
               products={products}
@@ -83,42 +86,53 @@ export default function ProductList({ user }: ProductListProps) {
         </TabContext>
       </Grid>
       <Grid
-        item
+        container
         sx={{
           display: "flex",
           flexDirection: "column",
+          position: "absolute",
+          bottom: 0,
         }}
       >
         <Grid
           sx={{
             display: "flex",
             flexDirection: "row",
+            paddingRight: 2,
           }}
+          container
+          spacing={1}
         >
-          <TextField
-            label="Taza kosh:"
-            color="success"
-            value={newProduct}
-            focused
-            onChange={(e) => {
-              setNewProduct(e.target.value);
-            }}
-            sx={{
-              margin: 1,
-            }}
-          />
-          <TextField
-            label="Kancha (sany ya kg):"
-            color="success"
-            value={newProductAmount}
-            focused
-            onChange={(e) => {
-              setNewProductAmount(Number(e.target.value));
-            }}
-            sx={{
-              margin: 1,
-            }}
-          />
+          <Grid item xs={6}>
+            <TextField
+              label="Taza kosh:"
+              color="success"
+              value={newProduct}
+              focused
+              onChange={(e) => {
+                setNewProduct(e.target.value);
+              }}
+              sx={{
+                margin: 1,
+                width: "100%",
+              }}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Kancha (sany ya kg):"
+              color="success"
+              value={newProductAmount}
+              focused
+              onChange={(e) => {
+                setNewProductAmount(Number(e.target.value));
+              }}
+              sx={{
+                margin: 1,
+                width: "100%",
+              }}
+            />
+          </Grid>
         </Grid>
         <Button
           variant="contained"

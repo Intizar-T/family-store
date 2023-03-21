@@ -91,7 +91,7 @@ export default function ProductList({ user }: ProductListProps) {
           display: "flex",
           flexDirection: "column",
           position: "absolute",
-          bottom: 0,
+          bottom: 4,
         }}
       >
         <Grid

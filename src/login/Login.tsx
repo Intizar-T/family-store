@@ -1,5 +1,5 @@
 import { FormControl, InputLabel, Select, MenuItem, Grid } from "@mui/material";
-import LoginImage from "./images/login1.jpg";
+import LoginImage from "../images/login.jpg";
 
 // const users = {
 //   rahim: "Rahim",

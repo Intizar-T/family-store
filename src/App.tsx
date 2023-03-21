@@ -1,8 +1,8 @@
 import { Grid } from "@mui/material";
 import React from "react";
 import { useState } from "react";
-import Login from "./Login";
-import ProductList from "./ProductList";
+import Login from "./login/Login";
+import ProductList from "./product/ProductList";
 
 function App() {
   const [user, setUser] = useState<string>("");

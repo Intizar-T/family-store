@@ -31,7 +31,8 @@ export default function CreateProduct({
         display: "flex",
         flexDirection: "column",
         position: "absolute",
-        bottom: 4,
+        bottom: 5,
+        backgroundColor: "white",
       }}
     >
       <Grid

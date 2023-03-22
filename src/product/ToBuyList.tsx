@@ -53,7 +53,7 @@ export default function ToBuyList({
     <List
       sx={{
         width: "100%",
-        maxHeight: "500px",
+        height: "70vh",
         bgcolor: "background.paper",
         overflow: "auto",
       }}

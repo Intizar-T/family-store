@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid, TextField } from "@mui/material";
+import { Backdrop, CircularProgress, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
@@ -8,6 +8,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import ToBuyList from "./ToBuyList";
+import CreateProduct from "./CreateProduct";
 
 export interface Products {
   id: number;
@@ -37,7 +38,7 @@ const fetchProductList = async () => {
 export default function ProductList({ user }: ProductListProps) {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
-  const [newProductAmount, setNewProductAmount] = useState<number>();
+  const [newProductAmount, setNewProductAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [tabValue, setTabValue] = useState("Almaly");
 
@@ -86,91 +87,23 @@ export default function ProductList({ user }: ProductListProps) {
           <TabPanel value="Alyndy">Item Three</TabPanel>
         </TabContext>
       </Grid>
-      <Grid
-        container
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          position: "absolute",
-          bottom: 4,
-        }}
-      >
-        <Grid
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            paddingRight: 2,
-          }}
-          container
-          spacing={1}
-        >
-          <Grid item xs={6}>
-            <TextField
-              label="Taza kosh:"
-              color="success"
-              value={newProduct}
-              focused
-              onChange={(e) => {
-                setNewProduct(e.target.value);
-              }}
-              sx={{
-                margin: 1,
-                width: "100%",
-              }}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Kancha (sany ya kg):"
-              color="success"
-              value={newProductAmount}
-              focused
-              onChange={(e) => {
-                setNewProductAmount(Number(e.target.value));
-              }}
-              sx={{
-                margin: 1,
-                width: "100%",
-              }}
-            />
-          </Grid>
-        </Grid>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={async () => {
-            if (user !== "" && newProduct !== "") {
-              setLoading(true);
-              await fetchWithErrorHandler(PRODUCTS_URL, "json", {
-                method: "post",
-                body: JSON.stringify({
-                  name: newProduct,
-                  createdUserName: user,
-                }),
-              });
-              setNewProduct("");
-              setProducts((await Promise.all([fetchProductList()]))[0]);
-              setLoading(false);
-            }
-          }}
-          sx={{
-            margin: 1,
-            marginTop: 0,
-          }}
-        >
-          Dobaw
-        </Button>
-      </Grid>
+      <CreateProduct
+        fetchProductList={fetchProductList}
+        newProduct={newProduct}
+        newProductAmount={newProductAmount}
+        setLoading={setLoading}
+        setNewProduct={setNewProduct}
+        setNewProductAmount={setNewProductAmount}
+        setProducts={setProducts}
+        user={user}
+      />
       {loading && (
-        <Grid
-          sx={{
-            position: "absolute",
-            left: "50%",
-            bottom: "50%",
-          }}
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={true}
         >
-          <CircularProgress />
-        </Grid>
+          <CircularProgress color="inherit" />
+        </Backdrop>
       )}
     </Grid>
   );

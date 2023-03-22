@@ -59,7 +59,14 @@ export default function ProductList({ user }: ProductListProps) {
     >
       <Grid item>
         <TabContext value={tabValue}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Box
+            sx={{
+              borderBottom: 1,
+              borderColor: "divider",
+              position: "fixed",
+              width: "100%",
+            }}
+          >
             <TabList
               centered
               onChange={(e, value) => {

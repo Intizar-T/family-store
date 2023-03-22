@@ -41,21 +41,16 @@ export default function ToBuyList({
   const [editedProductName, setEditedProductName] = useState("");
   const [editedProductAmount, setEditedProductAmount] = useState("");
   const [selectedProductId, setSelectedProductId] = useState(0);
-  // const Transition = React.forwardRef(function Transition(
-  //   props: TransitionProps & {
-  //     children: React.ReactElement<any, any>;
-  //   },
-  //   ref: React.Ref<unknown>
-  // ) {
-  //   return <Slide direction="up" ref={ref} {...props} />;
-  // });
   return (
     <List
       sx={{
         width: "100%",
-        height: "70vh",
         bgcolor: "background.paper",
         overflow: "auto",
+        marginTop: 7,
+      }}
+      style={{
+        height: "calc(100vh - 210px)",
       }}
     >
       {products.map((product) => (

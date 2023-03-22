@@ -50,7 +50,8 @@ export default function ToBuyList({
         marginTop: 7,
       }}
       style={{
-        height: "calc(100vh - 210px)",
+        maxHeight: "calc(100vh - 210px)",
+        // minHeight: 100,
       }}
     >
       {products.map((product) => (

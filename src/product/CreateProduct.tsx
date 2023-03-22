@@ -30,7 +30,7 @@ export default function CreateProduct({
       sx={{
         display: "flex",
         flexDirection: "column",
-        position: "absolute",
+        position: "fixed",
         bottom: 5,
         backgroundColor: "white",
       }}

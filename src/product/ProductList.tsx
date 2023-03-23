@@ -55,6 +55,7 @@ export default function ProductList({ user }: ProductListProps) {
       sx={{
         display: "flex",
         flexDirection: "column",
+        justifyContent: "space-between",
       }}
     >
       <Grid item>
@@ -63,8 +64,6 @@ export default function ProductList({ user }: ProductListProps) {
             sx={{
               borderBottom: 1,
               borderColor: "divider",
-              position: "fixed",
-              width: "100%",
             }}
           >
             <TabList
@@ -81,7 +80,12 @@ export default function ProductList({ user }: ProductListProps) {
           </Box>
           <TabPanel
             value="Almaly"
-            sx={{ padding: 1, margin: 0, paddingRight: 0 }}
+            sx={{
+              padding: 1,
+              margin: 0,
+              paddingRight: 0,
+              overflow: "scroll",
+            }}
           >
             <ToBuyList
               fetchProductList={fetchProductList}
@@ -94,16 +98,18 @@ export default function ProductList({ user }: ProductListProps) {
           <TabPanel value="Alyndy">Item Three</TabPanel>
         </TabContext>
       </Grid>
-      <CreateProduct
-        fetchProductList={fetchProductList}
-        newProduct={newProduct}
-        newProductAmount={newProductAmount}
-        setLoading={setLoading}
-        setNewProduct={setNewProduct}
-        setNewProductAmount={setNewProductAmount}
-        setProducts={setProducts}
-        user={user}
-      />
+      <Grid item>
+        <CreateProduct
+          fetchProductList={fetchProductList}
+          newProduct={newProduct}
+          newProductAmount={newProductAmount}
+          setLoading={setLoading}
+          setNewProduct={setNewProduct}
+          setNewProductAmount={setNewProductAmount}
+          setProducts={setProducts}
+          user={user}
+        />
+      </Grid>
       {loading && (
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

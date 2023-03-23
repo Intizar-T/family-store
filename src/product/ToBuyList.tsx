@@ -44,13 +44,13 @@ export default function ToBuyList({
   return (
     <List
       sx={{
-        width: "100%",
+        // width: "100%",
         bgcolor: "background.paper",
-        overflow: "auto",
-        marginTop: 7,
+        // maxHeight: "calc(100vh - 250px)",
+        // minHeight: 100,
       }}
       style={{
-        maxHeight: "calc(100vh - 210px)",
+        maxHeight: "calc(100vh - 250px)",
         // minHeight: 100,
       }}
     >

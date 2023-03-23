@@ -7,7 +7,7 @@ import ProductList from "./product/ProductList";
 function App() {
   const [user, setUser] = useState<string>("");
   return (
-    <Grid container>
+    <Grid container sx={{ display: "flex", overflowY: "scroll" }}>
       {user === "" ? (
         <Login user={user} setUser={setUser} />
       ) : (

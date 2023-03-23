@@ -30,9 +30,9 @@ export default function CreateProduct({
       sx={{
         display: "flex",
         flexDirection: "column",
-        position: "fixed",
-        bottom: 5,
         backgroundColor: "white",
+        position: "absolute",
+        bottom: 0,
       }}
     >
       <Grid

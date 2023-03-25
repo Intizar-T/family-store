@@ -1,5 +1,5 @@
 import { Backdrop, CircularProgress, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import Box from "@mui/material/Box";
@@ -9,6 +9,8 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import ToBuyList from "./ToBuyList";
 import CreateProduct from "./CreateProduct";
+import UserContext from "../UserContext";
+import Login from "../login/Login";
 
 export interface Products {
   id: number;
@@ -21,7 +23,8 @@ export interface Products {
 }
 
 interface ProductListProps {
-  user: string;
+  device: string;
+  setLoading: (load: boolean) => void;
 }
 
 const fetchProductList = async () => {
@@ -35,20 +38,22 @@ const fetchProductList = async () => {
   return products;
 };
 
-export default function ProductList({ user }: ProductListProps) {
+export default function ProductList({ device, setLoading }: ProductListProps) {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
   const [newProductAmount, setNewProductAmount] = useState("");
-  const [loading, setLoading] = useState(false);
   const [tabValue, setTabValue] = useState("Almaly");
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
+    if (user == null) return;
     (async () => {
       setLoading(true);
       setProducts((await Promise.all([fetchProductList()]))[0]);
       setLoading(false);
     })();
-  }, []);
+  }, [user]);
+
   return (
     <Grid
       container
@@ -56,6 +61,7 @@ export default function ProductList({ user }: ProductListProps) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
+        width: "100%",
       }}
     >
       <Grid item>
@@ -84,7 +90,6 @@ export default function ProductList({ user }: ProductListProps) {
               padding: 1,
               margin: 0,
               paddingRight: 0,
-              overflow: "scroll",
             }}
           >
             <ToBuyList
@@ -107,17 +112,8 @@ export default function ProductList({ user }: ProductListProps) {
           setNewProduct={setNewProduct}
           setNewProductAmount={setNewProductAmount}
           setProducts={setProducts}
-          user={user}
         />
       </Grid>
-      {loading && (
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={true}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      )}
     </Grid>
   );
 }

@@ -1,6 +1,8 @@
 import { Grid, TextField, Button } from "@mui/material";
+import { useContext } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import UserContext from "../UserContext";
 import { Products } from "./ProductList";
 
 interface CreateProductProps {
@@ -9,7 +11,6 @@ interface CreateProductProps {
   newProductAmount: string;
   setNewProductAmount: (newProductAmount: string) => void;
   setLoading: (loading: boolean) => void;
-  user: string;
   setProducts: (products: Products[]) => void;
   fetchProductList: () => Promise<Products[]>;
 }
@@ -21,9 +22,9 @@ export default function CreateProduct({
   setNewProduct,
   setNewProductAmount,
   setProducts,
-  user,
   fetchProductList,
 }: CreateProductProps) {
+  const { user } = useContext(UserContext);
   return (
     <Grid
       container
@@ -79,7 +80,7 @@ export default function CreateProduct({
         variant="contained"
         color="success"
         onClick={async () => {
-          if (user !== "" && newProduct !== "") {
+          if (user !== null && newProduct !== "") {
             setLoading(true);
             await fetchWithErrorHandler(PRODUCTS_URL, "json", {
               method: "post",

@@ -1,48 +1,107 @@
-import { FormControl, InputLabel, Select, MenuItem, Grid } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  TextField,
+} from "@mui/material";
+import { useContext, useState } from "react";
+import { PRODUCTS_URL, USER_URL } from "../api/APIs";
+import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import LoginImage from "../images/login.jpg";
-
-// const users = {
-//   rahim: "Rahim",
-//   intizar: "Intizar",
-//   ovadan: "Ovadan",
-//   jennet: "Jennet",
-//   hudayar: "Hudayar",
-// };
+import UserContext from "../UserContext";
 
 interface LoginProps {
-  user: string;
-  setUser: (user: string) => void;
+  device: string;
+  showLoginModal: (show: boolean) => void;
+  setLoading: (loading: boolean) => void;
 }
 
-export default function Login({ user, setUser }: LoginProps) {
+export default function Login({
+  device,
+  showLoginModal,
+  setLoading,
+}: LoginProps) {
+  const { setUser } = useContext(UserContext);
+  const [name, setName] = useState("");
   return (
-    <Grid
-      container
-      alignItems="center"
-      sx={{
-        height: "100vh",
-        padding: 2,
-        backgroundImage: `url(${LoginImage})`,
-      }}
+    <Dialog
+      open={true}
+      keepMounted
+      onClose={() => {}}
+      aria-describedby="alert-dialog-slide-description"
     >
-      <FormControl fullWidth color="success">
-        <InputLabel id="demo-simple-select-label">Adyn:</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={user}
-          label="Adyn"
-          onChange={(event) => {
-            setUser(event.target.value as string);
+      <DialogTitle>{"Bir gazaklik registrasiya:"}</DialogTitle>
+      <DialogContent>
+        <Grid
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingRight: 2,
           }}
+          container
+          spacing={1}
         >
-          <MenuItem value={"rahim"}>Rahim</MenuItem>
-          <MenuItem value={"intizar"}>Intizar</MenuItem>
-          <MenuItem value={"ovadan"}>Ovadan</MenuItem>
-          <MenuItem value={"jennet"}>Jennet</MenuItem>
-          <MenuItem value={"hudayar"}>Hudayar</MenuItem>
-        </Select>
-      </FormControl>
-    </Grid>
+          <Grid
+            item
+            xs={9}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+            }}
+          >
+            <TextField
+              label="Adyn pwease:"
+              color={name === "" ? "error" : "success"}
+              focused
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              sx={{
+                margin: 1,
+                width: "100%",
+              }}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={3}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              variant="contained"
+              sx={{
+                width: 20,
+                height: 40,
+              }}
+              onClick={async () => {
+                if (name === "") return;
+                setLoading(true);
+                setUser({ device, name });
+                await fetchWithErrorHandler(USER_URL, "json", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    device,
+                    name,
+                  }),
+                });
+                showLoginModal(false);
+                setLoading(false);
+              }}
+            >
+              OK
+            </Button>
+          </Grid>
+        </Grid>
+      </DialogContent>
+    </Dialog>
   );
 }

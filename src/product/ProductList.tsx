@@ -17,7 +17,8 @@ export interface Products {
   isBought: boolean;
   createdAt: Date;
   updatedAt: Date;
-  createdUserName: string;
+  userDevice: string;
+  userName: string;
   amount: number;
 }
 

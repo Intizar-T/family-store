@@ -84,7 +84,7 @@ export default function ToBuyList({
             primary={`${product.name} ${
               product.amount !== null ? "- " + product.amount + " ta/kg" : ""
             }`}
-            secondary={`${product.createdUserName}`}
+            secondary={`${product.userName}`}
             sx={{ marginRight: 10, overflowX: "hidden" }}
           />
         </ListItem>

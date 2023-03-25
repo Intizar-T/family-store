@@ -90,7 +90,8 @@ export default function CreateProduct({
                   newProductAmount !== ""
                     ? Number(newProductAmount)
                     : undefined,
-                createdUserName: user,
+                userDevice: user.device,
+                userName: user.name,
               }),
             });
             setNewProduct("");

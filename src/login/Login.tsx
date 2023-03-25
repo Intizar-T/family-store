@@ -1,16 +1,14 @@
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
   TextField,
 } from "@mui/material";
 import { useContext, useState } from "react";
-import { PRODUCTS_URL, USER_URL } from "../api/APIs";
+import { USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
-import LoginImage from "../images/login.jpg";
 import UserContext from "../UserContext";
 
 interface LoginProps {

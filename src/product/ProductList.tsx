@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
@@ -10,7 +10,6 @@ import TabPanel from "@mui/lab/TabPanel";
 import ToBuyList from "./ToBuyList";
 import CreateProduct from "./CreateProduct";
 import UserContext from "../UserContext";
-import Login from "../login/Login";
 
 export interface Products {
   id: number;

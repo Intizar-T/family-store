@@ -6,15 +6,13 @@ import {
   Avatar,
   ListItemText,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import { Products } from "./ProductList";
 import ImageIcon from "@mui/icons-material/Image";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import EditProduct from "./EditProduct";
-import Login from "../login/Login";
-import UserContext from "../UserContext";
 
 interface ToBuyListProps {
   products: Products[];

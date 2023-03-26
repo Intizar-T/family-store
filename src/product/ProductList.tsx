@@ -1,4 +1,4 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Tooltip } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
@@ -12,7 +12,7 @@ import CreateProduct from "./CreateProduct";
 import UserContext from "../UserContext";
 import useLoading from "../helpers/useLoading";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-
+import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 export interface Products {
   id: number;
   name: string;
@@ -27,6 +27,20 @@ export interface Products {
 
 interface ProductListProps {
   device: string;
+}
+
+function notifyMe() {
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop notification");
+  } else if (Notification.permission === "granted") {
+    new Notification("Hi there!");
+  } else {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        new Notification("Hi there!");
+      }
+    });
+  }
 }
 
 const fetchProductList = async () => {
@@ -111,18 +125,35 @@ export default function ProductList({ device }: ProductListProps) {
         </TabContext>
       </Grid>
       <Grid item display="flex" justifyContent="center">
-        <Button
-          onClick={() => {
-            showCreateModal(true);
-          }}
-        >
-          <AddCircleOutlineOutlinedIcon
-            color="primary"
-            sx={{
-              fontSize: 45,
+        <Tooltip title="Taza produkt kosh">
+          <Button
+            onClick={() => {
+              showCreateModal(true);
             }}
-          />
-        </Button>
+          >
+            <AddCircleOutlineOutlinedIcon
+              color="primary"
+              sx={{
+                fontSize: 45,
+              }}
+            />
+          </Button>
+        </Tooltip>
+        <Tooltip title="Bashgalara magazindadigini duydur">
+          <Button
+            onClick={() => {
+              notifyMe();
+            }}
+            sx={{ position: "absolute", bottom: 16, right: 4 }}
+          >
+            <NotificationsActiveOutlinedIcon
+              color="primary"
+              sx={{
+                fontSize: 45,
+              }}
+            />
+          </Button>
+        </Tooltip>
       </Grid>
       {createModal && (
         <CreateProduct

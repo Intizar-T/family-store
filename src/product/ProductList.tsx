@@ -21,7 +21,8 @@ export interface Products {
   updatedAt: Date;
   userDevice: string;
   userName: string;
-  amount: number;
+  amount?: number;
+  unit?: string;
 }
 
 interface ProductListProps {
@@ -105,8 +106,8 @@ export default function ProductList({ device }: ProductListProps) {
               setProducts={setProducts}
             />
           </TabPanel>
-          <TabPanel value="Almalymy">Item Two</TabPanel>
-          <TabPanel value="Alyndy">Item Three</TabPanel>
+          <TabPanel value="Almalymy">Hali onarylotran...</TabPanel>
+          <TabPanel value="Alyndy">Hali onarylotran...</TabPanel>
         </TabContext>
       </Grid>
       <Grid item display="flex" justifyContent="center">

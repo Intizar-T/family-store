@@ -40,7 +40,7 @@ export default function MenuBar() {
         }}
       >
         <Typography variant="button" color="#1976d2">
-          Dalbayu!
+          Tashovs' Store
         </Typography>
         <Tooltip title="Account settings">
           <IconButton

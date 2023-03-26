@@ -6,6 +6,10 @@ import {
   TextField,
   DialogActions,
   Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
@@ -21,6 +25,8 @@ interface EditProductProps {
   selectedProductId: number;
   setProducts: (products: Products[]) => void;
   fetchProductList: () => Promise<Products[]>;
+  editedUnit: string;
+  setEditedUnit: (unit: string) => void;
 }
 
 export default function EditProduct({
@@ -32,6 +38,8 @@ export default function EditProduct({
   selectedProductId,
   setProducts,
   fetchProductList,
+  setEditedUnit,
+  editedUnit,
 }: EditProductProps) {
   const [Loading, toggle] = useLoading();
   return (
@@ -50,12 +58,13 @@ export default function EditProduct({
           sx={{
             display: "flex",
             flexDirection: "row",
-            paddingRight: 2,
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
           container
           spacing={1}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               label="Taza kosh:"
               color="success"
@@ -65,7 +74,7 @@ export default function EditProduct({
                 setEditedProductName(e.target.value);
               }}
               sx={{
-                margin: 1,
+                marginY: 1,
                 width: "100%",
               }}
             />
@@ -80,10 +89,24 @@ export default function EditProduct({
                 setEditedProductAmount(e.target.value);
               }}
               sx={{
-                margin: 1,
+                marginY: 1,
                 width: "100%",
               }}
             />
+          </Grid>
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Olchag</InputLabel>
+              <Select
+                value={editedUnit}
+                label="olchag"
+                onChange={(e) => setEditedUnit(e.target.value)}
+              >
+                <MenuItem value={"ta"}>ta</MenuItem>
+                <MenuItem value={"kg"}>kg</MenuItem>
+                <MenuItem value={"litr"}>litr</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
       </DialogContent>
@@ -109,6 +132,7 @@ export default function EditProduct({
                     editedProductAmount !== ""
                       ? Number(editedProductAmount)
                       : undefined,
+                  unit: editedUnit,
                 }),
               }
             );

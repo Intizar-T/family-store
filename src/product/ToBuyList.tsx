@@ -29,6 +29,7 @@ export default function ToBuyList({
   const [editModal, showEditModal] = useState(false);
   const [editedProductName, setEditedProductName] = useState("");
   const [editedProductAmount, setEditedProductAmount] = useState("");
+  const [editedUnit, setEditedUnit] = useState("");
   const [selectedProductId, setSelectedProductId] = useState(0);
   const [Loading, toggle] = useLoading();
   return (
@@ -51,6 +52,7 @@ export default function ToBuyList({
                   setSelectedProductId(product.id);
                   setEditedProductName(product.name);
                   setEditedProductAmount(`${product.amount}`);
+                  setEditedUnit(product.unit || "");
                   showEditModal(true);
                 }}
               >
@@ -81,7 +83,9 @@ export default function ToBuyList({
           </ListItemAvatar>
           <ListItemText
             primary={`${product.name} ${
-              product.amount !== null ? "- " + product.amount + " ta/kg" : ""
+              product.amount != null && product.unit != null
+                ? "- " + product.amount + " " + product.unit
+                : ""
             }`}
             secondary={`${product.userName}`}
             sx={{ marginRight: 4, overflowWrap: "break-word" }}
@@ -98,6 +102,8 @@ export default function ToBuyList({
           setEditedProductName={setEditedProductName}
           setProducts={setProducts}
           showEditModal={showEditModal}
+          editedUnit={editedUnit}
+          setEditedUnit={setEditedUnit}
         />
       )}
       <Loading />

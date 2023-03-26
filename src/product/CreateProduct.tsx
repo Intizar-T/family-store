@@ -43,7 +43,13 @@ export default function CreateProduct({
   const { user } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
   return (
-    <Dialog open={true}>
+    <Dialog
+      open={true}
+      keepMounted
+      onClose={() => {
+        showCreateModal(false);
+      }}
+    >
       <DialogTitle textAlign="center">Taza produkt kosh:</DialogTitle>
       <DialogContent>
         <Grid
@@ -62,7 +68,7 @@ export default function CreateProduct({
             xs={12}
           >
             <TextField
-              label="Taza kosh:"
+              label="Product:"
               value={newProduct}
               color={newProduct === "" ? "error" : "primary"}
               focused
@@ -117,17 +123,13 @@ export default function CreateProduct({
             }}
           >
             <Button
-              variant="contained"
-              color="primary"
               onClick={() => {
                 showCreateModal(false);
               }}
             >
-              Iza
+              Nazad
             </Button>
             <Button
-              variant="contained"
-              color="primary"
               onClick={async () => {
                 if (user !== null && newProduct !== "") {
                   toggle(true);
@@ -139,12 +141,14 @@ export default function CreateProduct({
                         newProductAmount !== ""
                           ? Number(newProductAmount)
                           : undefined,
+                      unit,
                       userDevice: user.device,
                       userName: user.name,
                     }),
                   });
                   setNewProduct("");
                   setNewProductAmount("");
+                  setUnit("");
                   setProducts((await Promise.all([fetchProductList()]))[0]);
                   toggle(false);
                   showCreateModal(false);
@@ -155,7 +159,7 @@ export default function CreateProduct({
                 height: 40,
               }}
             >
-              Dobaw
+              OK
             </Button>
           </Grid>
           <Loading />

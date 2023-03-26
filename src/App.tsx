@@ -22,19 +22,16 @@ function App() {
   );
 
   useEffect(() => {
+    if (user != null) return;
     (async () => {
       const users: User[] = await Promise.all(await CheckUser(device));
       if (users.length !== 0) setUser(users[0]);
-      else showLoginModal(true);
+      else
+        setTimeout(() => {
+          showLoginModal(true);
+        }, 1500);
     })();
-  }, [device]);
-
-  useEffect(() => {
-    if (user != null || loginModal === true) return;
-    setTimeout(() => {
-      showLoginModal(true);
-    }, 1500);
-  }, [user, loginModal]);
+  }, [user, device]);
 
   const userState = useMemo(() => {
     return { user, setUser };
@@ -42,9 +39,22 @@ function App() {
 
   return (
     <UserContext.Provider value={userState}>
-      <Grid container sx={{ display: "flex", overflowY: "scroll" }}>
-        <MenuBar />
-        <ProductList device={device} />
+      <Grid
+        container
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "scroll",
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <Grid item xs={1} sx={{ maxWidth: "100%", paddingX: 2 }}>
+          <MenuBar />
+        </Grid>
+        <Grid item xs={11} sx={{ maxWidth: "100%" }}>
+          <ProductList device={device} />
+        </Grid>
         {loginModal && (
           <Login device={device} showLoginModal={showLoginModal} />
         )}

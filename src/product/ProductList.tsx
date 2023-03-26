@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
@@ -11,6 +11,7 @@ import ToBuyList from "./ToBuyList";
 import CreateProduct from "./CreateProduct";
 import UserContext from "../UserContext";
 import useLoading from "../helpers/useLoading";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
 export interface Products {
   id: number;
@@ -42,9 +43,11 @@ export default function ProductList({ device }: ProductListProps) {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
   const [newProductAmount, setNewProductAmount] = useState("");
+  const [unit, setUnit] = useState<string>("");
   const [tabValue, setTabValue] = useState("Almaly");
   const { user } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
+  const [createModal, showCreateModal] = useState(false);
 
   useEffect(() => {
     if (user == null) return;
@@ -63,6 +66,8 @@ export default function ProductList({ device }: ProductListProps) {
         flexDirection: "column",
         justifyContent: "space-between",
         width: "100%",
+        height: "100%",
+        paddingBottom: 2,
       }}
     >
       <Grid item>
@@ -104,7 +109,21 @@ export default function ProductList({ device }: ProductListProps) {
           <TabPanel value="Alyndy">Item Three</TabPanel>
         </TabContext>
       </Grid>
-      <Grid item>
+      <Grid item display="flex" justifyContent="center">
+        <Button
+          onClick={() => {
+            showCreateModal(true);
+          }}
+        >
+          <AddCircleOutlineOutlinedIcon
+            color="primary"
+            sx={{
+              fontSize: 45,
+            }}
+          />
+        </Button>
+      </Grid>
+      {createModal && (
         <CreateProduct
           fetchProductList={fetchProductList}
           newProduct={newProduct}
@@ -112,8 +131,11 @@ export default function ProductList({ device }: ProductListProps) {
           setNewProduct={setNewProduct}
           setNewProductAmount={setNewProductAmount}
           setProducts={setProducts}
+          showCreateModal={showCreateModal}
+          setUnit={setUnit}
+          unit={unit}
         />
-      </Grid>
+      )}
       <Loading />
     </Grid>
   );

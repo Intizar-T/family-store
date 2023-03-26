@@ -23,11 +23,18 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const user: User[] = await Promise.all(await CheckUser(device));
-      if (user.length !== 0) setUser(user[0]);
+      const users: User[] = await Promise.all(await CheckUser(device));
+      if (users.length !== 0) setUser(users[0]);
       else showLoginModal(true);
     })();
   }, [device]);
+
+  useEffect(() => {
+    if (user != null || loginModal === true) return;
+    setTimeout(() => {
+      showLoginModal(true);
+    }, 1500);
+  }, [user, loginModal]);
 
   const userState = useMemo(() => {
     return { user, setUser };

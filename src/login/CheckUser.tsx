@@ -6,6 +6,5 @@ export default async function CheckUser(device: string): Promise<User[]> {
   const users: User[] = await fetchWithErrorHandler(USER_URL, "json", {
     method: "GET",
   });
-  console.log(users);
   return users.filter((user) => user?.device === device);
 }

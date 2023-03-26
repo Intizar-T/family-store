@@ -3,6 +3,7 @@ import { useEffect, useMemo } from "react";
 import { useState } from "react";
 import CheckUser from "./login/CheckUser";
 import Login from "./login/Login";
+import MenuBar from "./menu/MenuBar";
 import ProductList from "./product/ProductList";
 import UserContext from "./UserContext";
 
@@ -24,7 +25,6 @@ function App() {
   useEffect(() => {
     (async () => {
       const user: User[] = await Promise.all(await CheckUser(device));
-      console.log(user);
       if (user.length !== 0) setUser(user[0]);
       else showLoginModal(true);
     })();
@@ -37,6 +37,7 @@ function App() {
   return (
     <UserContext.Provider value={userState}>
       <Grid container sx={{ display: "flex", overflowY: "scroll" }}>
+        <MenuBar />
         <ProductList device={device} setLoading={setLoading} />
         {loginModal && (
           <Login

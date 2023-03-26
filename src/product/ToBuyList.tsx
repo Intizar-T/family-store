@@ -85,7 +85,7 @@ export default function ToBuyList({
               product.amount !== null ? "- " + product.amount + " ta/kg" : ""
             }`}
             secondary={`${product.userName}`}
-            sx={{ marginRight: 10, overflowX: "hidden" }}
+            sx={{ marginRight: 4, overflowWrap: "break-word" }}
           />
         </ListItem>
       ))}

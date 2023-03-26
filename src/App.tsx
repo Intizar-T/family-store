@@ -16,9 +16,9 @@ export type User = {
 const registerServiceWorker = async () => {
   if ("serviceWorker" in navigator) {
     try {
-      const registration = await navigator.serviceWorker.register("sw.js", {
-        scope: "./",
-      });
+      const registration = await navigator.serviceWorker.register(
+        "service-worker.js"
+      );
       if (registration.installing) {
         console.log("Service worker installing");
       } else if (registration.waiting) {

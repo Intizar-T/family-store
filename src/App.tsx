@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useEffect, useMemo } from "react";
 import { useState } from "react";
 import CheckUser from "./login/CheckUser";
@@ -15,7 +15,6 @@ export type User = {
 function App() {
   const [user, setUser] = useState<User>(null);
   const [loginModal, showLoginModal] = useState(false);
-  const [loading, setLoading] = useState(false);
   const userAgent = window.navigator.userAgent;
   const device = userAgent.substring(
     userAgent.indexOf("(") + 1,
@@ -38,21 +37,9 @@ function App() {
     <UserContext.Provider value={userState}>
       <Grid container sx={{ display: "flex", overflowY: "scroll" }}>
         <MenuBar />
-        <ProductList device={device} setLoading={setLoading} />
+        <ProductList device={device} />
         {loginModal && (
-          <Login
-            device={device}
-            showLoginModal={showLoginModal}
-            setLoading={setLoading}
-          />
-        )}
-        {loading && (
-          <Backdrop
-            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={true}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
+          <Login device={device} showLoginModal={showLoginModal} />
         )}
       </Grid>
     </UserContext.Provider>

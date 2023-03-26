@@ -10,6 +10,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import ToBuyList from "./ToBuyList";
 import CreateProduct from "./CreateProduct";
 import UserContext from "../UserContext";
+import useLoading from "../helpers/useLoading";
 
 export interface Products {
   id: number;
@@ -24,7 +25,6 @@ export interface Products {
 
 interface ProductListProps {
   device: string;
-  setLoading: (load: boolean) => void;
 }
 
 const fetchProductList = async () => {
@@ -38,19 +38,20 @@ const fetchProductList = async () => {
   return products;
 };
 
-export default function ProductList({ device, setLoading }: ProductListProps) {
+export default function ProductList({ device }: ProductListProps) {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
   const [newProductAmount, setNewProductAmount] = useState("");
   const [tabValue, setTabValue] = useState("Almaly");
   const { user } = useContext(UserContext);
+  const [Loading, toggle] = useLoading();
 
   useEffect(() => {
     if (user == null) return;
     (async () => {
-      setLoading(true);
+      toggle(true);
       setProducts((await Promise.all([fetchProductList()]))[0]);
-      setLoading(false);
+      toggle(false);
     })();
   }, [user]);
 
@@ -96,7 +97,6 @@ export default function ProductList({ device, setLoading }: ProductListProps) {
             <ToBuyList
               fetchProductList={fetchProductList}
               products={products}
-              setLoading={setLoading}
               setProducts={setProducts}
             />
           </TabPanel>
@@ -109,12 +109,12 @@ export default function ProductList({ device, setLoading }: ProductListProps) {
           fetchProductList={fetchProductList}
           newProduct={newProduct}
           newProductAmount={newProductAmount}
-          setLoading={setLoading}
           setNewProduct={setNewProduct}
           setNewProductAmount={setNewProductAmount}
           setProducts={setProducts}
         />
       </Grid>
+      <Loading />
     </Grid>
   );
 }

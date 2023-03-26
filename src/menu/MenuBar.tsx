@@ -1,4 +1,4 @@
-import { PersonAdd, Settings, Logout } from "@mui/icons-material";
+import { Settings } from "@mui/icons-material";
 import {
   Box,
   Typography,
@@ -7,13 +7,13 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Divider,
   ListItemIcon,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import UserContext from "../UserContext";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import DeleteAccount from "./DeleteAccount";
+import useLoading from "../helpers/useLoading";
 
 export default function MenuBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -26,6 +26,7 @@ export default function MenuBar() {
     setAnchorEl(null);
   };
   const { user } = useContext(UserContext);
+  const [Loading, toggle] = useLoading();
   return (
     <React.Fragment>
       <Box
@@ -39,7 +40,7 @@ export default function MenuBar() {
         }}
       >
         <Typography variant="button" color="#1976d2">
-          Tashov's Family Store
+          Dalbayu!
         </Typography>
         <Tooltip title="Account settings">
           <IconButton
@@ -116,6 +117,7 @@ export default function MenuBar() {
       {deleteAccountModal && (
         <DeleteAccount handleClose={() => showDeleteAccountModal(false)} />
       )}
+      <Loading />
     </React.Fragment>
   );
 }

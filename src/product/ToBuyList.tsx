@@ -13,17 +13,16 @@ import ImageIcon from "@mui/icons-material/Image";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import EditProduct from "./EditProduct";
+import useLoading from "../helpers/useLoading";
 
 interface ToBuyListProps {
   products: Products[];
   setProducts: (products: Products[]) => void;
   fetchProductList: () => Promise<Products[]>;
-  setLoading: (loading: boolean) => void;
 }
 
 export default function ToBuyList({
   products,
-  setLoading,
   fetchProductList,
   setProducts,
 }: ToBuyListProps) {
@@ -31,7 +30,7 @@ export default function ToBuyList({
   const [editedProductName, setEditedProductName] = useState("");
   const [editedProductAmount, setEditedProductAmount] = useState("");
   const [selectedProductId, setSelectedProductId] = useState(0);
-
+  const [Loading, toggle] = useLoading();
   return (
     <List
       sx={{
@@ -61,12 +60,12 @@ export default function ToBuyList({
                 sx={{ mr: 1 }}
                 color="error"
                 onClick={async () => {
-                  setLoading(true);
+                  toggle(true);
                   await fetch(`${PRODUCTS_URL}/${product.id}`, {
                     method: "delete",
                   });
                   setProducts((await Promise.all([fetchProductList()]))[0]);
-                  setLoading(false);
+                  toggle(false);
                 }}
               >
                 <DeleteIcon />
@@ -97,11 +96,11 @@ export default function ToBuyList({
           selectedProductId={selectedProductId}
           setEditedProductAmount={setEditedProductAmount}
           setEditedProductName={setEditedProductName}
-          setLoading={setLoading}
           setProducts={setProducts}
           showEditModal={showEditModal}
         />
       )}
+      <Loading />
     </List>
   );
 }

@@ -2,6 +2,7 @@ import { Grid, TextField, Button } from "@mui/material";
 import { useContext } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import useLoading from "../helpers/useLoading";
 import UserContext from "../UserContext";
 import { Products } from "./ProductList";
 
@@ -10,7 +11,6 @@ interface CreateProductProps {
   setNewProduct: (newProduct: string) => void;
   newProductAmount: string;
   setNewProductAmount: (newProductAmount: string) => void;
-  setLoading: (loading: boolean) => void;
   setProducts: (products: Products[]) => void;
   fetchProductList: () => Promise<Products[]>;
 }
@@ -18,13 +18,13 @@ interface CreateProductProps {
 export default function CreateProduct({
   newProduct,
   newProductAmount,
-  setLoading,
   setNewProduct,
   setNewProductAmount,
   setProducts,
   fetchProductList,
 }: CreateProductProps) {
   const { user } = useContext(UserContext);
+  const [Loading, toggle] = useLoading();
   return (
     <Grid
       container
@@ -81,7 +81,7 @@ export default function CreateProduct({
         color="success"
         onClick={async () => {
           if (user !== null && newProduct !== "") {
-            setLoading(true);
+            toggle(true);
             await fetchWithErrorHandler(PRODUCTS_URL, "json", {
               method: "post",
               body: JSON.stringify({
@@ -97,7 +97,7 @@ export default function CreateProduct({
             setNewProduct("");
             setNewProductAmount("");
             setProducts((await Promise.all([fetchProductList()]))[0]);
-            setLoading(false);
+            toggle(false);
           }
         }}
         sx={{
@@ -107,6 +107,7 @@ export default function CreateProduct({
       >
         Dobaw
       </Button>
+      <Loading />
     </Grid>
   );
 }

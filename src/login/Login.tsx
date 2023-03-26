@@ -9,21 +9,18 @@ import {
 import { useContext, useState } from "react";
 import { USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import useLoading from "../helpers/useLoading";
 import UserContext from "../UserContext";
 
 interface LoginProps {
   device: string;
   showLoginModal: (show: boolean) => void;
-  setLoading: (loading: boolean) => void;
 }
 
-export default function Login({
-  device,
-  showLoginModal,
-  setLoading,
-}: LoginProps) {
+export default function Login({ device, showLoginModal }: LoginProps) {
   const { setUser } = useContext(UserContext);
   const [name, setName] = useState("");
+  const [Loading, toggle] = useLoading();
   return (
     <Dialog
       open={true}
@@ -82,7 +79,7 @@ export default function Login({
               }}
               onClick={async () => {
                 if (name === "") return;
-                setLoading(true);
+                toggle(true);
                 setUser({ device, name });
                 await fetchWithErrorHandler(USER_URL, "json", {
                   method: "POST",
@@ -92,7 +89,7 @@ export default function Login({
                   }),
                 });
                 showLoginModal(false);
-                setLoading(false);
+                toggle(false);
               }}
             >
               OK
@@ -100,6 +97,7 @@ export default function Login({
           </Grid>
         </Grid>
       </DialogContent>
+      <Loading />
     </Dialog>
   );
 }

@@ -2,6 +2,8 @@ import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { useContext } from "react";
 import { USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import useLoading from "../helpers/useLoading";
+import useMessage from "../helpers/useMessage";
 import UserContext from "../UserContext";
 
 interface DeleteAccountProps {
@@ -10,9 +12,13 @@ interface DeleteAccountProps {
 
 export default function DeleteAccount({ handleClose }: DeleteAccountProps) {
   const { user, setUser } = useContext(UserContext);
+  const [Loading, toggle] = useLoading();
+  const [Message, toggleMessage] = useMessage();
   return (
     <Dialog open={true}>
-      <DialogTitle>Tocno ocurjakmy?</DialogTitle>
+      <DialogTitle sx={{ textAlign: "center" }}>
+        Koshan hamma produtkalarynam ocadi. Tocno ocurjakmy?
+      </DialogTitle>
       <DialogContent sx={{ display: "flex", justifyContent: "space-evenly" }}>
         <Button variant="contained" sx={{ width: 30 }} onClick={handleClose}>
           Yok
@@ -21,7 +27,7 @@ export default function DeleteAccount({ handleClose }: DeleteAccountProps) {
           variant="contained"
           sx={{ width: 30 }}
           onClick={async () => {
-            handleClose();
+            toggle(true);
             const { success }: { success: boolean } =
               await fetchWithErrorHandler(USER_URL, "json", {
                 method: "DELETE",
@@ -30,12 +36,22 @@ export default function DeleteAccount({ handleClose }: DeleteAccountProps) {
                   name: user?.name,
                 }),
               });
-            setUser(null);
+            if (success) {
+              toggleMessage(true, "success", "Udalit edildi");
+              setUser(null);
+              toggle(false);
+              setTimeout(() => {
+                toggleMessage(false);
+                handleClose();
+              }, 1000);
+            }
           }}
         >
           Owwa
         </Button>
       </DialogContent>
+      <Loading />
+      <Message />
     </Dialog>
   );
 }

@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import useLoading from "../helpers/useLoading";
 import { Products } from "./ProductList";
 
 interface EditProductProps {
@@ -17,7 +18,6 @@ interface EditProductProps {
   setEditedProductName: (name: string) => void;
   editedProductAmount: string;
   setEditedProductAmount: (amount: string) => void;
-  setLoading: (load: boolean) => void;
   selectedProductId: number;
   setProducts: (products: Products[]) => void;
   fetchProductList: () => Promise<Products[]>;
@@ -28,12 +28,12 @@ export default function EditProduct({
   editedProductName,
   setEditedProductName,
   setEditedProductAmount,
-  setLoading,
   showEditModal,
   selectedProductId,
   setProducts,
   fetchProductList,
 }: EditProductProps) {
+  const [Loading, toggle] = useLoading();
   return (
     <Dialog
       open={true}
@@ -97,7 +97,7 @@ export default function EditProduct({
         </Button>
         <Button
           onClick={async () => {
-            setLoading(true);
+            toggle(true);
             await fetchWithErrorHandler(
               `${PRODUCTS_URL}/${selectedProductId}`,
               "json",
@@ -113,13 +113,14 @@ export default function EditProduct({
               }
             );
             setProducts((await Promise.all([fetchProductList()]))[0]);
-            setLoading(false);
+            toggle(false);
             showEditModal(false);
           }}
         >
           OK
         </Button>
       </DialogActions>
+      <Loading />
     </Dialog>
   );
 }

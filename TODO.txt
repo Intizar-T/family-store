@@ -1,0 +1,8 @@
+TODO
+1. notification
+2. topbar for account info
+3. fix the app UI for mobile browser
+
+DONE:
+1. add padding to product list 
+2. remove login page and replace with auto device detection 

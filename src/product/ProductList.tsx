@@ -29,18 +29,33 @@ interface ProductListProps {
   device: string;
 }
 
-function notifyMe() {
-  if (!("Notification" in window)) {
-    alert("This browser does not support desktop notification");
-  } else if (Notification.permission === "granted") {
-    new Notification("Hi there!");
-  } else {
-    Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
-        new Notification("Hi there!");
-      }
-    });
-  }
+// function notifyMe() {
+//   if (!("Notification" in window)) {
+//     alert("This browser does not support desktop notification");
+//   } else if (Notification.permission === "granted") {
+//     new Notification("Hi there!");
+//   } else {
+//     Notification.requestPermission().then((permission) => {
+//       if (permission === "granted") {
+//         new Notification("Hi there!");
+//       }
+//     });
+//   }
+// }
+
+function showNotification() {
+  Notification.requestPermission((result) => {
+    if (result === "granted") {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.showNotification("Vibration Sample", {
+          body: "Buzz! Buzz!",
+          icon: "../images/touch/chrome-touch-icon-192x192.png",
+          vibrate: [200, 100, 200, 100, 200, 100, 200],
+          tag: "vibration-sample",
+        });
+      });
+    }
+  });
 }
 
 const fetchProductList = async () => {
@@ -148,7 +163,8 @@ export default function ProductList({ device }: ProductListProps) {
         <Tooltip title="Bashgalara magazindadigini duydur">
           <Button
             onClick={() => {
-              notifyMe();
+              // notifyMe();
+              showNotification();
             }}
             sx={{ position: "absolute", bottom: 18, right: 4 }}
           >

@@ -13,11 +13,12 @@ import React, { useContext, useState } from "react";
 import UserContext from "../UserContext";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import DeleteAccount from "./DeleteAccount";
-import useLoading from "../helpers/useLoading";
+import EditAccount from "./EditAccount";
 
 export default function MenuBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [deleteAccountModal, showDeleteAccountModal] = useState(false);
+  const [editAccountModal, showEditAccountModal] = useState(false);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -26,7 +27,6 @@ export default function MenuBar() {
     setAnchorEl(null);
   };
   const { user } = useContext(UserContext);
-  const [Loading, toggle] = useLoading();
   return (
     <React.Fragment>
       <Box
@@ -95,6 +95,7 @@ export default function MenuBar() {
         <MenuItem
           onClick={() => {
             handleClose();
+            showEditAccountModal(true);
           }}
         >
           <ListItemIcon style={{ minWidth: 25 }}>
@@ -117,7 +118,9 @@ export default function MenuBar() {
       {deleteAccountModal && (
         <DeleteAccount handleClose={() => showDeleteAccountModal(false)} />
       )}
-      <Loading />
+      {editAccountModal && (
+        <EditAccount handleClose={() => showEditAccountModal(false)} />
+      )}
     </React.Fragment>
   );
 }

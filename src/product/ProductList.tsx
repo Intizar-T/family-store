@@ -124,7 +124,13 @@ export default function ProductList({ device }: ProductListProps) {
           <TabPanel value="Alyndy">Hali onarylotran...</TabPanel>
         </TabContext>
       </Grid>
-      <Grid item display="flex" justifyContent="center">
+
+      <Grid
+        item
+        display="flex"
+        justifyContent="center"
+        sx={{ borderTop: 1, borderColor: "rgba(0, 0, 0, 0.12)" }}
+      >
         <Tooltip title="Taza produkt kosh">
           <Button
             onClick={() => {
@@ -144,7 +150,7 @@ export default function ProductList({ device }: ProductListProps) {
             onClick={() => {
               notifyMe();
             }}
-            sx={{ position: "absolute", bottom: 16, right: 4 }}
+            sx={{ position: "absolute", bottom: 18, right: 4 }}
           >
             <NotificationsActiveOutlinedIcon
               color="primary"

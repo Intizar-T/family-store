@@ -15,16 +15,15 @@ export default function DeleteAccount({ handleClose }: DeleteAccountProps) {
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
   return (
-    <Dialog open={true}>
+    <Dialog open={true} keepMounted onClose={handleClose}>
       <DialogTitle sx={{ textAlign: "center" }}>
         Koshan hamma produtkalarynam ocadi. Tocno ocurjakmy?
       </DialogTitle>
       <DialogContent sx={{ display: "flex", justifyContent: "space-evenly" }}>
-        <Button variant="contained" sx={{ width: 30 }} onClick={handleClose}>
+        <Button sx={{ width: 30 }} onClick={handleClose}>
           Yok
         </Button>
         <Button
-          variant="contained"
           sx={{ width: 30 }}
           onClick={async () => {
             toggle(true);
@@ -47,7 +46,7 @@ export default function DeleteAccount({ handleClose }: DeleteAccountProps) {
             }
           }}
         >
-          Owwa
+          OK
         </Button>
       </DialogContent>
       <Loading />

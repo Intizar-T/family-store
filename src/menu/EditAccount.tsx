@@ -3,7 +3,6 @@ import {
   DialogTitle,
   DialogContent,
   Button,
-  Typography,
   Grid,
   TextField,
 } from "@mui/material";
@@ -85,7 +84,7 @@ export default function EditAccount({ handleClose }: EditAccountProps) {
                 }
               }}
             >
-              Owwa
+              OK
             </Button>
           </Grid>
         </Grid>

@@ -36,9 +36,10 @@ export default function ToBuyList({
     <List
       sx={{
         bgcolor: "background.paper",
+        overflowY: "scroll",
       }}
       style={{
-        maxHeight: "calc(100vh - 250px)",
+        maxHeight: "calc(100vh - 230px)",
       }}
     >
       {products.map((product) => (

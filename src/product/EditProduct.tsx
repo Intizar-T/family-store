@@ -121,7 +121,6 @@ export default function EditProduct({
             toggle(true);
             await fetchWithErrorHandler(
               `${PRODUCTS_URL}/${selectedProductId}`,
-              "json",
               {
                 method: "PUT",
                 body: JSON.stringify({

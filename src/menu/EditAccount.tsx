@@ -62,17 +62,13 @@ export default function EditAccount({ handleClose }: EditAccountProps) {
                 if (user == null) return;
                 toggle(true);
                 const { success }: { success: boolean } =
-                  await fetchWithErrorHandler(
-                    `${USER_URL}/${user.name}`,
-                    "json",
-                    {
-                      method: "PUT",
-                      body: JSON.stringify({
-                        newName: editedUserName,
-                        device: user.device,
-                      }),
-                    }
-                  );
+                  await fetchWithErrorHandler(`${USER_URL}/${user.name}`, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                      newName: editedUserName,
+                      device: user.device,
+                    }),
+                  });
                 if (success) {
                   toggleMessage(true, "success", "Uytgadildi");
                   setUser(null);

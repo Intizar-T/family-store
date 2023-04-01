@@ -28,7 +28,7 @@ export default function DeleteAccount({ handleClose }: DeleteAccountProps) {
           onClick={async () => {
             toggle(true);
             const { success }: { success: boolean } =
-              await fetchWithErrorHandler(USER_URL, "json", {
+              await fetchWithErrorHandler(USER_URL, {
                 method: "DELETE",
                 body: JSON.stringify({
                   device: user?.device,

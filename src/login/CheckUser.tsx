@@ -18,7 +18,7 @@ export type APIUsers = {
 };
 
 export default async function CheckUser(device: string): Promise<User[]> {
-  const users: APIUsers[] = await fetchWithErrorHandler(USER_URL, "json", {
+  const users: APIUsers[] = await fetchWithErrorHandler(USER_URL, {
     method: "GET",
   });
   return users

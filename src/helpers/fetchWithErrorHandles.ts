@@ -1,6 +1,5 @@
 export const fetchWithErrorHandler = async <Data = any>(
   url: string,
-  type: "text" | "json" | "blob",
   options?: RequestInit
 ): Promise<Data> => {
   const request = await fetch(url, {

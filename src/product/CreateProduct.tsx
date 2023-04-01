@@ -11,7 +11,7 @@ import {
   Select,
 } from "@mui/material";
 import { useContext } from "react";
-import { PRODUCTS_URL } from "../api/APIs";
+import { PRODUCTS_URL, USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import UserContext from "../UserContext";
@@ -131,14 +131,24 @@ export default function CreateProduct({
               onClick={async () => {
                 if (user !== null && newProduct !== "") {
                   toggle(true);
-                  await fetchWithErrorHandler(PRODUCTS_URL, "json", {
+                  const id = new Date().getTime();
+                  await fetchWithErrorHandler(PRODUCTS_URL, {
                     method: "POST",
                     body: JSON.stringify({
+                      id,
                       name: newProduct,
                       amount: newProductAmount,
                       unit,
                       createdUserDevice: user.device,
                       createdUserName: user.name,
+                    }),
+                  });
+                  await fetchWithErrorHandler(USER_URL, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                      device: user.device,
+                      name: user.name,
+                      newProductId: id,
                     }),
                   });
                   setNewProduct("");

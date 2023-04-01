@@ -20,7 +20,6 @@ export type APIProducts = {
 export default async function FetchProductList() {
   const fetchedProducts: APIProducts[] = await fetchWithErrorHandler(
     PRODUCTS_URL,
-    "json",
     {
       method: "GET",
     }

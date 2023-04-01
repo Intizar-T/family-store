@@ -81,7 +81,7 @@ export default function Login({ device, showLoginModal }: LoginProps) {
                 if (name === "") return;
                 toggle(true);
                 setUser({ device, name });
-                await fetchWithErrorHandler(USER_URL, "json", {
+                await fetchWithErrorHandler(USER_URL, {
                   method: "POST",
                   body: JSON.stringify({
                     device,

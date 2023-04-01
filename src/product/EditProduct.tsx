@@ -13,12 +13,12 @@ import {
 } from "@mui/material";
 import { PRODUCTS_URL } from "../api/APIs";
 import useLoading from "../helpers/useLoading";
-import { Products } from "./ProductList";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import { useContext } from "react";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import UserContext from "../UserContext";
+import useMessage from "../helpers/useMessage";
 
 interface EditProductProps {
   showEditModal: (show: boolean) => void;
@@ -42,8 +42,9 @@ export default function EditProduct({
   editedUnit,
 }: EditProductProps) {
   const [Loading, toggle] = useLoading();
-  const { products, setProducts } = useContext(ProductContext);
+  const { setProducts } = useContext(ProductContext);
   const { user } = useContext(UserContext);
+  const [Message, toggleMessage] = useMessage();
   return (
     <Dialog
       open={true}
@@ -122,27 +123,44 @@ export default function EditProduct({
         </Button>
         <Button
           onClick={async () => {
-            toggle(true);
-            await fetchWithErrorHandler(`${PRODUCTS_URL}`, {
-              method: "PUT",
-              body: JSON.stringify({
-                id: selectedProductId.toString(),
-                name: editedProductName,
-                amount: editedProductAmount,
-                unit: editedUnit,
-                editedUserDevice: user?.device,
-                editedUserName: user?.name,
-              }),
-            });
-            setProducts(await FetchProductList());
-            toggle(false);
-            showEditModal(false);
+            try {
+              toggle(true);
+              await fetchWithErrorHandler(PRODUCTS_URL, {
+                method: "PUT",
+                body: JSON.stringify({
+                  id: selectedProductId.toString(),
+                  name: editedProductName,
+                  amount: editedProductAmount,
+                  unit: editedUnit,
+                  editedUserDevice: user?.device,
+                  editedUserName: user?.name,
+                }),
+              });
+              setProducts(await FetchProductList());
+              toggleMessage(true, "success", "produkt uytgadildi");
+              toggle(false);
+              setTimeout(() => {
+                toggleMessage(false);
+                showEditModal(false);
+              }, 1500);
+            } catch (e) {
+              toggle(false);
+              toggleMessage(
+                true,
+                "error",
+                "Chota birzat yalnys gitdi. Please, Intizar bilan habarlashyn."
+              );
+              setTimeout(() => {
+                toggleMessage(false);
+              }, 1500);
+            }
           }}
         >
           OK
         </Button>
       </DialogActions>
       <Loading />
+      <Message />
     </Dialog>
   );
 }

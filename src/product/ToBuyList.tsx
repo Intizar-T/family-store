@@ -9,9 +9,7 @@ import {
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
-import { Products } from "./ProductList";
 import ImageIcon from "@mui/icons-material/Image";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import EditProduct from "./EditProduct";
 import useLoading from "../helpers/useLoading";
@@ -20,6 +18,7 @@ import FetchProductList from "./FetchProductList";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import ProductContext from "./ProductContext";
 import UserContext from "../UserContext";
+import useMessage from "../helpers/useMessage";
 
 export default function ToBuyList() {
   const [editModal, showEditModal] = useState(false);
@@ -30,6 +29,8 @@ export default function ToBuyList() {
   const [Loading, toggle] = useLoading();
   const { products, setProducts } = useContext(ProductContext);
   const { user } = useContext(UserContext);
+  const [Message, toggleMessage] = useMessage();
+
   return (
     <List
       sx={{
@@ -63,21 +64,38 @@ export default function ToBuyList() {
                   sx={{ mr: 1 }}
                   color="success"
                   onClick={async () => {
-                    toggle(true);
-                    // await fetch(`${PRODUCTS_URL}?id=${product.id}`, {
-                    //   method: "DELETE",
-                    // });
-                    await fetchWithErrorHandler(`${PRODUCTS_URL}`, {
-                      method: "PUT",
-                      body: JSON.stringify({
-                        id: product.id.toString(),
-                        isBought: "true",
-                        boughtUserDevice: user?.device,
-                        boughtUserName: user?.name,
-                      }),
-                    });
-                    setProducts(await FetchProductList());
-                    toggle(false);
+                    try {
+                      toggle(true);
+                      await fetchWithErrorHandler(`${PRODUCTS_URL}`, {
+                        method: "PUT",
+                        body: JSON.stringify({
+                          id: product.id.toString(),
+                          isBought: "true",
+                          boughtUserDevice: user?.device,
+                          boughtUserName: user?.name,
+                        }),
+                      });
+                      setProducts(await FetchProductList());
+                      toggle(false);
+                      toggleMessage(
+                        true,
+                        "success",
+                        "produckt 'Alyndy' lista koshyldy"
+                      );
+                      setTimeout(() => {
+                        toggleMessage(false);
+                      }, 1500);
+                    } catch (e) {
+                      toggle(false);
+                      toggleMessage(
+                        true,
+                        "error",
+                        "Chota birzat yalnys gitdi. Please, Intizar bilan habarlashyn."
+                      );
+                      setTimeout(() => {
+                        toggleMessage(false);
+                      }, 1500);
+                    }
                   }}
                 >
                   <CheckIcon />
@@ -131,6 +149,7 @@ export default function ToBuyList() {
         />
       )}
       <Loading />
+      <Message />
     </List>
   );
 }

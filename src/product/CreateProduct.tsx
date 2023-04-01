@@ -17,6 +17,7 @@ import useLoading from "../helpers/useLoading";
 import UserContext from "../UserContext";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
+import useMessage from "../helpers/useMessage";
 
 interface CreateProductProps {
   newProduct: string;
@@ -39,7 +40,8 @@ export default function CreateProduct({
 }: CreateProductProps) {
   const { user } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
-  const { products, setProducts } = useContext(ProductContext);
+  const { setProducts } = useContext(ProductContext);
+  const [Message, toggleMessage] = useMessage();
   return (
     <Dialog
       open={true}
@@ -130,33 +132,49 @@ export default function CreateProduct({
             <Button
               onClick={async () => {
                 if (user !== null && newProduct !== "") {
-                  toggle(true);
                   const id = new Date().getTime();
-                  await fetchWithErrorHandler(PRODUCTS_URL, {
-                    method: "POST",
-                    body: JSON.stringify({
-                      id,
-                      name: newProduct,
-                      amount: newProductAmount,
-                      unit,
-                      createdUserDevice: user.device,
-                      createdUserName: user.name,
-                    }),
-                  });
-                  await fetchWithErrorHandler(USER_URL, {
-                    method: "PUT",
-                    body: JSON.stringify({
-                      device: user.device,
-                      name: user.name,
-                      newProductId: id,
-                    }),
-                  });
-                  setNewProduct("");
-                  setNewProductAmount("");
-                  setUnit("");
-                  setProducts(await FetchProductList());
-                  toggle(false);
-                  showCreateModal(false);
+                  try {
+                    toggle(true);
+                    await fetchWithErrorHandler(PRODUCTS_URL, {
+                      method: "POST",
+                      body: JSON.stringify({
+                        id,
+                        name: newProduct,
+                        amount: newProductAmount,
+                        unit,
+                        createdUserDevice: user.device,
+                        createdUserName: user.name,
+                      }),
+                    });
+                    await fetchWithErrorHandler(USER_URL, {
+                      method: "PUT",
+                      body: JSON.stringify({
+                        device: user.device,
+                        name: user.name,
+                        newProductId: id,
+                      }),
+                    });
+                    setProducts(await FetchProductList());
+                    toggleMessage(true, "success", "taza produkt koshuldy");
+                    setNewProduct("");
+                    setNewProductAmount("");
+                    setUnit("");
+                    toggle(false);
+                    setTimeout(() => {
+                      toggleMessage(false);
+                      showCreateModal(false);
+                    }, 1500);
+                  } catch (e) {
+                    toggle(false);
+                    toggleMessage(
+                      true,
+                      "error",
+                      "Chota birzat yalnys gitdi. Please, Intizar bilan habarlashyn."
+                    );
+                    setTimeout(() => {
+                      toggleMessage(false);
+                    }, 1500);
+                  }
                 }
               }}
               sx={{
@@ -167,9 +185,10 @@ export default function CreateProduct({
               OK
             </Button>
           </Grid>
-          <Loading />
         </Grid>
       </DialogContent>
+      <Loading />
+      <Message />
     </Dialog>
   );
 }

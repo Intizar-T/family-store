@@ -17,6 +17,7 @@ import FetchProductList from "./FetchProductList";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import ProductContext from "./ProductContext";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
+import useMessage from "../helpers/useMessage";
 
 export default function BoughtList() {
   const [editModal, showEditModal] = useState(false);
@@ -26,6 +27,7 @@ export default function BoughtList() {
   const [selectedProductId, setSelectedProductId] = useState(0);
   const [Loading, toggle] = useLoading();
   const { products, setProducts } = useContext(ProductContext);
+  const [Message, toggleMessage] = useMessage();
 
   return (
     <List
@@ -47,16 +49,38 @@ export default function BoughtList() {
                 <IconButton
                   color="primary"
                   onClick={async () => {
-                    await fetchWithErrorHandler(`${PRODUCTS_URL}`, {
-                      method: "PUT",
-                      body: JSON.stringify({
-                        id: product.id.toString(),
-                        isBought: "false",
-                        boughtUserDevice: "",
-                        boughtUserName: "",
-                      }),
-                    });
-                    setProducts(await FetchProductList());
+                    try {
+                      toggle(true);
+                      await fetchWithErrorHandler(`${PRODUCTS_URL}`, {
+                        method: "PUT",
+                        body: JSON.stringify({
+                          id: product.id.toString(),
+                          isBought: "false",
+                          boughtUserDevice: "",
+                          boughtUserName: "",
+                        }),
+                      });
+                      setProducts(await FetchProductList());
+                      toggle(false);
+                      toggleMessage(
+                        true,
+                        "success",
+                        "produkt izina 'Almaly' lista koshyldy"
+                      );
+                      setTimeout(() => {
+                        toggleMessage(false);
+                      }, 1500);
+                    } catch (e) {
+                      toggle(false);
+                      toggleMessage(
+                        true,
+                        "error",
+                        "Chota birzat yalnys gitdi. Please, Intizar bilan habarlashyn."
+                      );
+                      setTimeout(() => {
+                        toggleMessage(false);
+                      }, 1500);
+                    }
                   }}
                 >
                   <RotateLeftIcon />
@@ -65,12 +89,28 @@ export default function BoughtList() {
                   sx={{ mr: 1 }}
                   color="error"
                   onClick={async () => {
-                    toggle(true);
-                    await fetch(`${PRODUCTS_URL}?id=${product.id}`, {
-                      method: "DELETE",
-                    });
-                    setProducts(await FetchProductList());
-                    toggle(false);
+                    try {
+                      toggle(true);
+                      await fetch(`${PRODUCTS_URL}?id=${product.id}`, {
+                        method: "DELETE",
+                      });
+                      setProducts(await FetchProductList());
+                      toggle(false);
+                      toggleMessage(true, "success", "produkt udalit edildi");
+                      setTimeout(() => {
+                        toggleMessage(false);
+                      }, 1500);
+                    } catch (e) {
+                      toggle(false);
+                      toggleMessage(
+                        true,
+                        "error",
+                        "Chota birzat yalnys gitdi. Please, Intizar bilan habarlashyn."
+                      );
+                      setTimeout(() => {
+                        toggleMessage(false);
+                      }, 1500);
+                    }
                   }}
                 >
                   <DeleteIcon />
@@ -124,6 +164,7 @@ export default function BoughtList() {
         />
       )}
       <Loading />
+      <Message />
     </List>
   );
 }

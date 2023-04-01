@@ -12,9 +12,9 @@ import {
   Select,
 } from "@mui/material";
 import { PRODUCTS_URL } from "../api/APIs";
-import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import { Products } from "./ProductList";
+import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 
 interface EditProductProps {
   showEditModal: (show: boolean) => void;
@@ -24,7 +24,6 @@ interface EditProductProps {
   setEditedProductAmount: (amount: string) => void;
   selectedProductId: number;
   setProducts: (products: Products[]) => void;
-  fetchProductList: () => Promise<Products[]>;
   editedUnit: string;
   setEditedUnit: (unit: string) => void;
 }
@@ -37,7 +36,6 @@ export default function EditProduct({
   showEditModal,
   selectedProductId,
   setProducts,
-  fetchProductList,
   setEditedUnit,
   editedUnit,
 }: EditProductProps) {
@@ -128,15 +126,12 @@ export default function EditProduct({
                 method: "PUT",
                 body: JSON.stringify({
                   name: editedProductName,
-                  amount:
-                    editedProductAmount !== ""
-                      ? Number(editedProductAmount)
-                      : undefined,
+                  amount: editedProductAmount,
                   unit: editedUnit,
                 }),
               }
             );
-            setProducts((await Promise.all([fetchProductList()]))[0]);
+            setProducts([]);
             toggle(false);
             showEditModal(false);
           }}

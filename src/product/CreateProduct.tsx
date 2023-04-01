@@ -15,15 +15,14 @@ import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import UserContext from "../UserContext";
-import { Products } from "./ProductList";
+import ProductContext from "./ProductContext";
+import FetchProductList from "./FetchProductList";
 
 interface CreateProductProps {
   newProduct: string;
   setNewProduct: (newProduct: string) => void;
   newProductAmount: string;
   setNewProductAmount: (newProductAmount: string) => void;
-  setProducts: (products: Products[]) => void;
-  fetchProductList: () => Promise<Products[]>;
   showCreateModal: (show: boolean) => void;
   unit: string;
   setUnit: (unit: string) => void;
@@ -34,14 +33,13 @@ export default function CreateProduct({
   newProductAmount,
   setNewProduct,
   setNewProductAmount,
-  setProducts,
-  fetchProductList,
   showCreateModal,
   setUnit,
   unit,
 }: CreateProductProps) {
   const { user } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
+  const { products, setProducts } = useContext(ProductContext);
   return (
     <Dialog
       open={true}
@@ -134,22 +132,19 @@ export default function CreateProduct({
                 if (user !== null && newProduct !== "") {
                   toggle(true);
                   await fetchWithErrorHandler(PRODUCTS_URL, "json", {
-                    method: "post",
+                    method: "POST",
                     body: JSON.stringify({
                       name: newProduct,
-                      amount:
-                        newProductAmount !== ""
-                          ? Number(newProductAmount)
-                          : undefined,
+                      amount: newProductAmount,
                       unit,
-                      userDevice: user.device,
-                      userName: user.name,
+                      createdUserDevice: user.device,
+                      createdUserName: user.name,
                     }),
                   });
                   setNewProduct("");
                   setNewProductAmount("");
                   setUnit("");
-                  setProducts((await Promise.all([fetchProductList()]))[0]);
+                  setProducts(await FetchProductList());
                   toggle(false);
                   showCreateModal(false);
                 }

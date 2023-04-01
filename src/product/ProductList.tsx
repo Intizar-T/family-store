@@ -1,7 +1,5 @@
 import { Button, Grid, Tooltip } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { PRODUCTS_URL } from "../api/APIs";
-import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { useContext, useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -13,6 +11,8 @@ import UserContext from "../UserContext";
 import useLoading from "../helpers/useLoading";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
+import ProductContext from "./ProductContext";
+import FetchProductList from "./FetchProductList";
 export interface Products {
   id: number;
   name: string;
@@ -23,6 +23,10 @@ export interface Products {
   userName: string;
   amount?: number;
   unit?: string;
+  boughtUserDevice?: string;
+  boughtUserName?: string;
+  editedUserDevice?: string;
+  editedUserName?: string;
 }
 
 interface ProductListProps {
@@ -58,17 +62,6 @@ function showNotification() {
   });
 }
 
-const fetchProductList = async () => {
-  const products: Products[] = await fetchWithErrorHandler(
-    PRODUCTS_URL,
-    "json",
-    {
-      method: "GET",
-    }
-  );
-  return products;
-};
-
 export default function ProductList({ device }: ProductListProps) {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
@@ -80,117 +73,116 @@ export default function ProductList({ device }: ProductListProps) {
   const [createModal, showCreateModal] = useState(false);
 
   useEffect(() => {
-    if (user == null) return;
     (async () => {
       toggle(true);
-      setProducts((await Promise.all([fetchProductList()]))[0]);
+      setProducts(await FetchProductList());
       toggle(false);
     })();
-  }, [user]);
+  }, []);
+
+  const productState = useMemo(() => {
+    return { products, setProducts };
+  }, [products]);
 
   return (
-    <Grid
-      container
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        width: "100%",
-        height: "100%",
-        paddingBottom: 2,
-      }}
-    >
-      <Grid item>
-        <TabContext value={tabValue}>
-          <Box
-            sx={{
-              borderBottom: 1,
-              borderTop: 1,
-              borderColor: "divider",
-            }}
-          >
-            <TabList
-              centered
-              onChange={(e, value) => {
-                setTabValue(value);
-              }}
-              sx={{ paddingTop: 1 }}
-            >
-              <Tab label="Almaly" value="Almaly" />
-              <Tab label="Almalymy" value="Almalymy" />
-              <Tab label="Alyndy" value="Alyndy" />
-            </TabList>
-          </Box>
-          <TabPanel
-            value="Almaly"
-            sx={{
-              padding: 1,
-              margin: 0,
-              paddingRight: 0,
-            }}
-          >
-            <ToBuyList
-              fetchProductList={fetchProductList}
-              products={products}
-              setProducts={setProducts}
-            />
-          </TabPanel>
-          <TabPanel value="Almalymy">Hali onarylotran...</TabPanel>
-          <TabPanel value="Alyndy">Hali onarylotran...</TabPanel>
-        </TabContext>
-      </Grid>
-
+    <ProductContext.Provider value={productState}>
       <Grid
-        item
-        display="flex"
-        justifyContent="center"
-        sx={{ borderTop: 1, borderColor: "rgba(0, 0, 0, 0.12)" }}
+        container
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          width: "100%",
+          height: "100%",
+          paddingBottom: 2,
+        }}
       >
-        <Tooltip title="Taza produkt kosh">
-          <Button
-            onClick={() => {
-              showCreateModal(true);
-            }}
-          >
-            <AddCircleOutlineOutlinedIcon
-              color="primary"
+        <Grid item>
+          <TabContext value={tabValue}>
+            <Box
               sx={{
-                fontSize: 45,
+                borderBottom: 1,
+                borderTop: 1,
+                borderColor: "divider",
               }}
-            />
-          </Button>
-        </Tooltip>
-        <Tooltip title="Bashgalara magazindadigini duydur">
-          <Button
-            onClick={() => {
-              // notifyMe();
-              showNotification();
-            }}
-            sx={{ position: "absolute", bottom: 18, right: 4 }}
-          >
-            <NotificationsActiveOutlinedIcon
-              color="primary"
+            >
+              <TabList
+                centered
+                onChange={(e, value) => {
+                  setTabValue(value);
+                }}
+                sx={{ paddingTop: 1 }}
+              >
+                <Tab label="Almaly" value="Almaly" />
+                <Tab label="Almalymy" value="Almalymy" />
+                <Tab label="Alyndy" value="Alyndy" />
+              </TabList>
+            </Box>
+            <TabPanel
+              value="Almaly"
               sx={{
-                fontSize: 45,
+                padding: 1,
+                margin: 0,
+                paddingRight: 0,
               }}
-            />
-          </Button>
-        </Tooltip>
+            >
+              <ToBuyList products={products} setProducts={setProducts} />
+            </TabPanel>
+            <TabPanel value="Almalymy">Hali onarylotran...</TabPanel>
+            <TabPanel value="Alyndy">Hali onarylotran...</TabPanel>
+          </TabContext>
+        </Grid>
+
+        <Grid
+          item
+          display="flex"
+          justifyContent="center"
+          sx={{ borderTop: 1, borderColor: "rgba(0, 0, 0, 0.12)" }}
+        >
+          <Tooltip title="Taza produkt kosh">
+            <Button
+              onClick={() => {
+                showCreateModal(true);
+              }}
+            >
+              <AddCircleOutlineOutlinedIcon
+                color="primary"
+                sx={{
+                  fontSize: 45,
+                }}
+              />
+            </Button>
+          </Tooltip>
+          <Tooltip title="Bashgalara magazindadigini duydur">
+            <Button
+              onClick={() => {
+                // notifyMe();
+                showNotification();
+              }}
+              sx={{ position: "absolute", bottom: 18, right: 4 }}
+            >
+              <NotificationsActiveOutlinedIcon
+                color="primary"
+                sx={{
+                  fontSize: 45,
+                }}
+              />
+            </Button>
+          </Tooltip>
+        </Grid>
+        {createModal && (
+          <CreateProduct
+            newProduct={newProduct}
+            newProductAmount={newProductAmount}
+            setNewProduct={setNewProduct}
+            setNewProductAmount={setNewProductAmount}
+            showCreateModal={showCreateModal}
+            setUnit={setUnit}
+            unit={unit}
+          />
+        )}
+        <Loading />
       </Grid>
-      {createModal && (
-        <CreateProduct
-          fetchProductList={fetchProductList}
-          newProduct={newProduct}
-          newProductAmount={newProductAmount}
-          setNewProduct={setNewProduct}
-          setNewProductAmount={setNewProductAmount}
-          setProducts={setProducts}
-          showCreateModal={showCreateModal}
-          setUnit={setUnit}
-          unit={unit}
-        />
-      )}
-      <Loading />
-    </Grid>
+    </ProductContext.Provider>
   );
 }

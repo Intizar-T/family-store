@@ -18,14 +18,9 @@ import useLoading from "../helpers/useLoading";
 interface ToBuyListProps {
   products: Products[];
   setProducts: (products: Products[]) => void;
-  fetchProductList: () => Promise<Products[]>;
 }
 
-export default function ToBuyList({
-  products,
-  fetchProductList,
-  setProducts,
-}: ToBuyListProps) {
+export default function ToBuyList({ products, setProducts }: ToBuyListProps) {
   const [editModal, showEditModal] = useState(false);
   const [editedProductName, setEditedProductName] = useState("");
   const [editedProductAmount, setEditedProductAmount] = useState("");
@@ -67,7 +62,7 @@ export default function ToBuyList({
                   await fetch(`${PRODUCTS_URL}/${product.id}`, {
                     method: "delete",
                   });
-                  setProducts((await Promise.all([fetchProductList()]))[0]);
+                  setProducts([]);
                   toggle(false);
                 }}
               >
@@ -97,7 +92,6 @@ export default function ToBuyList({
         <EditProduct
           editedProductAmount={editedProductAmount}
           editedProductName={editedProductName}
-          fetchProductList={fetchProductList}
           selectedProductId={selectedProductId}
           setEditedProductAmount={setEditedProductAmount}
           setEditedProductName={setEditedProductName}

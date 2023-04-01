@@ -59,8 +59,8 @@ export default function ToBuyList({ products, setProducts }: ToBuyListProps) {
                 color="error"
                 onClick={async () => {
                   toggle(true);
-                  await fetch(`${PRODUCTS_URL}/${product.id}`, {
-                    method: "delete",
+                  await fetch(`${PRODUCTS_URL}?id=${product.id}`, {
+                    method: "DELETE",
                   });
                   setProducts([]);
                   toggle(false);

@@ -15,6 +15,9 @@ import { PRODUCTS_URL } from "../api/APIs";
 import useLoading from "../helpers/useLoading";
 import { Products } from "./ProductList";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { useContext } from "react";
+import ProductContext from "./ProductContext";
+import FetchProductList from "./FetchProductList";
 
 interface EditProductProps {
   showEditModal: (show: boolean) => void;
@@ -23,7 +26,6 @@ interface EditProductProps {
   editedProductAmount: string;
   setEditedProductAmount: (amount: string) => void;
   selectedProductId: number;
-  setProducts: (products: Products[]) => void;
   editedUnit: string;
   setEditedUnit: (unit: string) => void;
 }
@@ -35,11 +37,11 @@ export default function EditProduct({
   setEditedProductAmount,
   showEditModal,
   selectedProductId,
-  setProducts,
   setEditedUnit,
   editedUnit,
 }: EditProductProps) {
   const [Loading, toggle] = useLoading();
+  const { products, setProducts } = useContext(ProductContext);
   return (
     <Dialog
       open={true}
@@ -119,18 +121,16 @@ export default function EditProduct({
         <Button
           onClick={async () => {
             toggle(true);
-            await fetchWithErrorHandler(
-              `${PRODUCTS_URL}/${selectedProductId}`,
-              {
-                method: "PUT",
-                body: JSON.stringify({
-                  name: editedProductName,
-                  amount: editedProductAmount,
-                  unit: editedUnit,
-                }),
-              }
-            );
-            setProducts([]);
+            await fetchWithErrorHandler(`${PRODUCTS_URL}`, {
+              method: "PUT",
+              body: JSON.stringify({
+                id: selectedProductId.toString(),
+                name: editedProductName,
+                amount: editedProductAmount,
+                unit: editedUnit,
+              }),
+            });
+            setProducts(await FetchProductList());
             toggle(false);
             showEditModal(false);
           }}

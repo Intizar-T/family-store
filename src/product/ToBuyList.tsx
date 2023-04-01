@@ -79,7 +79,7 @@ export default function ToBuyList({ products, setProducts }: ToBuyListProps) {
           </ListItemAvatar>
           <ListItemText
             primary={`${product.name} ${
-              product.amount != null && product.unit != null
+              product.amount !== 0 && product.unit != null
                 ? "- " + product.amount + " " + product.unit
                 : ""
             }`}
@@ -95,7 +95,6 @@ export default function ToBuyList({ products, setProducts }: ToBuyListProps) {
           selectedProductId={selectedProductId}
           setEditedProductAmount={setEditedProductAmount}
           setEditedProductName={setEditedProductName}
-          setProducts={setProducts}
           showEditModal={showEditModal}
           editedUnit={editedUnit}
           setEditedUnit={setEditedUnit}

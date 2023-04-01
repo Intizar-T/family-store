@@ -13,6 +13,7 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
+import BoughtList from "./BoughtList";
 export interface Products {
   id: number;
   name: string;
@@ -126,10 +127,28 @@ export default function ProductList({ device }: ProductListProps) {
                 paddingRight: 0,
               }}
             >
-              <ToBuyList products={products} setProducts={setProducts} />
+              <ToBuyList />
             </TabPanel>
-            <TabPanel value="Almalymy">Hali onarylotran...</TabPanel>
-            <TabPanel value="Alyndy">Hali onarylotran...</TabPanel>
+            <TabPanel
+              value="Almalymy"
+              sx={{
+                padding: 1,
+                margin: 0,
+                paddingRight: 0,
+              }}
+            >
+              Hali onarylotran...
+            </TabPanel>
+            <TabPanel
+              value="Alyndy"
+              sx={{
+                padding: 1,
+                margin: 0,
+                paddingRight: 0,
+              }}
+            >
+              <BoughtList />
+            </TabPanel>
           </TabContext>
         </Grid>
 

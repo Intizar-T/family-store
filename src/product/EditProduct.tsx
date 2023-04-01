@@ -18,6 +18,7 @@ import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import { useContext } from "react";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
+import UserContext from "../UserContext";
 
 interface EditProductProps {
   showEditModal: (show: boolean) => void;
@@ -42,6 +43,7 @@ export default function EditProduct({
 }: EditProductProps) {
   const [Loading, toggle] = useLoading();
   const { products, setProducts } = useContext(ProductContext);
+  const { user } = useContext(UserContext);
   return (
     <Dialog
       open={true}
@@ -128,6 +130,8 @@ export default function EditProduct({
                 name: editedProductName,
                 amount: editedProductAmount,
                 unit: editedUnit,
+                editedUserDevice: user?.device,
+                editedUserName: user?.name,
               }),
             });
             setProducts(await FetchProductList());

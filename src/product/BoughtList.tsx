@@ -9,19 +9,16 @@ import {
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
-import { Products } from "./ProductList";
 import ImageIcon from "@mui/icons-material/Image";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import EditProduct from "./EditProduct";
 import useLoading from "../helpers/useLoading";
-import CheckIcon from "@mui/icons-material/Check";
 import FetchProductList from "./FetchProductList";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import ProductContext from "./ProductContext";
-import UserContext from "../UserContext";
+import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 
-export default function ToBuyList() {
+export default function BoughtList() {
   const [editModal, showEditModal] = useState(false);
   const [editedProductName, setEditedProductName] = useState("");
   const [editedProductAmount, setEditedProductAmount] = useState("");
@@ -29,7 +26,7 @@ export default function ToBuyList() {
   const [selectedProductId, setSelectedProductId] = useState(0);
   const [Loading, toggle] = useLoading();
   const { products, setProducts } = useContext(ProductContext);
-  const { user } = useContext(UserContext);
+
   return (
     <List
       sx={{
@@ -41,7 +38,7 @@ export default function ToBuyList() {
       }}
     >
       {products
-        .filter(({ isBought }) => !isBought)
+        .filter(({ isBought }) => isBought)
         .map((product) => (
           <ListItem
             key={product.id}
@@ -49,38 +46,34 @@ export default function ToBuyList() {
               <React.Fragment>
                 <IconButton
                   color="primary"
-                  onClick={() => {
-                    setSelectedProductId(product.id);
-                    setEditedProductName(product.name);
-                    setEditedProductAmount(`${product.amount}`);
-                    setEditedUnit(product.unit || "");
-                    showEditModal(true);
-                  }}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  sx={{ mr: 1 }}
-                  color="success"
                   onClick={async () => {
-                    toggle(true);
-                    // await fetch(`${PRODUCTS_URL}?id=${product.id}`, {
-                    //   method: "DELETE",
-                    // });
                     await fetchWithErrorHandler(`${PRODUCTS_URL}`, {
                       method: "PUT",
                       body: JSON.stringify({
                         id: product.id.toString(),
-                        isBought: "true",
-                        boughtUserDevice: user?.device,
-                        boughtUserName: user?.name,
+                        isBought: "false",
+                        boughtUserDevice: "",
+                        boughtUserName: "",
                       }),
+                    });
+                    setProducts(await FetchProductList());
+                  }}
+                >
+                  <RotateLeftIcon />
+                </IconButton>
+                <IconButton
+                  sx={{ mr: 1 }}
+                  color="error"
+                  onClick={async () => {
+                    toggle(true);
+                    await fetch(`${PRODUCTS_URL}?id=${product.id}`, {
+                      method: "DELETE",
                     });
                     setProducts(await FetchProductList());
                     toggle(false);
                   }}
                 >
-                  <CheckIcon />
+                  <DeleteIcon />
                 </IconButton>
               </React.Fragment>
             }
@@ -102,16 +95,16 @@ export default function ToBuyList() {
                   <Typography fontSize="small" color="red">
                     Doratdi: {product.userName}
                   </Typography>
-                  {product.editedUserName && (
+                  {/* {product.editedUserName && (
                     <Typography fontSize="small" color="#1976D2">
                       Uytgatdi: {product.editedUserName}
                     </Typography>
-                  )}
-                  {/* {product.boughtUserName && (
+                  )} */}
+                  {product.boughtUserName && (
                     <Typography fontSize="small" color="#2e7d32">
                       Satyn aldy: {product.boughtUserName}
                     </Typography>
-                  )} */}
+                  )}
                 </React.Fragment>
               }
               sx={{ marginRight: 4, overflowWrap: "break-word" }}

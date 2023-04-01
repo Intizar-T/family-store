@@ -45,6 +45,7 @@ function App() {
     if (user != null) return;
     (async () => {
       const users: User[] = await Promise.all(await CheckUser(device));
+      console.log(users);
       if (users.length !== 0) setUser(users[0]);
       else
         setTimeout(() => {

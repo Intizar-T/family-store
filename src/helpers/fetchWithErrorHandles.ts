@@ -10,6 +10,7 @@ export const fetchWithErrorHandler = async <Data = any>(
       ...options?.headers,
     },
   });
+  // console.log(await request.json());
   if (!request.ok) throw new Error(await request.text());
-  return request[type]();
+  return request.json();
 };

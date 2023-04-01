@@ -57,7 +57,7 @@ export default function MenuBar() {
           </IconButton>
         </Tooltip>
       </Box>
-      <Menu
+      {/* <Menu
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -120,7 +120,7 @@ export default function MenuBar() {
       )}
       {editAccountModal && (
         <EditAccount handleClose={() => showEditAccountModal(false)} />
-      )}
+      )} */}
     </React.Fragment>
   );
 }

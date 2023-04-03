@@ -10,7 +10,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { PRODUCTS_URL, USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
@@ -18,6 +18,7 @@ import UserContext from "../UserContext";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import useMessage from "../helpers/useMessage";
+import { Store } from "./ToBuyList";
 
 interface CreateProductProps {
   newProduct: string;
@@ -42,6 +43,7 @@ export default function CreateProduct({
   const [Loading, toggle] = useLoading();
   const { setProducts } = useContext(ProductContext);
   const [Message, toggleMessage] = useMessage();
+  const [store, setStore] = useState<Store>("pyatrorychka");
   return (
     <Dialog
       open={true}
@@ -63,6 +65,7 @@ export default function CreateProduct({
             sx={{
               display: "flex",
               flexDirection: "row",
+              paddingY: 1,
             }}
             item
             xs={12}
@@ -76,7 +79,6 @@ export default function CreateProduct({
                 setNewProduct(e.target.value);
               }}
               sx={{
-                margin: 1,
                 width: "100%",
               }}
             />
@@ -88,6 +90,9 @@ export default function CreateProduct({
             flexDirection="row"
             alignItems="center"
             spacing={2}
+            sx={{
+              paddingY: 1,
+            }}
           >
             <TextField
               label="Kancha:"
@@ -97,10 +102,10 @@ export default function CreateProduct({
                 setNewProductAmount(e.target.value);
               }}
               sx={{
-                margin: 1,
+                paddingRight: 1,
               }}
             />
-            <FormControl fullWidth sx={{ width: 130 }}>
+            <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Olchag</InputLabel>
               <Select
                 value={unit}
@@ -116,12 +121,27 @@ export default function CreateProduct({
           <Grid
             item
             xs={12}
-            display="flex"
-            justifyContent="space-between"
             sx={{
-              marginX: 1,
+              paddingY: 1,
             }}
           >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Kaysy Magazindan
+              </InputLabel>
+              <Select
+                value={store}
+                label="Kaysy Magazindan"
+                onChange={(e) => setStore(e.target.value as Store)}
+              >
+                <MenuItem value={"all"}>Opshi</MenuItem>
+                <MenuItem value={"pyatrorychka"}>Pyatrorychka</MenuItem>
+                <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
+                <MenuItem value={"other"}>Bashga</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} display="flex" justifyContent="space-between">
             <Button
               onClick={() => {
                 showCreateModal(false);
@@ -144,6 +164,7 @@ export default function CreateProduct({
                         unit,
                         createdUserDevice: user.device,
                         createdUserName: user.name,
+                        store,
                       }),
                     });
                     await fetchWithErrorHandler(USER_URL, {

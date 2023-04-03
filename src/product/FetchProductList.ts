@@ -9,6 +9,7 @@ export type APIProducts = {
   isBought: { BOOL: boolean };
   name: { S: string };
   updatedAt: { S: string };
+  store: { S: string };
   amount?: { S: string };
   unit?: { S: string };
   boughtUserDevice?: { S: string };
@@ -24,11 +25,13 @@ export default async function FetchProductList() {
       method: "GET",
     }
   );
+  console.log(fetchedProducts);
   return fetchedProducts.map((product) => {
     return {
       id: parseInt(product["id"]["S"]),
       name: product["name"]["S"],
       isBought: product["isBought"]["BOOL"],
+      store: product["store"]["S"],
       createdAt: new Date(product["createdAt"]["S"]),
       updatedAt: new Date(product["updatedAt"]["S"]),
       userDevice: product["createdUserDevice"]["S"],

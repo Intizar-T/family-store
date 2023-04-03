@@ -22,6 +22,7 @@ export interface Products {
   updatedAt: Date;
   userDevice: string;
   userName: string;
+  store: string;
   amount?: number;
   unit?: string;
   boughtUserDevice?: string;

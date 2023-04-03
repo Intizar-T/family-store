@@ -43,7 +43,7 @@ export default function CreateProduct({
   const [Loading, toggle] = useLoading();
   const { setProducts } = useContext(ProductContext);
   const [Message, toggleMessage] = useMessage();
-  const [store, setStore] = useState<Store>("pyatrorychka");
+  // const [store, setStore] = useState<Store>("pyatrorychka");
   return (
     <Dialog
       open={true}
@@ -118,7 +118,7 @@ export default function CreateProduct({
               </Select>
             </FormControl>
           </Grid>
-          <Grid
+          {/* <Grid
             item
             xs={12}
             sx={{
@@ -140,7 +140,7 @@ export default function CreateProduct({
                 <MenuItem value={"other"}>Bashga</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} display="flex" justifyContent="space-between">
             <Button
               onClick={() => {
@@ -164,7 +164,7 @@ export default function CreateProduct({
                         unit,
                         createdUserDevice: user.device,
                         createdUserName: user.name,
-                        store,
+                        // store,
                       }),
                     });
                     await fetchWithErrorHandler(USER_URL, {

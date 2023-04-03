@@ -25,7 +25,6 @@ export default async function FetchProductList() {
       method: "GET",
     }
   );
-  console.log(fetchedProducts);
   return fetchedProducts.map((product) => {
     return {
       id: parseInt(product["id"]["S"]),

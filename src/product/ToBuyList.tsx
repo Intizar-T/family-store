@@ -40,12 +40,10 @@ const filterProducts = (
   selectedStore?: Store
 ): Products[] => {
   let filteringInProgressProducts: Products[] = products;
-  if (selectedStore != null && selectedStore !== "all")
-    filteringInProgressProducts = products.filter(({ store }) => {
-      // console.log(`${store} and ${selectedStore}`);
-      return store === selectedStore;
-    });
-  // console.log(filteringInProgressProducts);
+  // if (selectedStore != null && selectedStore !== "all")
+  //   filteringInProgressProducts = products.filter(({ store }) => {
+  //     return store === selectedStore;
+  //   });
   // if (createdAt != null) {
   //   if (createdAt === "all")
   //     return filteringInProgressProducts.filter(({ isBought }) => !isBought);
@@ -104,8 +102,8 @@ export default function ToBuyList() {
           paddingRight: 2,
         }}
       >
-        <Grid display="flex" flexDirection="row" sx={{ width: "100%" }}>
-          <FormControl fullWidth sx={{ marginRight: 1 }}>
+        {/* <Grid display="flex" flexDirection="row" sx={{ width: "100%" }}>
+          <FormControl fullWidth sx={{ marginRight: 1 }} disabled>
             <InputLabel>Kaysy Magazin</InputLabel>
             <Select
               value={store}
@@ -136,7 +134,7 @@ export default function ToBuyList() {
               <MenuItem value={"thisMonth"}>Shu ay</MenuItem>
             </Select>
           </FormControl>
-        </Grid>
+        </Grid> */}
       </ListItem>
       {filteredProducts.map((product) => (
         <ListItem

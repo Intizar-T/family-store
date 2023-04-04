@@ -30,7 +30,7 @@ export default async function FetchProductList() {
       id: parseInt(product["id"]["S"]),
       name: product["name"]["S"],
       isBought: product["isBought"]["BOOL"],
-      store: product["store"]["S"],
+      store: "all", // product["store"]["S"],
       createdAt: new Date(product["createdAt"]["S"]),
       updatedAt: new Date(product["updatedAt"]["S"]),
       userDevice: product["createdUserDevice"]["S"],

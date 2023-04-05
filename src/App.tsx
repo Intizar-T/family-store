@@ -73,10 +73,10 @@ function App() {
           width: "100%",
         }}
       >
-        <Grid item xs={1} sx={{ maxWidth: "100%", paddingX: 2 }}>
+        <Grid item sx={{ maxWidth: "100%", width: "100%", paddingX: 2 }}>
           <MenuBar />
         </Grid>
-        <Grid item xs={11} sx={{ maxWidth: "100%" }}>
+        <Grid item sx={{ maxWidth: "100%" }}>
           <ProductList device={device} />
         </Grid>
         {loginModal && (

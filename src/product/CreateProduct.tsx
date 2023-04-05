@@ -43,7 +43,7 @@ export default function CreateProduct({
   const [Loading, toggle] = useLoading();
   const { setProducts } = useContext(ProductContext);
   const [Message, toggleMessage] = useMessage();
-  // const [store, setStore] = useState<Store>("pyatrorychka");
+  const [store, setStore] = useState<Store>("pyatorychka");
   return (
     <Dialog
       open={true}
@@ -118,7 +118,7 @@ export default function CreateProduct({
               </Select>
             </FormControl>
           </Grid>
-          {/* <Grid
+          <Grid
             item
             xs={12}
             sx={{
@@ -134,13 +134,12 @@ export default function CreateProduct({
                 label="Kaysy Magazindan"
                 onChange={(e) => setStore(e.target.value as Store)}
               >
-                <MenuItem value={"all"}>Opshi</MenuItem>
-                <MenuItem value={"pyatrorychka"}>Pyatrorychka</MenuItem>
+                <MenuItem value={"pyatorychka"}>Pyatorychka</MenuItem>
                 <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
                 <MenuItem value={"other"}>Bashga</MenuItem>
               </Select>
             </FormControl>
-          </Grid> */}
+          </Grid>
           <Grid item xs={12} display="flex" justifyContent="space-between">
             <Button
               onClick={() => {
@@ -164,7 +163,7 @@ export default function CreateProduct({
                         unit,
                         createdUserDevice: user.device,
                         createdUserName: user.name,
-                        // store,
+                        store,
                       }),
                     });
                     await fetchWithErrorHandler(USER_URL, {

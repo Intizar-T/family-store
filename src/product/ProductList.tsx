@@ -5,7 +5,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import ToBuyList from "./ToBuyList";
+import ToBuyList, { Store } from "./ToBuyList";
 import CreateProduct from "./CreateProduct";
 import UserContext from "../UserContext";
 import useLoading from "../helpers/useLoading";
@@ -22,7 +22,7 @@ export interface Products {
   updatedAt: Date;
   userDevice: string;
   userName: string;
-  store: string;
+  store: Store;
   amount?: number;
   unit?: string;
   boughtUserDevice?: string;

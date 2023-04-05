@@ -1,5 +1,6 @@
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { Store } from "./ToBuyList";
 
 export type APIProducts = {
   createdAt: { S: string };
@@ -30,7 +31,7 @@ export default async function FetchProductList() {
       id: parseInt(product["id"]["S"]),
       name: product["name"]["S"],
       isBought: product["isBought"]["BOOL"],
-      store: "all", // product["store"]["S"],
+      store: (product["store"] ? product["store"]["S"] : "other") as Store,
       createdAt: new Date(product["createdAt"]["S"]),
       updatedAt: new Date(product["updatedAt"]["S"]),
       userDevice: product["createdUserDevice"]["S"],

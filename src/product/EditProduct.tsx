@@ -14,41 +14,38 @@ import {
 import { PRODUCTS_URL } from "../api/APIs";
 import useLoading from "../helpers/useLoading";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import UserContext from "../UserContext";
 import useMessage from "../helpers/useMessage";
+import { Products } from "./ProductList";
+import { Store } from "./ToBuyList";
 
 interface EditProductProps {
   showEditModal: (show: boolean) => void;
-  editedProductName: string;
-  setEditedProductName: (name: string) => void;
-  editedProductAmount: string;
-  setEditedProductAmount: (amount: string) => void;
   selectedProductId: number;
-  editedUnit: string;
-  setEditedUnit: (unit: string) => void;
+  product: Products;
 }
 
 export default function EditProduct({
-  editedProductAmount,
-  editedProductName,
-  setEditedProductName,
-  setEditedProductAmount,
   showEditModal,
   selectedProductId,
-  setEditedUnit,
-  editedUnit,
+  product,
 }: EditProductProps) {
   const [Loading, toggle] = useLoading();
-  const { setProducts } = useContext(ProductContext);
   const { user } = useContext(UserContext);
   const [Message, toggleMessage] = useMessage();
+  const { setProducts } = useContext(ProductContext);
+  const [editedProductName, setEditedProductName] = useState(product.name);
+  const [editedProductAmount, setEditedProductAmount] = useState(
+    product.amount?.toString() || ""
+  );
+  const [editedUnit, setEditedUnit] = useState(product.unit || "");
+  const [editedStore, setEditedStore] = useState(product.store);
   return (
     <Dialog
       open={true}
-      // TransitionComponent={Transition}
       keepMounted
       onClose={() => {
         showEditModal(false);
@@ -111,6 +108,22 @@ export default function EditProduct({
               </Select>
             </FormControl>
           </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Kaysy Magazindan
+              </InputLabel>
+              <Select
+                value={editedStore}
+                label="Kaysy Magazindan"
+                onChange={(e) => setEditedStore(e.target.value as Store)}
+              >
+                <MenuItem value={"pyatorychka"}>Pyatorychka</MenuItem>
+                <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
+                <MenuItem value={"other"}>Bashga</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
@@ -134,6 +147,7 @@ export default function EditProduct({
                   unit: editedUnit,
                   editedUserDevice: user?.device,
                   editedUserName: user?.name,
+                  store: editedStore,
                 }),
               });
               setProducts(await FetchProductList());

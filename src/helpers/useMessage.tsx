@@ -4,11 +4,13 @@ import { createPortal } from "react-dom";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 
 type iconColor = "success" | "error";
+export type toggleMessageProps = (
+  state: boolean,
+  iconColor?: iconColor | undefined,
+  message?: string
+) => void;
 
-export default function useMessage(): [
-  FC,
-  (state: boolean, iconColor?: iconColor | undefined, message?: string) => void
-] {
+export default function useMessage(): [FC, toggleMessageProps] {
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
   const [iconColor, setIconColor] = useState<iconColor>();

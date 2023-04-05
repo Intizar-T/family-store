@@ -2,7 +2,9 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import { FC, useState } from "react";
 import { createPortal } from "react-dom";
 
-export default function useLoading(): [FC, (state: boolean) => void] {
+export type toggle = (state: boolean) => void;
+
+export default function useLoading(): [FC, toggle] {
   const [loading, setLoading] = useState(false);
   const el = document.getElementById("modal");
   const toggle = (state: boolean) => {

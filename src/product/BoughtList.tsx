@@ -7,11 +7,10 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import ImageIcon from "@mui/icons-material/Image";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditProduct from "./EditProduct";
 import useLoading from "../helpers/useLoading";
 import FetchProductList from "./FetchProductList";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
@@ -20,11 +19,6 @@ import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import useMessage from "../helpers/useMessage";
 
 export default function BoughtList() {
-  const [editModal, showEditModal] = useState(false);
-  const [editedProductName, setEditedProductName] = useState("");
-  const [editedProductAmount, setEditedProductAmount] = useState("");
-  const [editedUnit, setEditedUnit] = useState("");
-  const [selectedProductId, setSelectedProductId] = useState(0);
   const [Loading, toggle] = useLoading();
   const { products, setProducts } = useContext(ProductContext);
   const [Message, toggleMessage] = useMessage();
@@ -135,11 +129,6 @@ export default function BoughtList() {
                   <Typography fontSize="small" color="red">
                     Doratdi: {product.userName}
                   </Typography>
-                  {/* {product.editedUserName && (
-                    <Typography fontSize="small" color="#1976D2">
-                      Uytgatdi: {product.editedUserName}
-                    </Typography>
-                  )} */}
                   {product.boughtUserName && (
                     <Typography fontSize="small" color="#2e7d32">
                       Satyn aldy: {product.boughtUserName}
@@ -151,18 +140,6 @@ export default function BoughtList() {
             />
           </ListItem>
         ))}
-      {editModal && (
-        <EditProduct
-          editedProductAmount={editedProductAmount}
-          editedProductName={editedProductName}
-          selectedProductId={selectedProductId}
-          setEditedProductAmount={setEditedProductAmount}
-          setEditedProductName={setEditedProductName}
-          showEditModal={showEditModal}
-          editedUnit={editedUnit}
-          setEditedUnit={setEditedUnit}
-        />
-      )}
       <Loading />
       <Message />
     </List>

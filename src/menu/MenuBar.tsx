@@ -33,10 +33,9 @@ export default function MenuBar() {
         sx={{
           display: "flex",
           alignItems: "center",
-          textAlign: "center",
           justifyContent: "space-between",
-          width: "100%",
-          padding: 1,
+          paddingX: 2,
+          paddingY: 1,
         }}
       >
         <Typography variant="button" color="#1976d2">

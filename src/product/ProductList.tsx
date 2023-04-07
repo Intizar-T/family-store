@@ -104,7 +104,6 @@ export default function ProductList({ device }: ProductListProps) {
             <Box
               sx={{
                 borderBottom: 1,
-                borderTop: 1,
                 borderColor: "divider",
               }}
             >

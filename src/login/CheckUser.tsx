@@ -22,7 +22,10 @@ export default async function CheckUser(device: string): Promise<User[]> {
     method: "GET",
   });
   return users
-    .filter((user) => user["device"]["S"] === device)
+    .filter(
+      (user) =>
+        parseInt(user["id"]["N"]) !== 0 && user["device"]["S"] === device
+    )
     .map((user) => {
       return {
         name: user["name"]["S"],

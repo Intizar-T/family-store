@@ -31,10 +31,6 @@ export interface Products {
   editedUserName?: string;
 }
 
-interface ProductListProps {
-  device: string;
-}
-
 // function notifyMe() {
 //   if (!("Notification" in window)) {
 //     alert("This browser does not support desktop notification");
@@ -64,7 +60,7 @@ function showNotification() {
   });
 }
 
-export default function ProductList({ device }: ProductListProps) {
+export default function ProductList() {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
   const [newProductAmount, setNewProductAmount] = useState("");
@@ -91,21 +87,25 @@ export default function ProductList({ device }: ProductListProps) {
       <Grid
         container
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
           width: "100%",
           height: "100%",
           paddingBottom: 2,
         }}
       >
-        <Grid item>
+        <Grid
+          item
+          sx={{
+            width: "100%",
+            height: "100%",
+            // height: "calc(100% - 120px)",
+          }}
+        >
           <TabContext value={tabValue}>
             <Box
               sx={{
                 borderBottom: 1,
-                borderTop: 1,
                 borderColor: "divider",
+                height: 60,
               }}
             >
               <TabList
@@ -120,76 +120,107 @@ export default function ProductList({ device }: ProductListProps) {
                 <Tab label="Alyndy" value="Alyndy" />
               </TabList>
             </Box>
-            <TabPanel
-              value="Almaly"
+            <Box
               sx={{
-                padding: 1,
-                margin: 0,
-                paddingRight: 0,
+                overflowY: "scroll",
+                height: "calc(100% - 110px)",
+                borderBottom: 1,
+                borderColor: "divider",
               }}
             >
-              <ToBuyList />
-            </TabPanel>
-            <TabPanel
-              value="Almalymy"
-              sx={{
-                padding: 1,
-                margin: 0,
-                paddingRight: 0,
-              }}
-            >
-              Hali onarylotran...
-            </TabPanel>
-            <TabPanel
-              value="Alyndy"
-              sx={{
-                padding: 1,
-                margin: 0,
-                paddingRight: 0,
-              }}
-            >
-              <BoughtList />
-            </TabPanel>
+              <TabPanel
+                value="Almaly"
+                sx={{
+                  padding: 1,
+                  margin: 0,
+                  paddingRight: 0,
+                  height: "100%",
+                }}
+              >
+                <ToBuyList />
+              </TabPanel>
+              <TabPanel
+                value="Almalymy"
+                sx={{
+                  padding: 1,
+                  margin: 0,
+                  paddingRight: 0,
+                }}
+              >
+                Hali onarylotran...
+              </TabPanel>
+              <TabPanel
+                value="Alyndy"
+                sx={{
+                  padding: 1,
+                  margin: 0,
+                  paddingRight: 0,
+                  height: "100%",
+                }}
+              >
+                <BoughtList />
+              </TabPanel>
+            </Box>
           </TabContext>
         </Grid>
 
-        <Grid
-          item
-          display="flex"
-          justifyContent="center"
-          sx={{ borderTop: 1, borderColor: "rgba(0, 0, 0, 0.12)" }}
+        <div
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: 60,
+            bottom: 0,
+            display: "flex",
+            flexDirection: "row",
+          }}
         >
-          <Tooltip title="Taza produkt kosh">
-            <Button
-              onClick={() => {
-                showCreateModal(true);
-              }}
-            >
-              <AddCircleOutlineOutlinedIcon
-                color="primary"
-                sx={{
-                  fontSize: 45,
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Tooltip title="Taza produkt kosh">
+              <Button
+                onClick={() => {
+                  showCreateModal(true);
                 }}
-              />
-            </Button>
-          </Tooltip>
-          <Tooltip title="Bashgalara magazindadigini duydur">
-            <Button
-              onClick={() => {
-                // notifyMe();
-                showNotification();
-              }}
-              sx={{ position: "absolute", bottom: 18, right: 4 }}
-            >
-              <NotificationsActiveOutlinedIcon
-                color="primary"
-                sx={{
-                  fontSize: 45,
+              >
+                <AddCircleOutlineOutlinedIcon
+                  color="primary"
+                  sx={{
+                    fontSize: 45,
+                  }}
+                />
+              </Button>
+            </Tooltip>
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+            }}
+          >
+            <Tooltip title="Bashgalara magazindadigini duydur">
+              <Button
+                onClick={() => {
+                  // notifyMe();
+                  showNotification();
                 }}
-              />
-            </Button>
-          </Tooltip>
-        </Grid>
+                // sx={{ position: "absolute", bottom: 18, right: 4 }}
+              >
+                <NotificationsActiveOutlinedIcon
+                  color="primary"
+                  sx={{
+                    fontSize: 45,
+                  }}
+                />
+              </Button>
+            </Tooltip>
+          </div>
+        </div>
         {createModal && (
           <CreateProduct
             newProduct={newProduct}

@@ -27,10 +27,8 @@ export default function BoughtList() {
     <List
       sx={{
         bgcolor: "background.paper",
-        overflowY: "scroll",
-      }}
-      style={{
-        maxHeight: "calc(100vh - 230px)",
+        height: "100%",
+        width: "100%",
       }}
     >
       {products

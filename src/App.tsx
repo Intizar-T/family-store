@@ -65,26 +65,34 @@ function App() {
     <UserContext.Provider value={userState}>
       <Grid
         container
-
-        // sx={{
-        //   display: "flex",
-        //   flexDirection: "column",
-        //   overflowY: "scroll",
-        //   height: "100%",
-        //   width: "100%",
-        // }}
+        sx={{
+          height: "100%",
+          width: "100%",
+          position: "relative",
+        }}
       >
         <Grid
           item
-          sx={{ width: "100%", borderBottom: 1, borderColor: "divider" }}
+          sx={{
+            width: "100%",
+            borderBottom: 1,
+            borderColor: "divider",
+            position: "absolute",
+            height: 60,
+          }}
         >
           <MenuBar />
         </Grid>
         <Grid
           item
-          // sx={{ maxWidth: "100%" }}
+          sx={{
+            width: "100%",
+            height: "calc(100% - 60px)",
+            position: "absolute",
+            top: 60,
+          }}
         >
-          <ProductList device={device} />
+          <ProductList />
         </Grid>
         {loginModal && (
           <Login device={device} showLoginModal={showLoginModal} />

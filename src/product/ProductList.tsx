@@ -14,6 +14,8 @@ import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsAc
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
+import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { SUBSCRIPTION_URL } from "../api/APIs";
 export interface Products {
   id: number;
   name: string;
@@ -45,20 +47,31 @@ export interface Products {
 //   }
 // }
 
-function showNotification() {
-  Notification.requestPermission((result) => {
+const mobileNotification = async () => {
+  await Notification.requestPermission(async (result) => {
     if (result === "granted") {
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.showNotification("Vibration Sample", {
-          body: "Buzz! Buzz!",
-          icon: "../images/touch/chrome-touch-icon-192x192.png",
-          vibrate: [200, 100, 200, 100, 200, 100, 200],
-          tag: "vibration-sample",
-        });
+      const registration: ServiceWorkerRegistration = await navigator
+        .serviceWorker.ready;
+      // save subscription to db
+      const subscription: PushSubscription =
+        await registration.pushManager.subscribe();
+      await fetchWithErrorHandler(SUBSCRIPTION_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          subscription,
+        }),
       });
+      // .then((registration) => {
+      //   registration.showNotification("Vibration Sample", {
+      //     body: "Buzz! Buzz!",
+      //     icon: "../images/touch/chrome-touch-icon-192x192.png",
+      //     vibrate: [200, 100, 200, 100, 200, 100, 200],
+      //     tag: "vibration-sample",
+      //   });
+      // });
     }
   });
-}
+};
 
 export default function ProductList() {
   const [products, setProducts] = useState<Products[]>([]);
@@ -205,9 +218,13 @@ export default function ProductList() {
           >
             <Tooltip title="Bashgalara magazindadigini duydur">
               <Button
-                onClick={() => {
-                  // notifyMe();
-                  showNotification();
+                onClick={async () => {
+                  try {
+                    // notifyMe();
+                    await mobileNotification();
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }}
                 // sx={{ position: "absolute", bottom: 18, right: 4 }}
               >

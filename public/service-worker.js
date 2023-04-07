@@ -82,3 +82,13 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+self.addEventListener("push", (event) => {
+  const promiseChain = self.registration.showNotification(
+    "Magazindan tazalyk:",
+    {
+      body: event.data.json(),
+    }
+  );
+  event.waitUntil(promiseChain);
+});

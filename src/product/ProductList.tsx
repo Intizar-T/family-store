@@ -131,7 +131,7 @@ export default function ProductList() {
               <TabPanel
                 value="Almaly"
                 sx={{
-                  padding: 1,
+                  padding: 0,
                   margin: 0,
                   paddingRight: 0,
                   height: "100%",
@@ -142,7 +142,7 @@ export default function ProductList() {
               <TabPanel
                 value="Almalymy"
                 sx={{
-                  padding: 1,
+                  padding: 0,
                   margin: 0,
                   paddingRight: 0,
                 }}
@@ -152,7 +152,7 @@ export default function ProductList() {
               <TabPanel
                 value="Alyndy"
                 sx={{
-                  padding: 1,
+                  padding: 0,
                   margin: 0,
                   paddingRight: 0,
                   height: "100%",

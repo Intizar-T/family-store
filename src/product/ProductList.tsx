@@ -16,6 +16,7 @@ import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import { SUBSCRIPTION_URL } from "../api/APIs";
+import { notificationSubscription } from "../helpers/notificationSubscription";
 export interface Products {
   id: number;
   name: string;
@@ -32,46 +33,6 @@ export interface Products {
   editedUserDevice?: string;
   editedUserName?: string;
 }
-
-// function notifyMe() {
-//   if (!("Notification" in window)) {
-//     alert("This browser does not support desktop notification");
-//   } else if (Notification.permission === "granted") {
-//     new Notification("Hi there!");
-//   } else {
-//     Notification.requestPermission().then((permission) => {
-//       if (permission === "granted") {
-//         new Notification("Hi there!");
-//       }
-//     });
-//   }
-// }
-
-const mobileNotification = async () => {
-  await Notification.requestPermission(async (result) => {
-    if (result === "granted") {
-      const registration: ServiceWorkerRegistration = await navigator
-        .serviceWorker.ready;
-      // save subscription to db
-      const subscription: PushSubscription =
-        await registration.pushManager.subscribe();
-      await fetchWithErrorHandler(SUBSCRIPTION_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          subscription,
-        }),
-      });
-      // .then((registration) => {
-      //   registration.showNotification("Vibration Sample", {
-      //     body: "Buzz! Buzz!",
-      //     icon: "../images/touch/chrome-touch-icon-192x192.png",
-      //     vibrate: [200, 100, 200, 100, 200, 100, 200],
-      //     tag: "vibration-sample",
-      //   });
-      // });
-    }
-  });
-};
 
 export default function ProductList() {
   const [products, setProducts] = useState<Products[]>([]);
@@ -220,13 +181,11 @@ export default function ProductList() {
               <Button
                 onClick={async () => {
                   try {
-                    // notifyMe();
-                    await mobileNotification();
+                    await notificationSubscription();
                   } catch (e) {
                     console.log(e);
                   }
                 }}
-                // sx={{ position: "absolute", bottom: 18, right: 4 }}
               >
                 <NotificationsActiveOutlinedIcon
                   color="primary"

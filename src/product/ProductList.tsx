@@ -181,7 +181,8 @@ export default function ProductList() {
               <Button
                 onClick={async () => {
                   try {
-                    await notificationSubscription();
+                    // await notificationSubscription();
+                    console.log("in progress feature");
                   } catch (e) {
                     console.log(e);
                   }

@@ -43,6 +43,7 @@ export const notificationSubscription = async () => {
     if (result === "granted") {
       const registration: ServiceWorkerRegistration = await navigator
         .serviceWorker.ready;
+      registration.showNotification("testing notification: hardcoded");
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),

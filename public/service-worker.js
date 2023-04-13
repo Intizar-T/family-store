@@ -84,6 +84,8 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("push", (event) => {
+  console.log(event);
+  console.log(event.data.json());
   const promiseChain = self.registration.showNotification(
     "Magazindan tazalyk:",
     {

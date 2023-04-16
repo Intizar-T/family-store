@@ -54,20 +54,11 @@ const enableNavigationPreload = async () => {
 };
 
 self.addEventListener("activate", (event) => {
-  console.log("activate");
-  const promiseChain = self.registration.showNotification(
-    "testing notification: activate"
-  );
-  event.waitUntil(promiseChain);
   event.waitUntil(enableNavigationPreload());
 });
 
 self.addEventListener("install", (event) => {
   console.log("install");
-  const promiseChain = self.registration.showNotification(
-    "testing notification: install"
-  );
-  event.waitUntil(promiseChain);
   event.waitUntil(
     addResourcesToCache([
       "./",
@@ -85,10 +76,6 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("fetch", (event) => {
   console.log("fetch");
-  const promiseChain = self.registration.showNotification(
-    "testing notification: fetch"
-  );
-  event.waitUntil(promiseChain);
   event.respondWith(
     cacheFirst({
       request: event.request,
@@ -99,14 +86,10 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("push", (event) => {
-  console.log("push");
-  console.log(event);
-  console.log(event.data.json());
-  const promiseChain = self.registration.showNotification(
-    "Magazindan tazalyk: push",
-    {
-      body: event.data.json(),
-    }
-  );
+  const data = event.data.json();
+  const message = `Magazina ${data.user || "biri"} ${
+    data.product || "produtka"
+  } koshdy`;
+  const promiseChain = self.registration.showNotification(message);
   event.waitUntil(promiseChain);
 });

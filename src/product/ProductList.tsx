@@ -14,9 +14,7 @@ import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsAc
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
-import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
-import { SUBSCRIPTION_URL } from "../api/APIs";
-import { notificationSubscription } from "../helpers/notificationSubscription";
+import { registerServiceWorker } from "../helpers/notificationSubscription";
 export interface Products {
   id: number;
   name: string;
@@ -181,8 +179,7 @@ export default function ProductList() {
               <Button
                 onClick={async () => {
                   try {
-                    // await notificationSubscription();
-                    console.log("in progress feature");
+                    await registerServiceWorker();
                   } catch (e) {
                     console.log(e);
                   }

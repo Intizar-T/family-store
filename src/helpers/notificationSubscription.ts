@@ -23,37 +23,26 @@ export const registerServiceWorker = async () => {
   if ("serviceWorker" in navigator) {
     try {
       const registration = await navigator.serviceWorker.register(
-        "service-worker.js"
+        "/family-store/service-worker.js"
       );
-      if (registration.installing) {
-        console.log("Service worker installing");
-      } else if (registration.waiting) {
-        console.log("Service worker installed");
-      } else if (registration.active) {
-        console.log("Service worker active");
+      if (registration.active) {
+        await Notification.requestPermission(async (result) => {
+          if (result === "granted") {
+            const subscription = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+            });
+            await fetchWithErrorHandler(SUBSCRIPTION_URL, {
+              method: "POST",
+              body: JSON.stringify(subscription),
+            });
+          }
+        });
       }
     } catch (error) {
       console.error(`Registration failed with ${error}`);
     }
   }
-};
-
-export const notificationSubscription = async () => {
-  await Notification.requestPermission(async (result) => {
-    if (result === "granted") {
-      const registration: ServiceWorkerRegistration = await navigator
-        .serviceWorker.ready;
-      // registration.showNotification("testing notification: hardcoded");
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-      });
-      await fetchWithErrorHandler(SUBSCRIPTION_URL, {
-        method: "POST",
-        body: JSON.stringify(subscription),
-      });
-    }
-  });
 };
 
 export const laptopNotification = async (message: string) => {

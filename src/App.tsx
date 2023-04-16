@@ -6,11 +6,7 @@ import Login from "./login/Login";
 import MenuBar from "./menu/MenuBar";
 import ProductList from "./product/ProductList";
 import UserContext from "./UserContext";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import {
-  notificationSubscription,
-  registerServiceWorker,
-} from "./helpers/notificationSubscription";
+import { registerServiceWorker } from "./helpers/notificationSubscription";
 
 export type User = {
   name: string;
@@ -41,13 +37,6 @@ function App() {
   const userState = useMemo(() => {
     return { user, setUser };
   }, [user]);
-
-  useEffect(() => {
-    (async () => {
-      await registerServiceWorker();
-      await notificationSubscription();
-    })();
-  }, []);
 
   return (
     <UserContext.Provider value={userState}>

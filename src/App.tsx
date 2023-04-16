@@ -6,9 +6,10 @@ import Login from "./login/Login";
 import MenuBar from "./menu/MenuBar";
 import ProductList from "./product/ProductList";
 import UserContext from "./UserContext";
-import { registerServiceWorker } from "./helpers/notificationSubscription";
 
 export type User = {
+  id: string;
+  subscribed: boolean;
   name: string;
   device: string;
 } | null;

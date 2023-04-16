@@ -19,7 +19,7 @@ const urlBase64ToUint8Array = (base64String: string) => {
   return outputArray;
 };
 
-export const registerServiceWorker = async () => {
+export const registerServiceWorker = async (id: string) => {
   if ("serviceWorker" in navigator) {
     try {
       const registration = await navigator.serviceWorker.register(
@@ -34,7 +34,10 @@ export const registerServiceWorker = async () => {
             });
             await fetchWithErrorHandler(SUBSCRIPTION_URL, {
               method: "POST",
-              body: JSON.stringify(subscription),
+              body: JSON.stringify({
+                subscription,
+                id,
+              }),
             });
             registration.showNotification(
               "Habarlashyga yazyldyn/yz. Indi kim magazina birzat koshsa soobsheniya geladi shundey"

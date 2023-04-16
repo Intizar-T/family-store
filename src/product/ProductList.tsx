@@ -16,6 +16,10 @@ import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
 import { registerServiceWorker } from "../helpers/notificationSubscription";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+import CheckUser from "../login/CheckUser";
+import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { USER_URL } from "../api/APIs";
+import { User } from "../App";
 export interface Products {
   id: number;
   name: string;
@@ -39,7 +43,7 @@ export default function ProductList() {
   const [newProductAmount, setNewProductAmount] = useState("");
   const [unit, setUnit] = useState<string>("");
   const [tabValue, setTabValue] = useState("Almaly");
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
   const [createModal, showCreateModal] = useState(false);
 
@@ -197,31 +201,35 @@ export default function ProductList() {
               </Button>
             </Tooltip>
           </div>
-          <div
-            style={{
-              position: "absolute",
-              left: 0,
-            }}
-          >
-            <Tooltip title="Magazinin soobsheniyalaryna yazyl">
-              <Button
-                onClick={async () => {
-                  try {
-                    await registerServiceWorker();
-                  } catch (e) {
-                    console.log(e);
-                  }
-                }}
-              >
-                <AlternateEmailIcon
-                  color="primary"
-                  sx={{
-                    fontSize: 45,
+          {!user?.subscribed && (
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+              }}
+            >
+              <Tooltip title="Magazinin soobsheniyalaryna yazyl">
+                <Button
+                  onClick={async () => {
+                    try {
+                      if (user?.id == null) return;
+                      await registerServiceWorker(user.id);
+                      setUser({ ...user, subscribed: true });
+                    } catch (e) {
+                      console.log(e);
+                    }
                   }}
-                />
-              </Button>
-            </Tooltip>
-          </div>
+                >
+                  <AlternateEmailIcon
+                    color="primary"
+                    sx={{
+                      fontSize: 45,
+                    }}
+                  />
+                </Button>
+              </Tooltip>
+            </div>
+          )}
         </div>
         {createModal && (
           <CreateProduct

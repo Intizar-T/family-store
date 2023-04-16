@@ -36,6 +36,9 @@ export const registerServiceWorker = async () => {
               method: "POST",
               body: JSON.stringify(subscription),
             });
+            registration.showNotification(
+              "Habarlashyga yazyldyn/yz. Indi kim magazina birzat koshsa soobsheniya geladi shundey"
+            );
           }
         });
       }

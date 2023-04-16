@@ -89,7 +89,6 @@ export default function CreateProduct({
             display="flex"
             flexDirection="row"
             alignItems="center"
-            spacing={2}
             sx={{
               paddingY: 1,
             }}

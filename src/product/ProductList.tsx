@@ -15,6 +15,7 @@ import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
 import { registerServiceWorker } from "../helpers/notificationSubscription";
+import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 export interface Products {
   id: number;
   name: string;
@@ -179,13 +180,40 @@ export default function ProductList() {
               <Button
                 onClick={async () => {
                   try {
-                    await registerServiceWorker();
+                    console.log(
+                      "implement sending notifications to others when near a store"
+                    );
                   } catch (e) {
                     console.log(e);
                   }
                 }}
               >
                 <NotificationsActiveOutlinedIcon
+                  color="primary"
+                  sx={{
+                    fontSize: 45,
+                  }}
+                />
+              </Button>
+            </Tooltip>
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+            }}
+          >
+            <Tooltip title="Magazinin soobsheniyalaryna yazyl">
+              <Button
+                onClick={async () => {
+                  try {
+                    await registerServiceWorker();
+                  } catch (e) {
+                    console.log(e);
+                  }
+                }}
+              >
+                <AlternateEmailIcon
                   color="primary"
                   sx={{
                     fontSize: 45,

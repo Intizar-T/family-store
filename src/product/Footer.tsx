@@ -5,6 +5,10 @@ import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsAc
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { useContext } from "react";
 import UserContext from "../UserContext";
+import { SEND_NOTIFICATION_URL } from "../api/APIs";
+import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import useLoading from "../helpers/useLoading";
+import useMessage from "../helpers/useMessage";
 
 interface FooterProps {
   showCreateModal: (show: boolean) => void;
@@ -12,6 +16,8 @@ interface FooterProps {
 
 export default function Footer({ showCreateModal }: FooterProps) {
   const { user, setUser } = useContext(UserContext);
+  const [Loading, toggle] = useLoading();
+  const [Message, toggleMessage] = useMessage();
   return (
     <div
       style={{
@@ -56,11 +62,31 @@ export default function Footer({ showCreateModal }: FooterProps) {
           <Button
             onClick={async () => {
               try {
-                console.log(
-                  "implement sending notifications to others when near a store"
-                );
+                if (user == null) return;
+                toggle(true);
+                await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                  method: "POST",
+                  body: JSON.stringify({
+                    userId: user.id,
+                    name: user.name,
+                  }),
+                });
+                toggle(false);
+                toggleMessage(true, "success", "Bashgalara uwedomleniya gitdi");
+                setTimeout(() => {
+                  toggleMessage(false);
+                }, 1500);
               } catch (e) {
                 console.log(e);
+                toggle(false);
+                toggleMessage(
+                  true,
+                  "error",
+                  "Bashgalara habar bermakda bir problema chykty"
+                );
+                setTimeout(() => {
+                  toggleMessage(false);
+                }, 1500);
               }
             }}
           >
@@ -102,6 +128,8 @@ export default function Footer({ showCreateModal }: FooterProps) {
           </Tooltip>
         </div>
       )}
+      <Loading />
+      <Message />
     </div>
   );
 }

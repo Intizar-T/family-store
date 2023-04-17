@@ -14,6 +14,12 @@ import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsAc
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
+import { registerServiceWorker } from "../helpers/notificationSubscription";
+import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+import CheckUser from "../login/CheckUser";
+import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { USER_URL } from "../api/APIs";
+import { User } from "../App";
 export interface Products {
   id: number;
   name: string;
@@ -31,42 +37,13 @@ export interface Products {
   editedUserName?: string;
 }
 
-// function notifyMe() {
-//   if (!("Notification" in window)) {
-//     alert("This browser does not support desktop notification");
-//   } else if (Notification.permission === "granted") {
-//     new Notification("Hi there!");
-//   } else {
-//     Notification.requestPermission().then((permission) => {
-//       if (permission === "granted") {
-//         new Notification("Hi there!");
-//       }
-//     });
-//   }
-// }
-
-function showNotification() {
-  Notification.requestPermission((result) => {
-    if (result === "granted") {
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.showNotification("Vibration Sample", {
-          body: "Buzz! Buzz!",
-          icon: "../images/touch/chrome-touch-icon-192x192.png",
-          vibrate: [200, 100, 200, 100, 200, 100, 200],
-          tag: "vibration-sample",
-        });
-      });
-    }
-  });
-}
-
 export default function ProductList() {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
   const [newProductAmount, setNewProductAmount] = useState("");
   const [unit, setUnit] = useState<string>("");
   const [tabValue, setTabValue] = useState("Almaly");
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
   const [createModal, showCreateModal] = useState(false);
 
@@ -205,11 +182,15 @@ export default function ProductList() {
           >
             <Tooltip title="Bashgalara magazindadigini duydur">
               <Button
-                onClick={() => {
-                  // notifyMe();
-                  showNotification();
+                onClick={async () => {
+                  try {
+                    console.log(
+                      "implement sending notifications to others when near a store"
+                    );
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }}
-                // sx={{ position: "absolute", bottom: 18, right: 4 }}
               >
                 <NotificationsActiveOutlinedIcon
                   color="primary"
@@ -220,6 +201,35 @@ export default function ProductList() {
               </Button>
             </Tooltip>
           </div>
+          {!user?.subscribed && (
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+              }}
+            >
+              <Tooltip title="Magazinin soobsheniyalaryna yazyl">
+                <Button
+                  onClick={async () => {
+                    try {
+                      if (user?.id == null) return;
+                      await registerServiceWorker(user.id);
+                      setUser({ ...user, subscribed: true });
+                    } catch (e) {
+                      console.log(e);
+                    }
+                  }}
+                >
+                  <AlternateEmailIcon
+                    color="primary"
+                    sx={{
+                      fontSize: 45,
+                    }}
+                  />
+                </Button>
+              </Tooltip>
+            </div>
+          )}
         </div>
         {createModal && (
           <CreateProduct

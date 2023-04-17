@@ -80,7 +80,7 @@ export default function Login({ device, showLoginModal }: LoginProps) {
               onClick={async () => {
                 if (name === "") return;
                 toggle(true);
-                setUser({ device, name });
+                // setUser({ device, name });
                 await fetchWithErrorHandler(USER_URL, {
                   method: "POST",
                   body: JSON.stringify({

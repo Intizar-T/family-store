@@ -11,7 +11,7 @@ import {
   Select,
 } from "@mui/material";
 import { useContext, useState } from "react";
-import { PRODUCTS_URL, USER_URL } from "../api/APIs";
+import { PRODUCTS_URL, SEND_NOTIFICATION_URL, USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import UserContext from "../UserContext";
@@ -89,7 +89,6 @@ export default function CreateProduct({
             display="flex"
             flexDirection="row"
             alignItems="center"
-            spacing={2}
             sx={{
               paddingY: 1,
             }}
@@ -174,6 +173,14 @@ export default function CreateProduct({
                         newProductId: id,
                       }),
                     });
+                    await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                      method: "POST",
+                      body: JSON.stringify({
+                        userId: user.id,
+                        name: user.name,
+                        product: newProduct,
+                      }),
+                    });
                     setProducts(await FetchProductList());
                     toggleMessage(true, "success", "taza produkt koshuldy");
                     setNewProduct("");
@@ -189,7 +196,7 @@ export default function CreateProduct({
                     toggleMessage(
                       true,
                       "error",
-                      "Chota birzat yalnys gitdi. Please, Intizar bilan habarlashyn."
+                      "Ya producty koshup bilmadim ya bashgalara habar ibarip bilmadim :("
                     );
                     setTimeout(() => {
                       toggleMessage(false);

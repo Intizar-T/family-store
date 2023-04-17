@@ -15,6 +15,9 @@ export type APIUsers = {
   id: {
     N: string;
   };
+  subscription: {
+    S: string;
+  };
 };
 
 export default async function CheckUser(device: string): Promise<User[]> {
@@ -22,14 +25,15 @@ export default async function CheckUser(device: string): Promise<User[]> {
     method: "GET",
   });
   return users
-    .filter(
-      (user) =>
-        parseInt(user["id"]["N"]) !== 0 && user["device"]["S"] === device
-    )
-    .map((user) => {
+    .filter((user) => {
+      return parseInt(user["id"]["N"]) !== 0 && user["device"]["S"] === device;
+    })
+    .map((user: APIUsers) => {
       return {
-        name: user["name"]["S"],
-        device: user["device"]["S"],
+        id: user.id.N,
+        name: user.name.S,
+        device: user.device.S,
+        subscribed: user.subscription?.S == null ? false : true,
       };
     });
 }

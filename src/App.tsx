@@ -6,31 +6,13 @@ import Login from "./login/Login";
 import MenuBar from "./menu/MenuBar";
 import ProductList from "./product/ProductList";
 import UserContext from "./UserContext";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 export type User = {
+  id: string;
+  subscribed: boolean;
   name: string;
   device: string;
 } | null;
-
-const registerServiceWorker = async () => {
-  if ("serviceWorker" in navigator) {
-    try {
-      const registration = await navigator.serviceWorker.register(
-        "service-worker.js"
-      );
-      if (registration.installing) {
-        console.log("Service worker installing");
-      } else if (registration.waiting) {
-        console.log("Service worker installed");
-      } else if (registration.active) {
-        console.log("Service worker active");
-      }
-    } catch (error) {
-      console.error(`Registration failed with ${error}`);
-    }
-  }
-};
 
 function App() {
   const [user, setUser] = useState<User>(null);
@@ -56,10 +38,6 @@ function App() {
   const userState = useMemo(() => {
     return { user, setUser };
   }, [user]);
-
-  useEffect(() => {
-    registerServiceWorker();
-  }, []);
 
   return (
     <UserContext.Provider value={userState}>

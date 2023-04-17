@@ -1,5 +1,5 @@
-import { Button, Grid, Tooltip } from "@mui/material";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { Grid } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -7,19 +7,11 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import ToBuyList, { Store } from "./ToBuyList";
 import CreateProduct from "./CreateProduct";
-import UserContext from "../UserContext";
 import useLoading from "../helpers/useLoading";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
-import { registerServiceWorker } from "../helpers/notificationSubscription";
-import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
-import CheckUser from "../login/CheckUser";
-import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
-import { USER_URL } from "../api/APIs";
-import { User } from "../App";
+import Footer from "./Footer";
 export interface Products {
   id: number;
   name: string;
@@ -43,7 +35,6 @@ export default function ProductList() {
   const [newProductAmount, setNewProductAmount] = useState("");
   const [unit, setUnit] = useState<string>("");
   const [tabValue, setTabValue] = useState("Almaly");
-  const { user, setUser } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
   const [createModal, showCreateModal] = useState(false);
 
@@ -53,6 +44,7 @@ export default function ProductList() {
       setProducts(await FetchProductList());
       toggle(false);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const productState = useMemo(() => {
@@ -74,7 +66,6 @@ export default function ProductList() {
           sx={{
             width: "100%",
             height: "100%",
-            // height: "calc(100% - 120px)",
           }}
         >
           <TabContext value={tabValue}>
@@ -141,96 +132,8 @@ export default function ProductList() {
           </TabContext>
         </Grid>
 
-        <div
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: 60,
-            bottom: 0,
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <Tooltip title="Taza produkt kosh">
-              <Button
-                onClick={() => {
-                  showCreateModal(true);
-                }}
-              >
-                <AddCircleOutlineOutlinedIcon
-                  color="primary"
-                  sx={{
-                    fontSize: 45,
-                  }}
-                />
-              </Button>
-            </Tooltip>
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-            }}
-          >
-            <Tooltip title="Bashgalara magazindadigini duydur">
-              <Button
-                onClick={async () => {
-                  try {
-                    console.log(
-                      "implement sending notifications to others when near a store"
-                    );
-                  } catch (e) {
-                    console.log(e);
-                  }
-                }}
-              >
-                <NotificationsActiveOutlinedIcon
-                  color="primary"
-                  sx={{
-                    fontSize: 45,
-                  }}
-                />
-              </Button>
-            </Tooltip>
-          </div>
-          {!user?.subscribed && (
-            <div
-              style={{
-                position: "absolute",
-                left: 0,
-              }}
-            >
-              <Tooltip title="Magazinin soobsheniyalaryna yazyl">
-                <Button
-                  onClick={async () => {
-                    try {
-                      if (user?.id == null) return;
-                      await registerServiceWorker(user.id);
-                      setUser({ ...user, subscribed: true });
-                    } catch (e) {
-                      console.log(e);
-                    }
-                  }}
-                >
-                  <AlternateEmailIcon
-                    color="primary"
-                    sx={{
-                      fontSize: 45,
-                    }}
-                  />
-                </Button>
-              </Tooltip>
-            </div>
-          )}
-        </div>
+        <Footer showCreateModal={showCreateModal} />
+
         {createModal && (
           <CreateProduct
             newProduct={newProduct}

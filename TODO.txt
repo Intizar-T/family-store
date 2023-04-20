@@ -1,8 +1,10 @@
 TODO
-1. notification
-2. topbar for account info
-3. fix the app UI for mobile browser
-
-DONE:
-1. add padding to product list 
-2. remove login page and replace with auto device detection 
+1. Voting system
+2. Track geolocation and auto notification
+3. Personal space
+4. Commenting to products
+5. UI improvement
+6. Sort according to added/edited date
+7. Profile picture
+8. View other people's profile
+9. 

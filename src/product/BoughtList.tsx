@@ -17,6 +17,7 @@ import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import ProductContext from "./ProductContext";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import useMessage from "../helpers/useMessage";
+import { buyStatusList } from "./ProductList";
 
 export default function BoughtList() {
   const { products, setProducts } = useContext(ProductContext);
@@ -32,7 +33,7 @@ export default function BoughtList() {
       }}
     >
       {products
-        .filter(({ isBought }) => isBought)
+        .filter(({ buyStatus }) => buyStatus === buyStatusList.BOUGHT)
         .map((product) => (
           <ListItem
             key={product.id}
@@ -47,7 +48,7 @@ export default function BoughtList() {
                         method: "PUT",
                         body: JSON.stringify({
                           id: product.id.toString(),
-                          isBought: "false",
+                          buyStatus: buyStatusList.BUY,
                           boughtUserDevice: "",
                           boughtUserName: "",
                         }),

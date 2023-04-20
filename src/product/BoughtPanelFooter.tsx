@@ -5,13 +5,14 @@ import { PRODUCTS_URL } from "../api/APIs";
 import FetchProductList from "./FetchProductList";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
+import { buyStatusList } from "./ProductList";
 
 export default function BoughtPanelFooter() {
   const { products, setProducts } = useContext(ProductContext);
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
   const boughtProductLength = products.filter(
-    ({ isBought }) => isBought
+    ({ buyStatus }) => buyStatus === buyStatusList.BOUGHT
   ).length;
   return (
     <div
@@ -36,7 +37,7 @@ export default function BoughtPanelFooter() {
             toggle(true);
             await Promise.all(
               products
-                .filter(({ isBought }) => isBought)
+                .filter(({ buyStatus }) => buyStatus === buyStatusList.BOUGHT)
                 .map(async ({ id }) => {
                   await fetch(`${PRODUCTS_URL}?id=${id}`, {
                     method: "DELETE",

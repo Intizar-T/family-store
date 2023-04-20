@@ -17,7 +17,7 @@ import UserContext from "../UserContext";
 import ProductContext from "./ProductContext";
 import ImageIcon from "@mui/icons-material/Image";
 import CheckIcon from "@mui/icons-material/Check";
-import { Products } from "./ProductList";
+import { Products, buyStatusList } from "./ProductList";
 
 interface ToBuyListItemProps {
   product: Products;
@@ -64,7 +64,7 @@ export default function ToBuyListItem({
                   method: "PUT",
                   body: JSON.stringify({
                     id: product.id.toString(),
-                    isBought: "true",
+                    buyStatus: buyStatusList.BOUGHT,
                     boughtUserDevice: user.device,
                     boughtUserName: user.name,
                   }),

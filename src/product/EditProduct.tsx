@@ -10,6 +10,9 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
 } from "@mui/material";
 import { PRODUCTS_URL } from "../api/APIs";
 import useLoading from "../helpers/useLoading";
@@ -19,7 +22,7 @@ import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import UserContext from "../UserContext";
 import useMessage from "../helpers/useMessage";
-import { Products } from "./ProductList";
+import { Products, buyStatusList } from "./ProductList";
 import { Store } from "./ToBuyList";
 
 interface EditProductProps {
@@ -43,6 +46,7 @@ export default function EditProduct({
   );
   const [editedUnit, setEditedUnit] = useState(product.unit || "");
   const [editedStore, setEditedStore] = useState(product.store);
+  const [editedToBuy, setEditedToBuy] = useState(product.buyStatus === "buy");
   return (
     <Dialog
       open={true}
@@ -55,18 +59,24 @@ export default function EditProduct({
       <DialogTitle>{"Produtka info-ny uytgat:"}</DialogTitle>
       <DialogContent>
         <Grid
+          container
           sx={{
             display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
+            flexDirection: "column",
           }}
-          container
-          spacing={1}
         >
-          <Grid item xs={12}>
+          <Grid
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              paddingY: 1,
+            }}
+            item
+            xs={12}
+          >
             <TextField
-              label="Taza kosh:"
+              size="small"
+              label="Produkt:"
               color="success"
               value={editedProductName}
               focused
@@ -74,55 +84,90 @@ export default function EditProduct({
                 setEditedProductName(e.target.value);
               }}
               sx={{
-                marginY: 1,
                 width: "100%",
               }}
             />
           </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Kancha (sany ya kg):"
-              color="success"
-              value={editedProductAmount}
-              focused
-              onChange={(e) => {
-                setEditedProductAmount(e.target.value);
-              }}
-              sx={{
-                marginY: 1,
-                width: "100%",
-              }}
-            />
+          <Grid
+            container
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            sx={{
+              paddingY: 1,
+            }}
+            spacing={1}
+          >
+            <Grid item xs={7}>
+              <TextField
+                size="small"
+                label="Kancha (sany ya kg):"
+                color="success"
+                value={editedProductAmount}
+                focused
+                onChange={(e) => {
+                  setEditedProductAmount(e.target.value);
+                }}
+                sx={{
+                  marginY: 1,
+                  width: "100%",
+                }}
+              />
+            </Grid>
+            <Grid item xs={5}>
+              <FormControl size="small" fullWidth>
+                <InputLabel id="demo-simple-select-label">Olchag</InputLabel>
+                <Select
+                  value={editedUnit}
+                  label="olchag"
+                  onChange={(e) => setEditedUnit(e.target.value)}
+                >
+                  <MenuItem value={"ta"}>ta</MenuItem>
+                  <MenuItem value={"kg"}>kg</MenuItem>
+                  <MenuItem value={"litr"}>litr</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Olchag</InputLabel>
-              <Select
-                value={editedUnit}
-                label="olchag"
-                onChange={(e) => setEditedUnit(e.target.value)}
-              >
-                <MenuItem value={"ta"}>ta</MenuItem>
-                <MenuItem value={"kg"}>kg</MenuItem>
-                <MenuItem value={"litr"}>litr</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Kaysy Magazindan
-              </InputLabel>
-              <Select
-                value={editedStore}
-                label="Kaysy Magazindan"
-                onChange={(e) => setEditedStore(e.target.value as Store)}
-              >
-                <MenuItem value={"pyatorychka"}>Pyatorychka</MenuItem>
-                <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
-                <MenuItem value={"other"}>Bashka</MenuItem>
-              </Select>
-            </FormControl>
+          <Grid
+            container
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            sx={{
+              paddingBottom: 1,
+            }}
+            spacing={1}
+          >
+            <Grid item xs={7}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">
+                  Kaysy Magazindan
+                </InputLabel>
+                <Select
+                  value={editedStore}
+                  label="Kaysy Magazindan"
+                  onChange={(e) => setEditedStore(e.target.value as Store)}
+                >
+                  <MenuItem value={"pyatorychka"}>Pyatorychka</MenuItem>
+                  <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
+                  <MenuItem value={"other"}>Bashka</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={5}>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox checked={editedToBuy} />}
+                  label="Almaly"
+                  onChange={(e) => {
+                    setEditedToBuy(
+                      (e as React.ChangeEvent<HTMLInputElement>).target.checked
+                    );
+                  }}
+                />
+              </FormGroup>
+            </Grid>
           </Grid>
         </Grid>
       </DialogContent>
@@ -148,6 +193,9 @@ export default function EditProduct({
                   editedUserDevice: user?.device,
                   editedUserName: user?.name,
                   store: editedStore,
+                  buyStatus: editedToBuy
+                    ? buyStatusList.BUY
+                    : buyStatusList.BUY_VOTE,
                 }),
               });
               setProducts(await FetchProductList());

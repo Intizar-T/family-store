@@ -13,10 +13,12 @@ import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
 import BuyPanelFooter from "./BuyPanelFooter";
 import BoughtPanelFooter from "./BoughtPanelFooter";
+
+export type TabValueTypes = "buy" | "bought" | "buyVote";
 export interface Products {
   id: number;
   name: string;
-  isBought: boolean;
+  buyStatus: TabValueTypes;
   createdAt: Date;
   updatedAt: Date;
   userDevice: string;
@@ -30,7 +32,11 @@ export interface Products {
   editedUserName?: string;
 }
 
-export type TabValueTypes = "buy" | "bought" | "buyVote";
+export enum buyStatusList {
+  BUY = "buy",
+  BOUGHT = "bought",
+  BUY_VOTE = "buyVote",
+}
 
 export default function ProductList() {
   const [products, setProducts] = useState<Products[]>([]);

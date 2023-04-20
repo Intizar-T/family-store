@@ -9,6 +9,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { PRODUCTS_URL, SEND_NOTIFICATION_URL, USER_URL } from "../api/APIs";
@@ -19,6 +21,8 @@ import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import useMessage from "../helpers/useMessage";
 import { Store } from "./ToBuyList";
+import { Checkbox } from "@mui/material";
+import { buyStatusList } from "./ProductList";
 
 interface CreateProductProps {
   newProduct: string;
@@ -44,6 +48,7 @@ export default function CreateProduct({
   const { setProducts } = useContext(ProductContext);
   const [Message, toggleMessage] = useMessage();
   const [store, setStore] = useState<Store>("pyatorychka");
+  const [toBuy, setToBuy] = useState(true);
   return (
     <Dialog
       open={true}
@@ -71,9 +76,9 @@ export default function CreateProduct({
             xs={12}
           >
             <TextField
+              size="small"
               label="Product:"
               value={newProduct}
-              color={newProduct === "" ? "error" : "primary"}
               focused
               onChange={(e) => {
                 setNewProduct(e.target.value);
@@ -84,60 +89,80 @@ export default function CreateProduct({
             />
           </Grid>
           <Grid
-            item
-            xs={12}
+            container
             display="flex"
             flexDirection="row"
             alignItems="center"
             sx={{
               paddingY: 1,
             }}
+            spacing={1}
           >
-            <TextField
-              label="Kancha:"
-              value={newProductAmount}
-              focused
-              onChange={(e) => {
-                setNewProductAmount(e.target.value);
-              }}
-              sx={{
-                paddingRight: 1,
-              }}
-            />
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Olchag</InputLabel>
-              <Select
-                value={unit}
-                label="olchag"
-                onChange={(e) => setUnit(e.target.value)}
-              >
-                <MenuItem value={"ta"}>ta</MenuItem>
-                <MenuItem value={"kg"}>kg</MenuItem>
-                <MenuItem value={"litr"}>litr</MenuItem>
-              </Select>
-            </FormControl>
+            <Grid item xs={7}>
+              <TextField
+                size="small"
+                label="Kancha:"
+                value={newProductAmount}
+                focused
+                onChange={(e) => {
+                  setNewProductAmount(e.target.value);
+                }}
+              />
+            </Grid>
+            <Grid item xs={5}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">Olchag</InputLabel>
+                <Select
+                  value={unit}
+                  label="olchag"
+                  onChange={(e) => setUnit(e.target.value)}
+                >
+                  <MenuItem value={"ta"}>ta</MenuItem>
+                  <MenuItem value={"kg"}>kg</MenuItem>
+                  <MenuItem value={"litr"}>litr</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
           </Grid>
           <Grid
-            item
-            xs={12}
+            container
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
             sx={{
               paddingY: 1,
             }}
+            spacing={1}
           >
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Kaysy Magazindan
-              </InputLabel>
-              <Select
-                value={store}
-                label="Kaysy Magazindan"
-                onChange={(e) => setStore(e.target.value as Store)}
-              >
-                <MenuItem value={"pyatorychka"}>Pyatorychka</MenuItem>
-                <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
-                <MenuItem value={"other"}>Bashka</MenuItem>
-              </Select>
-            </FormControl>
+            <Grid item xs={7}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">
+                  Kaysy Magazindan
+                </InputLabel>
+                <Select
+                  value={store}
+                  label="Kaysy Magazindan"
+                  onChange={(e) => setStore(e.target.value as Store)}
+                >
+                  <MenuItem value={"pyatorychka"}>Pyatorychka</MenuItem>
+                  <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
+                  <MenuItem value={"other"}>Bashka</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={5}>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox checked={toBuy} />}
+                  label="Almaly"
+                  onChange={(e) => {
+                    setToBuy(
+                      (e as React.ChangeEvent<HTMLInputElement>).target.checked
+                    );
+                  }}
+                />
+              </FormGroup>
+            </Grid>
           </Grid>
           <Grid item xs={12} display="flex" justifyContent="space-between">
             <Button
@@ -163,6 +188,9 @@ export default function CreateProduct({
                         createdUserDevice: user.device,
                         createdUserName: user.name,
                         store,
+                        buyStatus: toBuy
+                          ? buyStatusList.BUY
+                          : buyStatusList.BUY_VOTE,
                       }),
                     });
                     await fetchWithErrorHandler(USER_URL, {

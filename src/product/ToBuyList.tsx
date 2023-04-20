@@ -4,7 +4,7 @@ import EditProduct from "./EditProduct";
 import useLoading from "../helpers/useLoading";
 import ProductContext from "./ProductContext";
 import useMessage from "../helpers/useMessage";
-import { Products } from "./ProductList";
+import { Products, buyStatusList } from "./ProductList";
 import ToBuyListItem from "./ToBuyListItem";
 
 export type CreatedAt =
@@ -29,7 +29,9 @@ export default function ToBuyList() {
   const [Message, toggleMessage] = useMessage();
 
   useMemo(() => {
-    const isBoughtProducts = products.filter(({ isBought }) => !isBought);
+    const isBoughtProducts = products.filter(
+      ({ buyStatus }) => buyStatus === buyStatusList.BUY
+    );
     setPyatorychkaProducts(
       isBoughtProducts.filter(({ store }) => store === "pyatorychka")
     );

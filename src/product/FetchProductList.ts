@@ -1,5 +1,6 @@
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { TabValueTypes } from "./ProductList";
 import { Store } from "./ToBuyList";
 
 export type APIProducts = {
@@ -7,7 +8,7 @@ export type APIProducts = {
   createdUserDevice: { S: string };
   createdUserName: { S: string };
   id: { S: string };
-  isBought: { BOOL: boolean };
+  buyStatus: { S: string };
   name: { S: string };
   updatedAt: { S: string };
   store: { S: string };
@@ -30,7 +31,7 @@ export default async function FetchProductList() {
     return {
       id: parseInt(product["id"]["S"]),
       name: product["name"]["S"],
-      isBought: product["isBought"]["BOOL"],
+      buyStatus: product["buyStatus"]["S"] as TabValueTypes,
       store: (product["store"] ? product["store"]["S"] : "other") as Store,
       createdAt: new Date(product["createdAt"]["S"]),
       updatedAt: new Date(product["updatedAt"]["S"]),

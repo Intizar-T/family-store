@@ -11,7 +11,8 @@ import useLoading from "../helpers/useLoading";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
-import Footer from "./Footer";
+import BuyPanelFooter from "./BuyPanelFooter";
+import BoughtPanelFooter from "./BoughtPanelFooter";
 export interface Products {
   id: number;
   name: string;
@@ -132,8 +133,10 @@ export default function ProductList() {
           </TabContext>
         </Grid>
 
-        <Footer showCreateModal={showCreateModal} />
-
+        {tabValue === "buy" && (
+          <BuyPanelFooter showCreateModal={showCreateModal} />
+        )}
+        {tabValue === "bought" && <BoughtPanelFooter />}
         {createModal && (
           <CreateProduct
             newProduct={newProduct}

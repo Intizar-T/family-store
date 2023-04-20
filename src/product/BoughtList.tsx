@@ -124,7 +124,7 @@ export default function BoughtList() {
               }`}
               secondary={
                 <React.Fragment>
-                  <Typography fontSize="small" color="red">
+                  <Typography fontSize="small">
                     Doratdi: {product.userName}
                   </Typography>
                   {product.boughtUserName && (

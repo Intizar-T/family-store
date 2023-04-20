@@ -9,11 +9,13 @@ import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
 import NotificationConfirmationModal from "./NotificationConfirmationModal";
 
-interface FooterProps {
+interface BuyPanelFooterProps {
   showCreateModal: (show: boolean) => void;
 }
 
-export default function Footer({ showCreateModal }: FooterProps) {
+export default function BuyPanelFooter({
+  showCreateModal,
+}: BuyPanelFooterProps) {
   const { user, setUser } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
@@ -62,7 +64,21 @@ export default function Footer({ showCreateModal }: FooterProps) {
         <Tooltip title="Bashgalara magazindadigini duydur">
           <Button
             onClick={async () => {
-              showNotificationConfirmationModal(true);
+              try {
+                if (user == null) return;
+                showNotificationConfirmationModal(true);
+              } catch (e) {
+                console.log(e);
+                toggle(false);
+                toggleMessage(
+                  true,
+                  "error",
+                  "Bashkalara habar bermakda bir problema chykty"
+                );
+                setTimeout(() => {
+                  toggleMessage(false);
+                }, 1500);
+              }
             }}
           >
             <NotificationsActiveOutlinedIcon

@@ -34,7 +34,7 @@ export default function ProductList() {
   const [newProduct, setNewProduct] = useState<string>("");
   const [newProductAmount, setNewProductAmount] = useState("");
   const [unit, setUnit] = useState<string>("");
-  const [tabValue, setTabValue] = useState("Almaly");
+  const [tabValue, setTabValue] = useState<"buy" | "bought" | "buyVote">("buy");
   const [Loading, toggle] = useLoading();
   const [createModal, showCreateModal] = useState(false);
 
@@ -83,9 +83,9 @@ export default function ProductList() {
                 }}
                 sx={{ paddingTop: 1 }}
               >
-                <Tab label="Almaly" value="Almaly" />
-                <Tab label="Almalymy" value="Almalymy" />
-                <Tab label="Alyndy" value="Alyndy" />
+                <Tab value="buy" label="Almaly" />
+                <Tab value="buyVote" label="Almalymy" />
+                <Tab value="bought" label="Alyndy" />
               </TabList>
             </Box>
             <Box
@@ -97,7 +97,7 @@ export default function ProductList() {
               }}
             >
               <TabPanel
-                value="Almaly"
+                value="buy"
                 sx={{
                   padding: 0,
                   margin: 0,
@@ -108,7 +108,7 @@ export default function ProductList() {
                 <ToBuyList />
               </TabPanel>
               <TabPanel
-                value="Almalymy"
+                value="buyVote"
                 sx={{
                   padding: 0,
                   margin: 0,
@@ -118,7 +118,7 @@ export default function ProductList() {
                 Hali onarylotran...
               </TabPanel>
               <TabPanel
-                value="Alyndy"
+                value="bought"
                 sx={{
                   padding: 0,
                   margin: 0,

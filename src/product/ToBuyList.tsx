@@ -82,7 +82,7 @@ export default function ToBuyList() {
       )}
       {otherProducts.length !== 0 && (
         <React.Fragment>
-          <Divider>Bashga:</Divider>
+          <Divider>Bashka:</Divider>
           {otherProducts.map((product) => (
             <ToBuyListItem
               product={product}

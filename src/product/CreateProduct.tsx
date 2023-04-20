@@ -135,7 +135,7 @@ export default function CreateProduct({
               >
                 <MenuItem value={"pyatorychka"}>Pyatorychka</MenuItem>
                 <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
-                <MenuItem value={"other"}>Bashga</MenuItem>
+                <MenuItem value={"other"}>Bashka</MenuItem>
               </Select>
             </FormControl>
           </Grid>

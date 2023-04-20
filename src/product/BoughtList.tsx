@@ -19,8 +19,8 @@ import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import useMessage from "../helpers/useMessage";
 
 export default function BoughtList() {
-  const [Loading, toggle] = useLoading();
   const { products, setProducts } = useContext(ProductContext);
+  const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
 
   return (

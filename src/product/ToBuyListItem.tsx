@@ -78,7 +78,7 @@ export default function ToBuyListItem({
                 );
                 setTimeout(() => {
                   toggleMessage(false);
-                }, 1500);
+                }, 1000);
               } catch (e) {
                 toggle(false);
                 toggleMessage(

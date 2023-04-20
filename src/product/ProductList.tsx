@@ -30,12 +30,14 @@ export interface Products {
   editedUserName?: string;
 }
 
+export type TabValueTypes = "buy" | "bought" | "buyVote";
+
 export default function ProductList() {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
   const [newProductAmount, setNewProductAmount] = useState("");
   const [unit, setUnit] = useState<string>("");
-  const [tabValue, setTabValue] = useState<"buy" | "bought" | "buyVote">("buy");
+  const [tabValue, setTabValue] = useState<TabValueTypes>("buy");
   const [Loading, toggle] = useLoading();
   const [createModal, showCreateModal] = useState(false);
 

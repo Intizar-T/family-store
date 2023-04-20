@@ -14,6 +14,7 @@ import BoughtList from "./BoughtList";
 import BuyPanelFooter from "./BuyPanelFooter";
 import BoughtPanelFooter from "./BoughtPanelFooter";
 import BuyVoteList from "./BuyVoteList";
+import BuyVotePanelFooter from "./BuyVotePanelFooter";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote";
 export interface Products {
@@ -31,12 +32,19 @@ export interface Products {
   boughtUserName?: string;
   editedUserDevice?: string;
   editedUserName?: string;
+  likes?: string[];
+  dislikes?: string[];
 }
 
 export enum buyStatusList {
   BUY = "buy",
   BOUGHT = "bought",
   BUY_VOTE = "buyVote",
+}
+
+export enum voteResult {
+  LIKE = "like",
+  DISLIKE = "dislike",
 }
 
 export default function ProductList() {
@@ -148,6 +156,7 @@ export default function ProductList() {
           <BuyPanelFooter showCreateModal={showCreateModal} />
         )}
         {tabValue === "bought" && <BoughtPanelFooter />}
+        {tabValue === "buyVote" && <BuyVotePanelFooter />}
         {createModal && (
           <CreateProduct
             newProduct={newProduct}

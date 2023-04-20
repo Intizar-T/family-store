@@ -13,6 +13,7 @@ import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
 import BuyPanelFooter from "./BuyPanelFooter";
 import BoughtPanelFooter from "./BoughtPanelFooter";
+import BuyVoteList from "./BuyVoteList";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote";
 export interface Products {
@@ -66,8 +67,9 @@ export default function ProductList() {
         container
         sx={{
           width: "100%",
-          height: "100%",
-          paddingBottom: 2,
+          height: "calc(100% - 60px)",
+          // paddingBottom: 2,
+          // position: "relative",
         }}
       >
         <Grid
@@ -82,7 +84,7 @@ export default function ProductList() {
               sx={{
                 borderBottom: 1,
                 borderColor: "divider",
-                height: 60,
+                height: 59,
               }}
             >
               <TabList
@@ -100,9 +102,10 @@ export default function ProductList() {
             <Box
               sx={{
                 overflowY: "scroll",
-                height: "calc(100% - 110px)",
+                height: "calc(100% - 60px)",
                 borderBottom: 1,
                 borderColor: "divider",
+                marginBottom: 1,
               }}
             >
               <TabPanel
@@ -124,7 +127,7 @@ export default function ProductList() {
                   paddingRight: 0,
                 }}
               >
-                Hali onarylotran...
+                <BuyVoteList />
               </TabPanel>
               <TabPanel
                 value="bought"

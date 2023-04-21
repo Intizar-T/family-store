@@ -8,12 +8,16 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
+  Button,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import UserContext from "../UserContext";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import DeleteAccount from "./DeleteAccount";
 import EditAccount from "./EditAccount";
+import ProductContext from "../product/ProductContext";
+import FetchProductList from "../product/FetchProductList";
+import useLoading from "../helpers/useLoading";
 
 export default function MenuBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -27,6 +31,8 @@ export default function MenuBar() {
     setAnchorEl(null);
   };
   const { user } = useContext(UserContext);
+  const { products, setProducts } = useContext(ProductContext);
+  const [Loading, toggle] = useLoading();
   return (
     <React.Fragment>
       <Box
@@ -38,9 +44,15 @@ export default function MenuBar() {
           paddingY: 1,
         }}
       >
-        <Typography variant="button" color="#1976d2">
+        <Button
+          onClick={async () => {
+            toggle(true);
+            setProducts(await FetchProductList());
+            toggle(false);
+          }}
+        >
           Tashovs' Store
-        </Typography>
+        </Button>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
@@ -120,6 +132,7 @@ export default function MenuBar() {
       {editAccountModal && (
         <EditAccount handleClose={() => showEditAccountModal(false)} />
       )} */}
+      <Loading />
     </React.Fragment>
   );
 }

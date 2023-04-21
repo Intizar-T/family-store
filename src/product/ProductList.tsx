@@ -76,8 +76,6 @@ export default function ProductList() {
         sx={{
           width: "100%",
           height: "calc(100% - 60px)",
-          // paddingBottom: 2,
-          // position: "relative",
         }}
       >
         <Grid

@@ -19,7 +19,7 @@ import ProductContext from "../product/ProductContext";
 import FetchProductList from "../product/FetchProductList";
 import useLoading from "../helpers/useLoading";
 
-export default function MenuBar() {
+export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [deleteAccountModal, showDeleteAccountModal] = useState(false);
   const [editAccountModal, showEditAccountModal] = useState(false);

@@ -3,9 +3,9 @@ import { useEffect, useMemo } from "react";
 import { useState } from "react";
 import CheckUser from "./login/CheckUser";
 import Login from "./login/Login";
-import MenuBar from "./menu/MenuBar";
 import ProductList from "./product/ProductList";
 import UserContext from "./UserContext";
+import Header from "./header/Header";
 
 export type User = {
   id: string;
@@ -59,7 +59,7 @@ function App() {
             height: 60,
           }}
         >
-          <MenuBar />
+          <Header />
         </Grid>
         <Grid
           item

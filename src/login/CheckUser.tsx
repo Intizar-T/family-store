@@ -21,6 +21,9 @@ export type APIUsers = {
   onDuty: {
     S: string;
   };
+  tasks: {
+    L: string[];
+  };
 };
 
 export default async function CheckUser(
@@ -46,7 +49,9 @@ export default async function CheckUser(
     return users
       .filter((user) => {
         return (
-          parseInt(user["id"]["N"]) !== 0 && user["device"]["S"] === device
+          parseInt(user["id"]["N"]) !== 0 &&
+          parseInt(user["id"]["N"]) !== 1 &&
+          user["device"]["S"] === device
         );
       })
       .map((user: APIUsers) => {

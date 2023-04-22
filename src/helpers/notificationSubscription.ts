@@ -39,9 +39,9 @@ export const registerServiceWorker = async (id: string) => {
                 id,
               }),
             });
-            registration.showNotification(
-              "Habarlashyga yazyldyn/yz. Indi kim magazina birzat koshsa soobsheniya geladi shundey"
-            );
+            registration.showNotification("Habarlashyga yazyldynyz", {
+              body: "Indi kim magazina birzat koshsa soobsheniya geladi shundey",
+            });
           }
         });
       }

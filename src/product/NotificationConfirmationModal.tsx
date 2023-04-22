@@ -91,8 +91,6 @@ export default function NotificationConfirmationModal({
                           : store +
                             " magazina gitjak bolotran. Garak zat bolsa store yazynlar"
                       }`,
-                      name: user.name,
-                      store,
                     }),
                   });
                   toggle(false);

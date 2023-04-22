@@ -212,8 +212,6 @@ export default function CreateProduct({
                             ? ""
                             : "Girip golosawat etmagi yatdan chykarman pwease"
                         }`,
-                        name: user.name,
-                        product: newProduct,
                       }),
                     });
                     setProducts(await FetchProductList());

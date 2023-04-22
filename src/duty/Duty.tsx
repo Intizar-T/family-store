@@ -1,11 +1,28 @@
-import { Grid, Typography } from "@mui/material";
-import { useContext, useEffect } from "react";
+import {
+  Avatar,
+  Button,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 import OnDutyContext from "../OnDutyContext";
 import { OnDutyUsersType } from "../App";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import { USER_URL } from "../api/APIs";
 import UserContext from "../UserContext";
 import CheckUser from "../login/CheckUser";
+import TasksContext from "../TasksContext";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import useLoading from "../helpers/useLoading";
+import useMessage from "../helpers/useMessage";
+import CheckIcon from "@mui/icons-material/Check";
 
 enum DutyList {
   INTIZAR = "Intizar",
@@ -85,8 +102,22 @@ function getPersonOnDuty(onDutyUsers: OnDutyUsersType[]): string {
     })[0];
 }
 
+async function getTasks(): Promise<string[]> {
+  const {
+    tasks: { L },
+  }: { tasks: { L: { S: string }[] } } = await fetchWithErrorHandler(
+    `${USER_URL}?id=1`
+  );
+  return L.map(({ S }) => S);
+}
+
 export default function Duty() {
   const { onDutyUsers, setOnDutyUsers } = useContext(OnDutyContext);
+  const { tasks, setTasks } = useContext(TasksContext);
+  const { user } = useContext(UserContext);
+  const [Loading, toggle] = useLoading();
+  const [Message, toggleMessage] = useMessage();
+  const [newTask, setNewTask] = useState("");
   useEffect(() => {
     (async () => {
       await updatePersonOnDuty(onDutyUsers, setOnDutyUsers);
@@ -99,11 +130,138 @@ export default function Duty() {
         height: "100%",
         width: "100%",
         p: 2,
+        overflowY: "scroll",
       }}
     >
-      <Typography>
-        Bugun nobatchy: <b>{getPersonOnDuty(onDutyUsers)}</b>
-      </Typography>
+      <Grid item xs={12}>
+        <Typography>
+          Bugun nobatchy: <b>{getPersonOnDuty(onDutyUsers)}</b>
+        </Typography>
+      </Grid>
+      <Grid
+        container
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          paddingTop: 2,
+        }}
+      >
+        <Grid item xs={3}>
+          <Typography>Taza task:</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Task:"
+            variant="outlined"
+            multiline
+            value={newTask}
+            onChange={(e) => {
+              setNewTask(
+                (e as React.ChangeEvent<HTMLInputElement>).target.value
+              );
+            }}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Button
+            onClick={async () => {
+              try {
+                if (user == null || newTask === "") return;
+                toggle(true);
+                await fetchWithErrorHandler(USER_URL, {
+                  method: "PUT",
+                  body: JSON.stringify({
+                    name: user.name,
+                    device: user.device,
+                    newTask,
+                  }),
+                });
+                setTasks(await getTasks());
+                setNewTask("");
+                toggle(false);
+                toggleMessage(true, "success", "Udalit edildi");
+                setTimeout(() => {
+                  toggleMessage(false);
+                }, 1000);
+              } catch (error) {
+                toggle(false);
+                toggleMessage(true, "error", "Taza task koshup bilmadim");
+                setTimeout(() => {
+                  toggleMessage(false);
+                }, 1500);
+              }
+            }}
+          >
+            <CheckIcon />
+          </Button>
+        </Grid>
+      </Grid>
+      <Grid item xs={12} sx={{}}>
+        <List>
+          <ListItem sx={{ p: 0, m: 0 }}>
+            <ListItemText>
+              <b>Etmali zatlar:</b>
+            </ListItemText>
+          </ListItem>
+          {tasks.map((task, index) => (
+            <ListItem
+              key={index}
+              secondaryAction={
+                <React.Fragment>
+                  <IconButton
+                    color="error"
+                    onClick={async () => {
+                      try {
+                        if (user == null) return;
+                        toggle(true);
+                        await fetchWithErrorHandler(USER_URL, {
+                          method: "PUT",
+                          body: JSON.stringify({
+                            name: user.name,
+                            device: user.device,
+                            taskIndex: index,
+                          }),
+                        });
+                        setTasks(await getTasks());
+                        toggle(false);
+                        toggleMessage(true, "success", "Udalit edildi");
+                        setTimeout(() => {
+                          toggleMessage(false);
+                        }, 1000);
+                      } catch (error) {
+                        toggle(false);
+                        toggleMessage(true, "error", "Udalit edip bilmadim");
+                        setTimeout(() => {
+                          toggleMessage(false);
+                        }, 1500);
+                      }
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </React.Fragment>
+              }
+            >
+              <ListItemAvatar
+                sx={{
+                  minWidth: 0,
+                  paddingRight: 1,
+                  display: "flex",
+                  alignContent: "center",
+                }}
+              >
+                <RadioButtonCheckedIcon />
+              </ListItemAvatar>
+              <ListItemText sx={{ display: "flex", alignContent: "center" }}>
+                {task}
+              </ListItemText>
+            </ListItem>
+          ))}
+        </List>
+      </Grid>
+      <Loading />
+      <Message />
     </Grid>
   );
 }

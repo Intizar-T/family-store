@@ -40,7 +40,6 @@ export default function ToBuyListItem({
   const { setProducts } = useContext(ProductContext);
   return (
     <ListItem
-      key={`${product.id}-${product.name}`}
       secondaryAction={
         <React.Fragment>
           <IconButton

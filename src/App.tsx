@@ -7,6 +7,7 @@ import ProductList from "./product/ProductList";
 import UserContext from "./UserContext";
 import Header from "./header/Header";
 import OnDutyContext from "./OnDutyContext";
+import TasksContext from "./TasksContext";
 
 export type User = {
   id: string;
@@ -31,11 +32,12 @@ function App() {
     userAgent.indexOf(")")
   );
   const [onDutyUsers, setOnDutyUsers] = useState<OnDutyUsersType[]>([]);
+  const [tasks, setTasks] = useState<string[]>([]);
 
   useEffect(() => {
     if (user != null) return;
     (async () => {
-      const res = await CheckUser(setOnDutyUsers, device);
+      const res = await CheckUser(setOnDutyUsers, setTasks, device);
       if (res == null) return;
       const users: User[] = await Promise.all(res);
       if (users.length !== 0) setUser(users[0]);
@@ -54,44 +56,53 @@ function App() {
     return { onDutyUsers, setOnDutyUsers };
   }, [onDutyUsers]);
 
+  const tasksState = useMemo(() => {
+    return {
+      tasks,
+      setTasks,
+    };
+  }, [tasks]);
+
   return (
     <OnDutyContext.Provider value={onDutyUserState}>
       <UserContext.Provider value={userState}>
-        <Grid
-          container
-          sx={{
-            height: "100%",
-            width: "100%",
-            position: "relative",
-          }}
-        >
+        <TasksContext.Provider value={tasksState}>
           <Grid
-            item
+            container
             sx={{
+              height: "100%",
               width: "100%",
-              borderBottom: 1,
-              borderColor: "divider",
-              position: "absolute",
-              height: 60,
+              position: "relative",
             }}
           >
-            <Header />
+            <Grid
+              item
+              sx={{
+                width: "100%",
+                borderBottom: 1,
+                borderColor: "divider",
+                position: "absolute",
+                height: 60,
+              }}
+            >
+              <Header />
+            </Grid>
+            <Grid
+              item
+              sx={{
+                width: "100%",
+                height: "calc(100% - 60px)",
+                position: "absolute",
+                top: 60,
+              }}
+            >
+              <ProductList />
+            </Grid>
+            {loginModal && (
+              <Login device={device} showLoginModal={showLoginModal} />
+            )}
           </Grid>
-          <Grid
-            item
-            sx={{
-              width: "100%",
-              height: "calc(100% - 60px)",
-              position: "absolute",
-              top: 60,
-            }}
-          >
-            <ProductList />
-          </Grid>
-          {loginModal && (
-            <Login device={device} showLoginModal={showLoginModal} />
-          )}
-        </Grid>
+        </TasksContext.Provider>
       </UserContext.Provider>
     </OnDutyContext.Provider>
   );

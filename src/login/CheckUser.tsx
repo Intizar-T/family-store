@@ -22,12 +22,15 @@ export type APIUsers = {
     S: string;
   };
   tasks: {
-    L: string[];
+    L: {
+      S: string;
+    }[];
   };
 };
 
 export default async function CheckUser(
   setOnDutyUsers: (users: OnDutyUsersType[]) => void,
+  setTasks?: (tasks: string[]) => void,
   device?: string
 ): Promise<User[] | undefined> {
   const users: APIUsers[] = await fetchWithErrorHandler(USER_URL, {
@@ -45,6 +48,14 @@ export default async function CheckUser(
         };
       })
   );
+
+  if (setTasks != null)
+    setTasks(
+      users
+        .filter(({ id }) => parseInt(id["N"]) === 1)
+        .map(({ tasks }) => tasks["L"].map(({ S }) => S))[0]
+    );
+
   if (device != null)
     return users
       .filter((user) => {

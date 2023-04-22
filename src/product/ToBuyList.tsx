@@ -20,13 +20,13 @@ export default function ToBuyList() {
   const [selectedProductId, setSelectedProductId] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState<Products>();
   const [Loading, toggle] = useLoading();
+  const [Message, toggleMessage] = useMessage();
   const { products } = useContext(ProductContext);
   const [pyatorychkaProducts, setPyatorychkaProducts] = useState<Products[]>(
     []
   );
   const [fixPriceProducts, setFixPriceProducts] = useState<Products[]>([]);
   const [otherProducts, setOtherProducts] = useState<Products[]>([]);
-  const [Message, toggleMessage] = useMessage();
 
   useMemo(() => {
     const isBoughtProducts = products.filter(

@@ -163,7 +163,13 @@ export default function Duty() {
             }}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid
+          item
+          xs={3}
+          sx={{
+            paddingLeft: 2,
+          }}
+        >
           <Button
             onClick={async () => {
               try {

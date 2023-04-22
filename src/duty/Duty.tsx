@@ -14,7 +14,7 @@ import React, { useContext, useEffect, useState } from "react";
 import OnDutyContext from "../OnDutyContext";
 import { OnDutyUsersType } from "../App";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
-import { USER_URL } from "../api/APIs";
+import { SEND_NOTIFICATION_URL, USER_URL } from "../api/APIs";
 import UserContext from "../UserContext";
 import CheckUser from "../login/CheckUser";
 import TasksContext from "../TasksContext";
@@ -184,6 +184,13 @@ export default function Duty() {
                   }),
                 });
                 setTasks(await getTasks());
+                await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                  method: "POST",
+                  body: JSON.stringify({
+                    userId: user.id,
+                    message: `${user.name} nobatchylyk lista taza ish koshdy: ${newTask}`,
+                  }),
+                });
                 setNewTask("");
                 toggle(false);
                 toggleMessage(true, "success", "Udalit edildi");
@@ -230,6 +237,13 @@ export default function Duty() {
                           }),
                         });
                         setTasks(await getTasks());
+                        await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                          method: "POST",
+                          body: JSON.stringify({
+                            userId: user.id,
+                            message: `${user.name} nobatchylyk listdan shu task ayyrdy: ${task}`,
+                          }),
+                        });
                         toggle(false);
                         toggleMessage(true, "success", "Udalit edildi");
                         setTimeout(() => {

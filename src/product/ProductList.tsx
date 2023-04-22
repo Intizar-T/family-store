@@ -27,14 +27,14 @@ export interface Products {
   userDevice: string;
   userName: string;
   store: Store;
+  likes: string[];
+  dislikes: string[];
   amount?: number;
   unit?: string;
   boughtUserDevice?: string;
   boughtUserName?: string;
   editedUserDevice?: string;
   editedUserName?: string;
-  likes?: string[];
-  dislikes?: string[];
 }
 
 export enum buyStatusList {

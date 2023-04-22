@@ -205,6 +205,13 @@ export default function CreateProduct({
                       method: "POST",
                       body: JSON.stringify({
                         userId: user.id,
+                        message: `${user.name} ${
+                          toBuy ? "Almaly" : "Almalymy"
+                        } lista "${newProduct}" koshdy. ${
+                          toBuy
+                            ? ""
+                            : "Girip golosawat etmagi yatdan chykarman pwease"
+                        }`,
                         name: user.name,
                         product: newProduct,
                       }),

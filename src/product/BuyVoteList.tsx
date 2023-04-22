@@ -14,9 +14,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useLoading from "../helpers/useLoading";
 import FetchProductList from "./FetchProductList";
-import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import ProductContext from "./ProductContext";
-import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import useMessage from "../helpers/useMessage";
 import { Products, buyStatusList } from "./ProductList";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
@@ -25,20 +23,6 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import UserContext from "../UserContext";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import EditIcon from "@mui/icons-material/Edit";
-
-const dummyProduct = {
-  id: 10000,
-  name: "agursy",
-  buyStatus: "buyVote",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  userDevice: "device",
-  userName: "Intizar",
-  store: "fixPrice",
-  likes: ["1681669345"],
-  amount: 0,
-  unit: "ta",
-} as Products;
 
 export default function BuyVoteList() {
   const { products, setProducts } = useContext(ProductContext);
@@ -52,7 +36,7 @@ export default function BuyVoteList() {
         bgcolor: "background.paper",
       }}
     >
-      {[...products, dummyProduct]
+      {products
         .filter(({ buyStatus }) => buyStatus === buyStatusList.BUY_VOTE)
         .map((product) => (
           <ListItem

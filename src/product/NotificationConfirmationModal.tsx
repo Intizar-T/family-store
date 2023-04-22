@@ -85,6 +85,12 @@ export default function NotificationConfirmationModal({
                     method: "POST",
                     body: JSON.stringify({
                       userId: user.id,
+                      message: `${user.name} hazyr ${
+                        store === "other"
+                          ? "bir magazina gitjak bolotran. Kaysy magazindigini bilimman toka"
+                          : store +
+                            " magazina gitjak bolotran. Garak zat bolsa store yazynlar"
+                      }`,
                       name: user.name,
                       store,
                     }),

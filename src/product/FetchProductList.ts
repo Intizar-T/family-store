@@ -18,6 +18,8 @@ export type APIProducts = {
   boughtUserName?: { S: string };
   editedUserDevice?: { S: string };
   editedUserName?: { S: string };
+  likes?: { L: { N: string }[] };
+  dislikes?: { L: { N: string }[] };
 };
 
 export default async function FetchProductList() {
@@ -27,29 +29,44 @@ export default async function FetchProductList() {
       method: "GET",
     }
   );
-  return fetchedProducts.map((product) => {
-    return {
-      id: parseInt(product["id"]["S"]),
-      name: product["name"]["S"],
-      buyStatus: product["buyStatus"]["S"] as TabValueTypes,
-      store: (product["store"] ? product["store"]["S"] : "other") as Store,
-      createdAt: new Date(product["createdAt"]["S"]),
-      updatedAt: new Date(product["updatedAt"]["S"]),
-      userDevice: product["createdUserDevice"]["S"],
-      userName: product["createdUserName"]["S"],
-      amount:
-        product["amount"] == null || product["amount"]["S"] === ""
-          ? 0.0
-          : parseFloat(product["amount"]["S"]),
-      unit: product["unit"] && product["unit"]["S"],
-      boughtUserDevice:
-        product["boughtUserDevice"] && product["boughtUserDevice"]["S"],
-      boughtUserName:
-        product["boughtUserName"] && product["boughtUserName"]["S"],
-      editedUserDevice:
-        product["editedUserDevice"] && product["editedUserDevice"]["S"],
-      editedUserName:
-        product["editedUserName"] && product["editedUserName"]["S"],
-    };
-  });
+  return fetchedProducts.map(
+    ({
+      buyStatus,
+      createdAt,
+      createdUserDevice,
+      createdUserName,
+      id,
+      name,
+      store,
+      updatedAt,
+      amount,
+      boughtUserDevice,
+      boughtUserName,
+      dislikes,
+      editedUserDevice,
+      editedUserName,
+      likes,
+      unit,
+    }) => {
+      return {
+        id: parseInt(id["S"]),
+        name: name["S"],
+        buyStatus: buyStatus["S"] as TabValueTypes,
+        store: (store ? store["S"] : "other") as Store,
+        createdAt: new Date(createdAt["S"]),
+        updatedAt: new Date(updatedAt["S"]),
+        userDevice: createdUserDevice["S"],
+        userName: createdUserName["S"],
+        likes: likes != null ? likes["L"].map(({ N }) => N) : [],
+        dislikes: dislikes != null ? dislikes["L"].map(({ N }) => N) : [],
+        amount:
+          amount == null || amount["S"] === "" ? 0.0 : parseFloat(amount["S"]),
+        unit: unit && unit["S"],
+        boughtUserDevice: boughtUserDevice && boughtUserDevice["S"],
+        boughtUserName: boughtUserName && boughtUserName["S"],
+        editedUserDevice: editedUserDevice && editedUserDevice["S"],
+        editedUserName: editedUserName && editedUserName["S"],
+      };
+    }
+  );
 }

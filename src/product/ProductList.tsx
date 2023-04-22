@@ -15,8 +15,9 @@ import BuyPanelFooter from "./BuyPanelFooter";
 import BoughtPanelFooter from "./BoughtPanelFooter";
 import BuyVoteList from "./BuyVoteList";
 import BuyVotePanelFooter from "./BuyVotePanelFooter";
+import Duty from "../duty/Duty";
 
-export type TabValueTypes = "buy" | "bought" | "buyVote";
+export type TabValueTypes = "buy" | "bought" | "buyVote" | "duty";
 export interface Products {
   id: number;
   name: string;
@@ -94,15 +95,16 @@ export default function ProductList() {
               }}
             >
               <TabList
-                centered
                 onChange={(e, value) => {
                   setTabValue(value);
                 }}
                 sx={{ paddingTop: 1 }}
+                variant="scrollable"
               >
                 <Tab value="buy" label="Almaly" />
                 <Tab value="buyVote" label="Almalymy" />
                 <Tab value="bought" label="Alyndy" />
+                <Tab value="duty" label="Nobatcylyk" />
               </TabList>
             </Box>
             <Box
@@ -146,6 +148,16 @@ export default function ProductList() {
               >
                 <BoughtList />
               </TabPanel>
+              <TabPanel
+                value="duty"
+                sx={{
+                  padding: 0,
+                  margin: 0,
+                  paddingRight: 0,
+                }}
+              >
+                <Duty />
+              </TabPanel>
             </Box>
           </TabContext>
         </Grid>
@@ -155,6 +167,7 @@ export default function ProductList() {
         )}
         {tabValue === "bought" && <BoughtPanelFooter />}
         {tabValue === "buyVote" && <BuyVotePanelFooter />}
+        {/* {tabValue === "duty" && <Duty />} */}
         {createModal && (
           <CreateProduct
             newProduct={newProduct}

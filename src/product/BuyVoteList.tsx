@@ -36,7 +36,6 @@ const dummyProduct = {
   userName: "Intizar",
   store: "fixPrice",
   likes: ["1681669345"],
-  dislikes: ["1681669345"],
   amount: 0,
   unit: "ta",
 } as Products;
@@ -76,7 +75,7 @@ export default function BuyVoteList() {
                       // });
                       // setProducts(await FetchProductList());
                       toggle(false);
-                      toggleMessage(true, "success", "poka ishlamidi");
+                      toggleMessage(true, "error", "poka ishlamidi");
                       setTimeout(() => {
                         toggleMessage(false);
                       }, 1500);
@@ -172,7 +171,7 @@ export default function BuyVoteList() {
                       }}
                       color="primary"
                       onClick={() => {
-                        toggleMessage(true, "success", "poka ishlamidi");
+                        toggleMessage(true, "error", "poka ishlamidi");
                         setTimeout(() => {
                           toggleMessage(false);
                         }, 1500);
@@ -191,7 +190,7 @@ export default function BuyVoteList() {
                       sx={{ m: 0, p: 0 }}
                       color="error"
                       onClick={() => {
-                        toggleMessage(true, "success", "poka ishlamidi");
+                        toggleMessage(true, "error", "poka ishlamidi");
                         setTimeout(() => {
                           toggleMessage(false);
                         }, 1500);

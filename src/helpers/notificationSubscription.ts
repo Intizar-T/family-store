@@ -19,13 +19,14 @@ const urlBase64ToUint8Array = (base64String: string) => {
   return outputArray;
 };
 
-export const registerServiceWorker = async (id: string) => {
+export const registerServiceWorker = async (id: string, subscribe: boolean) => {
   if ("serviceWorker" in navigator) {
     try {
       const registration = await navigator.serviceWorker.register(
         "/family-store/service-worker.js"
       );
-      if (registration.active) {
+      console.log(`service worker status: ${registration.active?.state}`);
+      if (subscribe && registration.active) {
         await Notification.requestPermission(async (result) => {
           if (result === "granted") {
             const subscription = await registration.pushManager.subscribe({

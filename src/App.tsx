@@ -8,6 +8,7 @@ import UserContext from "./UserContext";
 import Header from "./header/Header";
 import OnDutyContext from "./OnDutyContext";
 import TasksContext from "./TasksContext";
+import { registerServiceWorker } from "./helpers/notificationSubscription";
 
 export type User = {
   id: string;
@@ -45,6 +46,8 @@ function App() {
         setTimeout(() => {
           showLoginModal(true);
         }, 1500);
+      if (users[0] == null) return;
+      await registerServiceWorker(users[0].id, false);
     })();
   }, [user, device]);
 

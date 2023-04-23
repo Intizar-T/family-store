@@ -226,6 +226,7 @@ export default function CreateProduct({
                     }, 1500);
                   } catch (e) {
                     toggle(false);
+                    setProducts(await FetchProductList());
                     toggleMessage(
                       true,
                       "error",
@@ -233,6 +234,7 @@ export default function CreateProduct({
                     );
                     setTimeout(() => {
                       toggleMessage(false);
+                      showCreateModal(false);
                     }, 1500);
                   }
                 }

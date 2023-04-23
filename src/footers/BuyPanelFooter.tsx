@@ -102,7 +102,7 @@ export default function BuyPanelFooter({
               onClick={async () => {
                 try {
                   if (user?.id == null) return;
-                  await registerServiceWorker(user.id);
+                  await registerServiceWorker(user.id, true);
                   setUser({ ...user, subscribed: true });
                 } catch (e) {
                   console.log(e);

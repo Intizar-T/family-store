@@ -1,10 +1,12 @@
 TODO
-1. Voting system
-2. Track geolocation and auto notification
-3. Personal space
-4. Commenting to products
-5. UI improvement
-6. Sort according to added/edited date
-7. Profile picture
-8. View other people's profile
-9. 
+1. Fix expiring subscriptions
+2. Voting system
+3. Track geolocation and auto notification
+4. Edit duty tasks
+4. Personal space
+5. Commenting to products
+6. UI improvement
+7. Sort according to added/edited date
+8. Profile picture
+9. View other people's profile
+10. 

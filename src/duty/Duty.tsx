@@ -33,6 +33,7 @@ enum DutyList {
 }
 
 const ON_DUTY_LIST = ["Intizar", "Ovadan", "Jennet", "Hudayar"];
+const MEAL_DUTY_LIST = ["Jennet", "Intizar", "Ovadan"];
 
 async function updatePersonOnDuty(
   onDutyUsers: OnDutyUsersType[],
@@ -146,9 +147,19 @@ export default function Duty() {
           alignItems: "center",
         }}
       >
-        <Grid item xs={7}>
+        <Grid
+          item
+          xs={7}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Typography>
-            Nobatchy: <b>{getPersonOnDuty(onDutyUsers)}</b>
+            Opshi Nobatchy: <b>{getPersonOnDuty(onDutyUsers)}</b>
+          </Typography>
+          <Typography>
+            Nahar Nobatcy: <b>{MEAL_DUTY_LIST[new Date().getDate() % 3]}</b>
           </Typography>
         </Grid>
         <Grid

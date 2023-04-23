@@ -168,7 +168,7 @@ export default function ProductList() {
         )}
         {tabValue === "bought" && <BoughtPanelFooter />}
         {tabValue === "buyVote" && <BuyVotePanelFooter />}
-        {tabValue === "duty" && <DutyFooter />}
+        {/* {tabValue === "duty" && <DutyFooter />} */}
         {createModal && (
           <CreateProduct
             newProduct={newProduct}

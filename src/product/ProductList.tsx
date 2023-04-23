@@ -16,6 +16,7 @@ import BoughtPanelFooter from "../footers/BoughtPanelFooter";
 import BuyVoteList from "./BuyVoteList";
 import BuyVotePanelFooter from "../footers/BuyVotePanelFooter";
 import Duty from "../duty/Duty";
+import DutyFooter from "../footers/DutyFooter";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote" | "duty";
 export interface Products {
@@ -167,7 +168,7 @@ export default function ProductList() {
         )}
         {tabValue === "bought" && <BoughtPanelFooter />}
         {tabValue === "buyVote" && <BuyVotePanelFooter />}
-        {/* {tabValue === "duty" && <Duty />} */}
+        {tabValue === "duty" && <DutyFooter />}
         {createModal && (
           <CreateProduct
             newProduct={newProduct}

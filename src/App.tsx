@@ -20,7 +20,7 @@ export type OnDutyUsersType = {
   id: string;
   name: string;
   device: string;
-  onDuty: string;
+  onDuty: "No" | "Pending" | string;
 };
 
 function App() {

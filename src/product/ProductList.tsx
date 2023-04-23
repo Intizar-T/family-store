@@ -11,10 +11,10 @@ import useLoading from "../helpers/useLoading";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import BoughtList from "./BoughtList";
-import BuyPanelFooter from "./BuyPanelFooter";
-import BoughtPanelFooter from "./BoughtPanelFooter";
+import BuyPanelFooter from "../footers/BuyPanelFooter";
+import BoughtPanelFooter from "../footers/BoughtPanelFooter";
 import BuyVoteList from "./BuyVoteList";
-import BuyVotePanelFooter from "./BuyVotePanelFooter";
+import BuyVotePanelFooter from "../footers/BuyVotePanelFooter";
 import Duty from "../duty/Duty";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote" | "duty";

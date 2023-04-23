@@ -7,7 +7,7 @@ import { useContext, useState } from "react";
 import UserContext from "../UserContext";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
-import NotificationConfirmationModal from "./NotificationConfirmationModal";
+import NotificationConfirmationModal from "../product/NotificationConfirmationModal";
 
 interface BuyPanelFooterProps {
   showCreateModal: (show: boolean) => void;

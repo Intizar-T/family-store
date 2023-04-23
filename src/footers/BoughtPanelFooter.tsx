@@ -1,11 +1,11 @@
 import { Button } from "@mui/material";
 import { useContext } from "react";
-import ProductContext from "./ProductContext";
+import ProductContext from "../product/ProductContext";
 import { PRODUCTS_URL } from "../api/APIs";
-import FetchProductList from "./FetchProductList";
+import FetchProductList from "../product/FetchProductList";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
-import { buyStatusList } from "./ProductList";
+import { buyStatusList } from "../product/ProductList";
 
 export default function BoughtPanelFooter() {
   const { products, setProducts } = useContext(ProductContext);

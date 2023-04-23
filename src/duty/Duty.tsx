@@ -131,7 +131,7 @@ export default function Duty() {
       sx={{
         height: "100%",
         width: "100%",
-        p: 2,
+        p: 1,
         overflowY: "scroll",
         display: "flex",
         flexDirection: "column",
@@ -146,14 +146,14 @@ export default function Duty() {
           alignItems: "center",
         }}
       >
-        <Grid item xs={6}>
+        <Grid item xs={7}>
           <Typography>
             Nobatchy: <b>{getPersonOnDuty(onDutyUsers)}</b>
           </Typography>
         </Grid>
         <Grid
           item
-          xs={6}
+          xs={5}
           sx={{
             display: "flex",
             justifyContent: "flex-end",
@@ -228,7 +228,7 @@ export default function Duty() {
                     });
                     setNewTask("");
                     toggle(false);
-                    toggleMessage(true, "success", "Udalit edildi");
+                    toggleMessage(true, "success", "Taza task koshuldy");
                     setTimeout(() => {
                       toggleMessage(false);
                     }, 1000);

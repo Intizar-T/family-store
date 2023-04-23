@@ -6,5 +6,5 @@ export const PRODUCTS_URL = `${BASE_URL}/product`;
 export const USER_URL = `${BASE_URL}/user`;
 export const SUBSCRIPTION_URL = `${BASE_URL}/subscription`;
 export const SEND_NOTIFICATION_URL =
-  "https://family-store-backend.onrender.com/push";
-// "http://localhost:8000/push";
+  // "https://family-store-backend.onrender.com/push";
+  "http://localhost:8000/push";

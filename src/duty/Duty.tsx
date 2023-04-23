@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -118,6 +119,7 @@ export default function Duty() {
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
   const [newTask, setNewTask] = useState("");
+  const [editMode, setEditMode] = useState(false);
   useEffect(() => {
     (async () => {
       await updatePersonOnDuty(onDutyUsers, setOnDutyUsers);
@@ -131,154 +133,195 @@ export default function Duty() {
         width: "100%",
         p: 2,
         overflowY: "scroll",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
-      <Grid item xs={12}>
-        <Typography>
-          Bugun nobatchy: <b>{getPersonOnDuty(onDutyUsers)}</b>
-        </Typography>
-      </Grid>
       <Grid
         container
         sx={{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          paddingTop: 2,
         }}
       >
-        <Grid item xs={3}>
-          <Typography>Taza task:</Typography>
-        </Grid>
         <Grid item xs={6}>
-          <TextField
-            label="Task:"
-            variant="outlined"
-            multiline
-            value={newTask}
+          <Typography>
+            Nobatchy: <b>{getPersonOnDuty(onDutyUsers)}</b>
+          </Typography>
+        </Grid>
+        <Grid
+          item
+          xs={6}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <Typography>List uytgat:</Typography>
+          <Switch
+            checked={editMode}
             onChange={(e) => {
-              setNewTask(
-                (e as React.ChangeEvent<HTMLInputElement>).target.value
+              setEditMode(
+                (e as React.ChangeEvent<HTMLInputElement>).target.checked
               );
             }}
           />
         </Grid>
-        <Grid
-          item
-          xs={3}
-          sx={{
-            paddingLeft: 2,
-          }}
-        >
-          <Button
-            onClick={async () => {
-              try {
-                if (user == null || newTask === "") return;
-                toggle(true);
-                await fetchWithErrorHandler(USER_URL, {
-                  method: "PUT",
-                  body: JSON.stringify({
-                    name: user.name,
-                    device: user.device,
-                    newTask,
-                  }),
-                });
-                setTasks(await getTasks());
-                await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
-                  method: "POST",
-                  body: JSON.stringify({
-                    userId: user.id,
-                    message: `${user.name} nobatchylyk lista taza ish koshdy: ${newTask}`,
-                  }),
-                });
-                setNewTask("");
-                toggle(false);
-                toggleMessage(true, "success", "Udalit edildi");
-                setTimeout(() => {
-                  toggleMessage(false);
-                }, 1000);
-              } catch (error) {
-                toggle(false);
-                toggleMessage(true, "error", "Taza task koshup bilmadim");
-                setTimeout(() => {
-                  toggleMessage(false);
-                }, 1500);
-              }
+      </Grid>
+      <Grid container>
+        {editMode && (
+          <Grid
+            container
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              paddingTop: 2,
             }}
           >
-            <CheckIcon />
-          </Button>
-        </Grid>
-      </Grid>
-      <Grid item xs={12} sx={{}}>
-        <List>
-          <ListItem sx={{ p: 0, m: 0 }}>
-            <ListItemText>
-              <b>Etmali zatlar:</b>
-            </ListItemText>
-          </ListItem>
-          {tasks.map((task, index) => (
-            <ListItem
-              key={index}
-              secondaryAction={
-                <React.Fragment>
-                  <IconButton
-                    color="error"
-                    onClick={async () => {
-                      try {
-                        if (user == null) return;
-                        toggle(true);
-                        await fetchWithErrorHandler(USER_URL, {
-                          method: "PUT",
-                          body: JSON.stringify({
-                            name: user.name,
-                            device: user.device,
-                            taskIndex: index,
-                          }),
-                        });
-                        setTasks(await getTasks());
-                        await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
-                          method: "POST",
-                          body: JSON.stringify({
-                            userId: user.id,
-                            message: `${user.name} nobatchylyk listdan shu task ayyrdy: ${task}`,
-                          }),
-                        });
-                        toggle(false);
-                        toggleMessage(true, "success", "Udalit edildi");
-                        setTimeout(() => {
-                          toggleMessage(false);
-                        }, 1000);
-                      } catch (error) {
-                        toggle(false);
-                        toggleMessage(true, "error", "Udalit edip bilmadim");
-                        setTimeout(() => {
-                          toggleMessage(false);
-                        }, 1500);
-                      }
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </React.Fragment>
-              }
+            <Grid item xs={3}>
+              <Typography>Taza task:</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Task:"
+                variant="outlined"
+                multiline
+                value={newTask}
+                onChange={(e) => {
+                  setNewTask(
+                    (e as React.ChangeEvent<HTMLInputElement>).target.value
+                  );
+                }}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={3}
+              sx={{
+                paddingLeft: 2,
+              }}
             >
-              <ListItemAvatar
-                sx={{
-                  minWidth: 0,
-                  paddingRight: 1,
-                  display: "flex",
-                  alignContent: "center",
+              <Button
+                onClick={async () => {
+                  try {
+                    if (user == null || newTask === "") return;
+                    toggle(true);
+                    await fetchWithErrorHandler(USER_URL, {
+                      method: "PUT",
+                      body: JSON.stringify({
+                        name: user.name,
+                        device: user.device,
+                        newTask,
+                      }),
+                    });
+                    setTasks(await getTasks());
+                    await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                      method: "POST",
+                      body: JSON.stringify({
+                        userId: user.id,
+                        message: `${user.name} nobatchylyk lista taza ish koshdy: ${newTask}`,
+                      }),
+                    });
+                    setNewTask("");
+                    toggle(false);
+                    toggleMessage(true, "success", "Udalit edildi");
+                    setTimeout(() => {
+                      toggleMessage(false);
+                    }, 1000);
+                  } catch (error) {
+                    toggle(false);
+                    toggleMessage(true, "error", "Taza task koshup bilmadim");
+                    setTimeout(() => {
+                      toggleMessage(false);
+                    }, 1500);
+                  }
                 }}
               >
-                <RadioButtonCheckedIcon />
-              </ListItemAvatar>
-              <ListItemText sx={{ display: "flex", alignContent: "center" }}>
-                {task}
+                <CheckIcon />
+              </Button>
+            </Grid>
+          </Grid>
+        )}
+        <Grid item xs={12} sx={{}}>
+          <List>
+            <ListItem sx={{ p: 0, m: 0 }}>
+              <ListItemText>
+                <b>Etmali zatlar:</b>
               </ListItemText>
             </ListItem>
-          ))}
-        </List>
+            {tasks.map((task, index) => (
+              <ListItem
+                key={index}
+                secondaryAction={
+                  <React.Fragment>
+                    {editMode && (
+                      <IconButton
+                        color="error"
+                        onClick={async () => {
+                          try {
+                            if (user == null) return;
+                            toggle(true);
+                            await fetchWithErrorHandler(USER_URL, {
+                              method: "PUT",
+                              body: JSON.stringify({
+                                name: user.name,
+                                device: user.device,
+                                taskIndex: index,
+                              }),
+                            });
+                            setTasks(await getTasks());
+                            await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                              method: "POST",
+                              body: JSON.stringify({
+                                userId: user.id,
+                                message: `${user.name} nobatchylyk listdan shu task ayyrdy: ${task}`,
+                              }),
+                            });
+                            toggle(false);
+                            toggleMessage(true, "success", "Udalit edildi");
+                            setTimeout(() => {
+                              toggleMessage(false);
+                            }, 1000);
+                          } catch (error) {
+                            toggle(false);
+                            toggleMessage(
+                              true,
+                              "error",
+                              "Udalit edip bilmadim"
+                            );
+                            setTimeout(() => {
+                              toggleMessage(false);
+                            }, 1500);
+                          }
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
+                  </React.Fragment>
+                }
+              >
+                <ListItemAvatar
+                  sx={{
+                    minWidth: 0,
+                    paddingRight: 1,
+                    display: "flex",
+                    alignContent: "center",
+                  }}
+                >
+                  <RadioButtonCheckedIcon />
+                </ListItemAvatar>
+                <ListItemText sx={{ display: "flex", alignContent: "center" }}>
+                  {task}
+                </ListItemText>
+              </ListItem>
+            ))}
+          </List>
+        </Grid>
       </Grid>
       <Loading />
       <Message />

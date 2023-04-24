@@ -27,14 +27,14 @@ import { Store } from "./ToBuyList";
 
 interface EditProductProps {
   showEditModal: (show: boolean) => void;
-  selectedProductId: number;
   product: Products;
+  showBuyCheckBox: boolean;
 }
 
 export default function EditProduct({
   showEditModal,
-  selectedProductId,
   product,
+  showBuyCheckBox,
 }: EditProductProps) {
   const [Loading, toggle] = useLoading();
   const { user } = useContext(UserContext);
@@ -139,7 +139,7 @@ export default function EditProduct({
             }}
             spacing={1}
           >
-            <Grid item xs={7}>
+            <Grid item xs={showBuyCheckBox ? 7 : 12}>
               <FormControl fullWidth size="small">
                 <InputLabel id="demo-simple-select-label">
                   Kaysy Magazindan
@@ -155,19 +155,22 @@ export default function EditProduct({
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={5}>
-              <FormGroup>
-                <FormControlLabel
-                  control={<Checkbox checked={editedToBuy} />}
-                  label="Almaly"
-                  onChange={(e) => {
-                    setEditedToBuy(
-                      (e as React.ChangeEvent<HTMLInputElement>).target.checked
-                    );
-                  }}
-                />
-              </FormGroup>
-            </Grid>
+            {showBuyCheckBox && (
+              <Grid item xs={5}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={<Checkbox checked={editedToBuy} />}
+                    label="Almaly"
+                    onChange={(e) => {
+                      setEditedToBuy(
+                        (e as React.ChangeEvent<HTMLInputElement>).target
+                          .checked
+                      );
+                    }}
+                  />
+                </FormGroup>
+              </Grid>
+            )}
           </Grid>
         </Grid>
       </DialogContent>
@@ -186,7 +189,7 @@ export default function EditProduct({
               await fetchWithErrorHandler(PRODUCTS_URL, {
                 method: "PUT",
                 body: JSON.stringify({
-                  id: selectedProductId.toString(),
+                  id: product.id.toString(),
                   name: editedProductName,
                   amount: editedProductAmount,
                   unit: editedUnit,

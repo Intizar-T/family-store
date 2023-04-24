@@ -8,7 +8,7 @@ import {
   Typography,
   Grid,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import ImageIcon from "@mui/icons-material/Image";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -23,12 +23,15 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import UserContext from "../UserContext";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import EditIcon from "@mui/icons-material/Edit";
+import EditProduct from "./EditProduct";
 
 export default function BuyVoteList() {
   const { products, setProducts } = useContext(ProductContext);
   const { user } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
+  const [editModal, showEditModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Products>();
 
   return (
     <List
@@ -47,22 +50,8 @@ export default function BuyVoteList() {
                   color="primary"
                   onClick={async () => {
                     try {
-                      toggle(true);
-                      // await fetchWithErrorHandler(`${PRODUCTS_URL}`, {
-                      //   method: "PUT",
-                      //   body: JSON.stringify({
-                      //     id: product.id.toString(),
-                      //     buyStatus: buyStatusList.BUY,
-                      //     boughtUserDevice: "",
-                      //     boughtUserName: "",
-                      //   }),
-                      // });
-                      // setProducts(await FetchProductList());
-                      toggle(false);
-                      toggleMessage(true, "error", "poka ishlamidi");
-                      setTimeout(() => {
-                        toggleMessage(false);
-                      }, 1500);
+                      setSelectedProduct(product);
+                      showEditModal(true);
                     } catch (e) {
                       toggle(false);
                       toggleMessage(
@@ -196,6 +185,13 @@ export default function BuyVoteList() {
             />
           </ListItem>
         ))}
+      {editModal && selectedProduct != null && (
+        <EditProduct
+          showBuyCheckBox={false}
+          product={selectedProduct}
+          showEditModal={showEditModal}
+        />
+      )}
       <Loading />
       <Message />
     </List>

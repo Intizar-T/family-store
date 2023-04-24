@@ -22,7 +22,6 @@ import { Products, buyStatusList } from "./ProductList";
 interface ToBuyListItemProps {
   product: Products;
   setSelectedProduct: (product: Products) => void;
-  setSelectedProductId: (productId: number) => void;
   showEditModal: (show: boolean) => void;
   toggleMessage: toggleMessageProps;
   toggle: toggle;
@@ -30,7 +29,6 @@ interface ToBuyListItemProps {
 
 export default function ToBuyListItem({
   product,
-  setSelectedProductId,
   setSelectedProduct,
   showEditModal,
   toggleMessage,
@@ -46,7 +44,6 @@ export default function ToBuyListItem({
             color="primary"
             onClick={() => {
               setSelectedProduct(product);
-              setSelectedProductId(product.id);
               showEditModal(true);
             }}
           >

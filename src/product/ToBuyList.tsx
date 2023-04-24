@@ -17,7 +17,6 @@ export type Store = "pyatorychka" | "fixPrice" | "other";
 
 export default function ToBuyList() {
   const [editModal, showEditModal] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState<Products>();
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
@@ -57,7 +56,6 @@ export default function ToBuyList() {
             <ToBuyListItem
               product={product}
               setSelectedProduct={setSelectedProduct}
-              setSelectedProductId={setSelectedProductId}
               showEditModal={showEditModal}
               toggle={toggle}
               toggleMessage={toggleMessage}
@@ -73,7 +71,6 @@ export default function ToBuyList() {
             <ToBuyListItem
               product={product}
               setSelectedProduct={setSelectedProduct}
-              setSelectedProductId={setSelectedProductId}
               showEditModal={showEditModal}
               toggle={toggle}
               toggleMessage={toggleMessage}
@@ -89,7 +86,6 @@ export default function ToBuyList() {
             <ToBuyListItem
               product={product}
               setSelectedProduct={setSelectedProduct}
-              setSelectedProductId={setSelectedProductId}
               showEditModal={showEditModal}
               toggle={toggle}
               toggleMessage={toggleMessage}
@@ -100,7 +96,7 @@ export default function ToBuyList() {
 
       {editModal && selectedProduct && (
         <EditProduct
-          selectedProductId={selectedProductId}
+          showBuyCheckBox={true}
           product={selectedProduct}
           showEditModal={showEditModal}
         />

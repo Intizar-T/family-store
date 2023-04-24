@@ -18,8 +18,8 @@ export type APIProducts = {
   boughtUserName?: { S: string };
   editedUserDevice?: { S: string };
   editedUserName?: { S: string };
-  likes?: { L: { N: string }[] };
-  dislikes?: { L: { N: string }[] };
+  likes?: { L: { S: string }[] };
+  dislikes?: { L: { S: string }[] };
 };
 
 export default async function FetchProductList() {
@@ -57,8 +57,8 @@ export default async function FetchProductList() {
         updatedAt: new Date(updatedAt["S"]),
         userDevice: createdUserDevice["S"],
         userName: createdUserName["S"],
-        likes: likes != null ? likes["L"].map(({ N }) => N) : [],
-        dislikes: dislikes != null ? dislikes["L"].map(({ N }) => N) : [],
+        likes: likes != null ? likes["L"].map(({ S }) => S) : [],
+        dislikes: dislikes != null ? dislikes["L"].map(({ S }) => S) : [],
         amount:
           amount == null || amount["S"] === "" ? 0.0 : parseFloat(amount["S"]),
         unit: unit && unit["S"],

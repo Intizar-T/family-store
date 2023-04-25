@@ -176,16 +176,33 @@ export default function BuyVoteList() {
                                   }),
                                 });
                               }
+
                               if (productIsLiked) {
+                                const userIndex = product.likes.indexOf(
+                                  user.id
+                                );
                                 setProducts(
                                   products.map((pr) => {
-                                    if (product.id === pr.id)
-                                      pr.likes.splice(
-                                        pr.likes.indexOf(user.id)
+                                    if (product.id === pr.id) {
+                                      const tempArr = pr.likes;
+                                      tempArr.splice(
+                                        tempArr.indexOf(user.id),
+                                        1
                                       );
+                                      pr.likes = tempArr;
+                                    }
                                     return pr;
                                   })
                                 );
+                                await fetchWithErrorHandler(PRODUCTS_URL, {
+                                  method: "PUT",
+                                  body: JSON.stringify({
+                                    id: product.id,
+                                    userId: user.id,
+                                    action: ACTIONS.REMOVE_LIKE,
+                                    userIndex,
+                                  }),
+                                });
                               }
                             }
                           } catch (error) {
@@ -209,10 +226,10 @@ export default function BuyVoteList() {
                       <IconButton
                         sx={{ m: 0, p: 0 }}
                         color="error"
-                        onClick={() => {
+                        onClick={async () => {
                           try {
                             if (!productIsLiked) {
-                              if (!productIsDisliked)
+                              if (!productIsDisliked) {
                                 setProducts(
                                   products.map((pr) => {
                                     if (product.id === pr.id)
@@ -220,7 +237,19 @@ export default function BuyVoteList() {
                                     return pr;
                                   })
                                 );
-                              if (productIsDisliked)
+                                await fetchWithErrorHandler(PRODUCTS_URL, {
+                                  method: "PUT",
+                                  body: JSON.stringify({
+                                    id: product.id,
+                                    userId: user.id,
+                                    action: ACTIONS.ADD_DISLIKE,
+                                  }),
+                                });
+                              }
+                              if (productIsDisliked) {
+                                const userIndex = product.dislikes.indexOf(
+                                  user.id
+                                );
                                 setProducts(
                                   products.map((pr) => {
                                     if (product.id === pr.id)
@@ -230,6 +259,16 @@ export default function BuyVoteList() {
                                     return pr;
                                   })
                                 );
+                                await fetchWithErrorHandler(PRODUCTS_URL, {
+                                  method: "PUT",
+                                  body: JSON.stringify({
+                                    id: product.id,
+                                    userId: user.id,
+                                    action: ACTIONS.REMOVE_DISLIKE,
+                                    userIndex,
+                                  }),
+                                });
+                              }
                             }
                           } catch (error) {
                             toggleMessage(

@@ -11,6 +11,7 @@ import { USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import UserContext from "../UserContext";
+import CheckUser from "./CheckUser";
 
 interface LoginProps {
   device: string;
@@ -78,18 +79,24 @@ export default function Login({ device, showLoginModal }: LoginProps) {
                 height: 40,
               }}
               onClick={async () => {
-                // if (name === "") return;
-                // toggle(true);
-                // setUser({ device, name });
-                // await fetchWithErrorHandler(USER_URL, {
-                //   method: "POST",
-                //   body: JSON.stringify({
-                //     device,
-                //     name,
-                //   }),
-                // });
-                // showLoginModal(false);
-                // toggle(false);
+                if (name === "") return;
+                toggle(true);
+                await fetchWithErrorHandler(USER_URL, {
+                  method: "POST",
+                  body: JSON.stringify({
+                    device,
+                    name,
+                  }),
+                });
+                const updatedUser = await CheckUser(
+                  undefined,
+                  undefined,
+                  device
+                );
+                if (updatedUser != null && updatedUser.length > 0)
+                  setUser(updatedUser[0]);
+                showLoginModal(false);
+                toggle(false);
               }}
             >
               OK

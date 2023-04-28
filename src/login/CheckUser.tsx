@@ -29,25 +29,26 @@ export type APIUsers = {
 };
 
 export default async function CheckUser(
-  setOnDutyUsers: (users: OnDutyUsersType[]) => void,
+  setOnDutyUsers?: (users: OnDutyUsersType[]) => void,
   setTasks?: (tasks: string[]) => void,
   device?: string
 ): Promise<User[] | undefined> {
   const users: APIUsers[] = await fetchWithErrorHandler(USER_URL, {
     method: "GET",
   });
-  setOnDutyUsers(
-    users
-      .filter(({ onDuty }) => onDuty)
-      .map(({ id, name, onDuty, device }) => {
-        return {
-          id: id["N"],
-          name: name["S"],
-          device: device["S"],
-          onDuty: onDuty["S"],
-        };
-      })
-  );
+  if (setOnDutyUsers != null)
+    setOnDutyUsers(
+      users
+        .filter(({ onDuty }) => onDuty)
+        .map(({ id, name, onDuty, device }) => {
+          return {
+            id: id["N"],
+            name: name["S"],
+            device: device["S"],
+            onDuty: onDuty["S"],
+          };
+        })
+    );
 
   if (setTasks != null)
     setTasks(

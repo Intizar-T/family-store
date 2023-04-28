@@ -34,6 +34,9 @@ enum ACTIONS {
   REMOVE_DISLIKE = "removeDislike",
 }
 
+const LIKE_LIMIT = 3;
+const DISLIKE_LIMIT = 3;
+
 export default function BuyVoteList() {
   const { products, setProducts } = useContext(ProductContext);
   const { user } = useContext(UserContext);
@@ -167,14 +170,35 @@ export default function BuyVoteList() {
                                     return pr;
                                   })
                                 );
-                                await fetchWithErrorHandler(PRODUCTS_URL, {
-                                  method: "PUT",
-                                  body: JSON.stringify({
-                                    id: product.id,
-                                    userId: user.id,
-                                    action: ACTIONS.ADD_LIKE,
-                                  }),
-                                });
+                                if (product.likes.length >= LIKE_LIMIT) {
+                                  toggle(true);
+                                  await fetchWithErrorHandler(PRODUCTS_URL, {
+                                    method: "PUT",
+                                    body: JSON.stringify({
+                                      id: product.id.toString(),
+                                      buyStatus: buyStatusList.BUY,
+                                    }),
+                                  });
+                                  setProducts(await FetchProductList());
+                                  toggle(false);
+                                  toggleMessage(
+                                    true,
+                                    "success",
+                                    `Opshi like sany ${LIKE_LIMIT} yetdi we produkt "Almaly" lista otirildi`
+                                  );
+                                  setTimeout(() => {
+                                    toggleMessage(false);
+                                  }, 3000);
+                                } else {
+                                  await fetchWithErrorHandler(PRODUCTS_URL, {
+                                    method: "PUT",
+                                    body: JSON.stringify({
+                                      id: product.id,
+                                      userId: user.id,
+                                      action: ACTIONS.ADD_LIKE,
+                                    }),
+                                  });
+                                }
                               }
 
                               if (productIsLiked) {
@@ -206,6 +230,7 @@ export default function BuyVoteList() {
                               }
                             }
                           } catch (error) {
+                            toggle(false);
                             toggleMessage(true, "error", "Like koyup bolmady");
                             setTimeout(() => {
                               toggleMessage(false);
@@ -237,14 +262,34 @@ export default function BuyVoteList() {
                                     return pr;
                                   })
                                 );
-                                await fetchWithErrorHandler(PRODUCTS_URL, {
-                                  method: "PUT",
-                                  body: JSON.stringify({
-                                    id: product.id,
-                                    userId: user.id,
-                                    action: ACTIONS.ADD_DISLIKE,
-                                  }),
-                                });
+                                if (product.dislikes.length >= DISLIKE_LIMIT) {
+                                  toggle(true);
+                                  await fetch(
+                                    `${PRODUCTS_URL}?id=${product.id}`,
+                                    {
+                                      method: "DELETE",
+                                    }
+                                  );
+                                  setProducts(await FetchProductList());
+                                  toggle(false);
+                                  toggleMessage(
+                                    true,
+                                    "success",
+                                    `Opshi like sany ${DISLIKE_LIMIT} yetdi we produkt udalit edildi :(`
+                                  );
+                                  setTimeout(() => {
+                                    toggleMessage(false);
+                                  }, 3000);
+                                } else {
+                                  await fetchWithErrorHandler(PRODUCTS_URL, {
+                                    method: "PUT",
+                                    body: JSON.stringify({
+                                      id: product.id,
+                                      userId: user.id,
+                                      action: ACTIONS.ADD_DISLIKE,
+                                    }),
+                                  });
+                                }
                               }
                               if (productIsDisliked) {
                                 const userIndex = product.dislikes.indexOf(
@@ -271,6 +316,7 @@ export default function BuyVoteList() {
                               }
                             }
                           } catch (error) {
+                            toggle(false);
                             toggleMessage(
                               true,
                               "error",

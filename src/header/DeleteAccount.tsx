@@ -16,9 +16,7 @@ export default function DeleteAccount({ handleClose }: DeleteAccountProps) {
   const [Message, toggleMessage] = useMessage();
   return (
     <Dialog open={true} keepMounted onClose={handleClose}>
-      <DialogTitle sx={{ textAlign: "center" }}>
-        Koshan hamma produtkalarynam ocadi. Tocno ocurjakmy?
-      </DialogTitle>
+      <DialogTitle sx={{ textAlign: "center" }}>Tocno ocurjakmy?</DialogTitle>
       <DialogContent sx={{ display: "flex", justifyContent: "space-evenly" }}>
         <Button sx={{ width: 30 }} onClick={handleClose}>
           Yok
@@ -26,22 +24,32 @@ export default function DeleteAccount({ handleClose }: DeleteAccountProps) {
         <Button
           sx={{ width: 30 }}
           onClick={async () => {
-            toggle(true);
-            const { success }: { success: boolean } =
+            try {
+              if (user == null) return;
+              toggle(true);
               await fetchWithErrorHandler(USER_URL, {
                 method: "DELETE",
                 body: JSON.stringify({
-                  device: user?.device,
-                  name: user?.name,
+                  device: user.device,
+                  name: user.name,
                 }),
               });
-            if (success) {
               toggleMessage(true, "success", "Udalit edildi");
               setUser(null);
               toggle(false);
               setTimeout(() => {
                 toggleMessage(false);
                 handleClose();
+              }, 1000);
+            } catch (error) {
+              toggle(false);
+              toggleMessage(
+                true,
+                "error",
+                "Uytgadip bolmady. Tazaldan barlan ya Intizar bn habarlashyn"
+              );
+              setTimeout(() => {
+                toggleMessage(false);
               }, 1000);
             }
           }}

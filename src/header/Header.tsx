@@ -1,7 +1,6 @@
 import { Settings } from "@mui/icons-material";
 import {
   Box,
-  Typography,
   Tooltip,
   IconButton,
   Avatar,
@@ -68,7 +67,7 @@ export default function Header() {
           </IconButton>
         </Tooltip>
       </Box>
-      {/* <Menu
+      <Menu
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -131,7 +130,7 @@ export default function Header() {
       )}
       {editAccountModal && (
         <EditAccount handleClose={() => showEditAccountModal(false)} />
-      )} */}
+      )}
       <Loading />
     </React.Fragment>
   );

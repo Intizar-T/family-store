@@ -26,6 +26,8 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import EditIcon from "@mui/icons-material/Edit";
 import EditProduct from "./EditProduct";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import BaseDialog from "../helpers/BaseDialog";
+import { User } from "../App";
 
 enum ACTIONS {
   ADD_LIKE = "addLike",
@@ -44,6 +46,15 @@ export default function BuyVoteList() {
   const [Message, toggleMessage] = useMessage();
   const [editModal, showEditModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Products>();
+  const [likesLimitDialog, setLikesLimitDialog] = useState<{
+    show: boolean;
+    user: User | null;
+    product: Products | null;
+  }>({ show: false, user: null, product: null });
+  const [dislikesLimitDialog, setDislikesLimitDialog] = useState<{
+    show: boolean;
+    productId: number | null;
+  }>({ show: false, productId: null });
 
   return (
     <List
@@ -163,33 +174,21 @@ export default function BuyVoteList() {
                             if (user == null) return;
                             if (!productIsDisliked) {
                               if (!productIsLiked) {
-                                setProducts(
-                                  products.map((pr) => {
-                                    if (product.id === pr.id)
-                                      pr.likes.push(user.id);
-                                    return pr;
-                                  })
-                                );
-                                if (product.likes.length >= LIKE_LIMIT) {
-                                  toggle(true);
-                                  await fetchWithErrorHandler(PRODUCTS_URL, {
-                                    method: "PUT",
-                                    body: JSON.stringify({
-                                      id: product.id.toString(),
-                                      buyStatus: buyStatusList.BUY,
-                                    }),
+                                const totalLikes = product.likes.length;
+                                if (totalLikes + 1 >= LIKE_LIMIT) {
+                                  setLikesLimitDialog({
+                                    show: true,
+                                    user,
+                                    product,
                                   });
-                                  setProducts(await FetchProductList());
-                                  toggle(false);
-                                  toggleMessage(
-                                    true,
-                                    "success",
-                                    `Opshi like sany ${LIKE_LIMIT} yetdi we produkt "Almaly" lista otirildi`
-                                  );
-                                  setTimeout(() => {
-                                    toggleMessage(false);
-                                  }, 3000);
                                 } else {
+                                  setProducts(
+                                    products.map((pr) => {
+                                      if (product.id === pr.id)
+                                        pr.likes.push(user.id);
+                                      return pr;
+                                    })
+                                  );
                                   await fetchWithErrorHandler(PRODUCTS_URL, {
                                     method: "PUT",
                                     body: JSON.stringify({
@@ -199,9 +198,7 @@ export default function BuyVoteList() {
                                     }),
                                   });
                                 }
-                              }
-
-                              if (productIsLiked) {
+                              } else if (productIsLiked) {
                                 const userIndex = product.likes.indexOf(
                                   user.id
                                 );
@@ -255,6 +252,7 @@ export default function BuyVoteList() {
                           try {
                             if (!productIsLiked) {
                               if (!productIsDisliked) {
+                                const totalDislikes = product.dislikes.length;
                                 setProducts(
                                   products.map((pr) => {
                                     if (product.id === pr.id)
@@ -262,24 +260,11 @@ export default function BuyVoteList() {
                                     return pr;
                                   })
                                 );
-                                if (product.dislikes.length >= DISLIKE_LIMIT) {
-                                  toggle(true);
-                                  await fetch(
-                                    `${PRODUCTS_URL}?id=${product.id}`,
-                                    {
-                                      method: "DELETE",
-                                    }
-                                  );
-                                  setProducts(await FetchProductList());
-                                  toggle(false);
-                                  toggleMessage(
-                                    true,
-                                    "success",
-                                    `Opshi like sany ${DISLIKE_LIMIT} yetdi we produkt udalit edildi :(`
-                                  );
-                                  setTimeout(() => {
-                                    toggleMessage(false);
-                                  }, 3000);
+                                if (totalDislikes + 1 >= DISLIKE_LIMIT) {
+                                  setDislikesLimitDialog({
+                                    show: true,
+                                    productId: product.id,
+                                  });
                                 } else {
                                   await fetchWithErrorHandler(PRODUCTS_URL, {
                                     method: "PUT",
@@ -353,6 +338,60 @@ export default function BuyVoteList() {
           showBuyCheckBox={false}
           product={selectedProduct}
           showEditModal={showEditModal}
+        />
+      )}
+      {likesLimitDialog.show && (
+        <BaseDialog
+          handleClose={() =>
+            setLikesLimitDialog({
+              show: false,
+              user: null,
+              product: null,
+            })
+          }
+          handleConfirm={async () => {
+            const { user: passedUser, product } = likesLimitDialog;
+            if (passedUser == null || product == null) return;
+            setProducts(
+              products.map((pr) => {
+                if (product.id === pr.id) pr.likes.push(passedUser.id);
+                return pr;
+              })
+            );
+            await fetchWithErrorHandler(PRODUCTS_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                id: product.id.toString(),
+                buyStatus: buyStatusList.BUY,
+              }),
+            });
+            setProducts(await FetchProductList());
+          }}
+          dialogText='"Almaly" lista otadi, in sonki like koyjakmy?'
+          successMessage={`Opshi like sany ${LIKE_LIMIT} yetdi we produkt "Almaly" lista otirildi`}
+          errorMessage="Like koyup bolmady"
+          modalKeepAliveTime={3000}
+        />
+      )}
+      {dislikesLimitDialog.show && (
+        <BaseDialog
+          handleClose={() =>
+            setDislikesLimitDialog({
+              show: false,
+              productId: null,
+            })
+          }
+          handleConfirm={async () => {
+            if (dislikesLimitDialog.productId == null) return;
+            await fetch(`${PRODUCTS_URL}?id=${dislikesLimitDialog.productId}`, {
+              method: "DELETE",
+            });
+            setProducts(await FetchProductList());
+          }}
+          dialogText="Produkt udalit ediladi, in sonki dislike koyjakmy?"
+          successMessage={`Opshi dislike sany ${DISLIKE_LIMIT} yetdi we produkt udalit edildi`}
+          errorMessage="Dislike koyup bolmady"
+          modalKeepAliveTime={3000}
         />
       )}
       <Loading />

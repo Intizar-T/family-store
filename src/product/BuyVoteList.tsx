@@ -97,7 +97,7 @@ export default function BuyVoteList() {
                   >
                     <EditIcon />
                   </IconButton>
-                  <IconButton
+                  {/* <IconButton
                     sx={{ mr: 1 }}
                     color="error"
                     onClick={async () => {
@@ -126,7 +126,7 @@ export default function BuyVoteList() {
                     }}
                   >
                     <DeleteIcon />
-                  </IconButton>
+                  </IconButton> */}
                 </React.Fragment>
               }
               sx={{ width: "100%", borderBottom: 1, borderColor: "divider" }}

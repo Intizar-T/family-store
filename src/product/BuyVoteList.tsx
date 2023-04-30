@@ -175,17 +175,6 @@ export default function BuyVoteList() {
                         onClick={async () => {
                           try {
                             if (user == null) return;
-                            if (
-                              readyState === ReadyState.OPEN &&
-                              sendMessage != null
-                            ) {
-                              sendMessage(
-                                JSON.stringify({
-                                  action: "store",
-                                  message: WEBSOCKET_MESSAGE.update,
-                                })
-                              );
-                            }
                             if (!productIsDisliked) {
                               if (!productIsLiked) {
                                 const totalLikes = product.likes.length;
@@ -238,6 +227,17 @@ export default function BuyVoteList() {
                                   }),
                                 });
                               }
+                              if (
+                                readyState === ReadyState.OPEN &&
+                                sendMessage != null
+                              ) {
+                                sendMessage(
+                                  JSON.stringify({
+                                    action: "store",
+                                    message: WEBSOCKET_MESSAGE.update,
+                                  })
+                                );
+                              }
                             }
                           } catch (error) {
                             toggle(false);
@@ -263,17 +263,6 @@ export default function BuyVoteList() {
                         color="error"
                         onClick={async () => {
                           try {
-                            if (
-                              readyState === ReadyState.OPEN &&
-                              sendMessage != null
-                            ) {
-                              sendMessage(
-                                JSON.stringify({
-                                  action: "store",
-                                  message: WEBSOCKET_MESSAGE.update,
-                                })
-                              );
-                            }
                             if (!productIsLiked) {
                               if (!productIsDisliked) {
                                 const totalDislikes = product.dislikes.length;
@@ -300,8 +289,7 @@ export default function BuyVoteList() {
                                     }),
                                   });
                                 }
-                              }
-                              if (productIsDisliked) {
+                              } else if (productIsDisliked) {
                                 const userIndex = product.dislikes.indexOf(
                                   user.id
                                 );
@@ -323,6 +311,17 @@ export default function BuyVoteList() {
                                     userIndex,
                                   }),
                                 });
+                              }
+                              if (
+                                readyState === ReadyState.OPEN &&
+                                sendMessage != null
+                              ) {
+                                sendMessage(
+                                  JSON.stringify({
+                                    action: "store",
+                                    message: WEBSOCKET_MESSAGE.update,
+                                  })
+                                );
                               }
                             }
                           } catch (error) {

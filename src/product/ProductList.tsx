@@ -74,9 +74,7 @@ export default function ProductList() {
   useEffect(() => {
     if (lastMessage == null) return;
     (async () => {
-      console.log(lastMessage);
       const message = JSON.parse(lastMessage.data)["message"];
-      console.log(message);
       if (message != null && message === WEBSOCKET_MESSAGE.update) {
         setProducts(await FetchProductList());
       }

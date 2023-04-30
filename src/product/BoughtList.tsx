@@ -18,18 +18,20 @@ import ProductContext from "./ProductContext";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import useMessage from "../helpers/useMessage";
 import { buyStatusList } from "./ProductList";
+import { WEBSOCKET_MESSAGE } from "../App";
+import { ReadyState } from "react-use-websocket";
+import WebSocketContext from "../WebSocketContext";
 
 export default function BoughtList() {
   const { products, setProducts } = useContext(ProductContext);
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
+  const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
 
   return (
     <List
       sx={{
         bgcolor: "background.paper",
-        // height: "100%",
-        // width: "100%",
       }}
     >
       {products
@@ -53,6 +55,17 @@ export default function BoughtList() {
                           boughtUserName: "",
                         }),
                       });
+                      if (
+                        readyState === ReadyState.OPEN &&
+                        sendMessage != null
+                      ) {
+                        sendMessage(
+                          JSON.stringify({
+                            action: "store",
+                            message: WEBSOCKET_MESSAGE.update,
+                          })
+                        );
+                      }
                       setProducts(await FetchProductList());
                       toggle(false);
                       toggleMessage(
@@ -87,6 +100,17 @@ export default function BoughtList() {
                       await fetch(`${PRODUCTS_URL}?id=${product.id}`, {
                         method: "DELETE",
                       });
+                      if (
+                        readyState === ReadyState.OPEN &&
+                        sendMessage != null
+                      ) {
+                        sendMessage(
+                          JSON.stringify({
+                            action: "store",
+                            message: WEBSOCKET_MESSAGE.update,
+                          })
+                        );
+                      }
                       setProducts(await FetchProductList());
                       toggle(false);
                       toggleMessage(true, "success", "produkt udalit edildi");

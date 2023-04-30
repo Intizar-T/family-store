@@ -24,6 +24,9 @@ import UserContext from "../UserContext";
 import useMessage from "../helpers/useMessage";
 import { Products, buyStatusList } from "./ProductList";
 import { Store } from "./ToBuyList";
+import WebSocketContext from "../WebSocketContext";
+import { WEBSOCKET_MESSAGE } from "../App";
+import { ReadyState } from "react-use-websocket";
 
 interface EditProductProps {
   showEditModal: (show: boolean) => void;
@@ -47,6 +50,8 @@ export default function EditProduct({
   const [editedUnit, setEditedUnit] = useState(product.unit || "");
   const [editedStore, setEditedStore] = useState(product.store);
   const [editedToBuy, setEditedToBuy] = useState(product.buyStatus === "buy");
+  const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
+
   return (
     <Dialog
       open={true}
@@ -201,6 +206,14 @@ export default function EditProduct({
                     : buyStatusList.BUY_VOTE,
                 }),
               });
+              if (readyState === ReadyState.OPEN && sendMessage != null) {
+                sendMessage(
+                  JSON.stringify({
+                    action: "store",
+                    message: WEBSOCKET_MESSAGE.update,
+                  })
+                );
+              }
               setProducts(await FetchProductList());
               toggleMessage(true, "success", "produkt uytgadildi");
               toggle(false);

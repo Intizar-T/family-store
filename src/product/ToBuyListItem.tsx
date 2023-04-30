@@ -18,6 +18,9 @@ import ProductContext from "./ProductContext";
 import ImageIcon from "@mui/icons-material/Image";
 import CheckIcon from "@mui/icons-material/Check";
 import { Products, buyStatusList } from "./ProductList";
+import { WEBSOCKET_MESSAGE } from "../App";
+import { ReadyState } from "react-use-websocket";
+import WebSocketContext from "../WebSocketContext";
 
 interface ToBuyListItemProps {
   product: Products;
@@ -36,6 +39,7 @@ export default function ToBuyListItem({
 }: ToBuyListItemProps) {
   const { user } = useContext(UserContext);
   const { setProducts } = useContext(ProductContext);
+  const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
   return (
     <ListItem
       secondaryAction={
@@ -65,6 +69,14 @@ export default function ToBuyListItem({
                     boughtUserName: user.name,
                   }),
                 });
+                if (readyState === ReadyState.OPEN && sendMessage != null) {
+                  sendMessage(
+                    JSON.stringify({
+                      action: "store",
+                      message: WEBSOCKET_MESSAGE.update,
+                    })
+                  );
+                }
                 setProducts(await FetchProductList());
                 toggle(false);
                 toggleMessage(

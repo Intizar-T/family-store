@@ -9,6 +9,9 @@ import Header from "./header/Header";
 import OnDutyContext from "./OnDutyContext";
 import TasksContext from "./TasksContext";
 import { registerServiceWorker } from "./helpers/notificationSubscription";
+import { WEBSOCKET } from "./api/APIs";
+import useWebSocket, { ReadyState } from "react-use-websocket";
+import WebsocketContext from "./WebSocketContext";
 
 export type User = {
   id: string;
@@ -24,6 +27,19 @@ export type OnDutyUsersType = {
   onDuty: "No" | "Pending" | string;
 };
 
+export const websocketConnectionStatus = {
+  [ReadyState.CLOSED]: "Closed",
+  [ReadyState.CLOSING]: "Closing",
+  [ReadyState.CONNECTING]: "Connecting",
+  [ReadyState.OPEN]: "Open",
+  [ReadyState.UNINSTANTIATED]: "Uninstantiated",
+};
+
+export const WEBSOCKET_MESSAGE = {
+  postProduct: "POST_PRODUCT",
+  update: "UPDATE",
+};
+
 function App() {
   const [user, setUser] = useState<User>(null);
   const [loginModal, showLoginModal] = useState(false);
@@ -34,6 +50,7 @@ function App() {
   );
   const [onDutyUsers, setOnDutyUsers] = useState<OnDutyUsersType[]>([]);
   const [tasks, setTasks] = useState<string[]>([]);
+  const { lastMessage, readyState, sendMessage } = useWebSocket(WEBSOCKET);
 
   useEffect(() => {
     if (user != null) return;
@@ -66,45 +83,51 @@ function App() {
     };
   }, [tasks]);
 
+  const websocketState = useMemo(() => {
+    return { lastMessage, readyState, sendMessage };
+  }, [lastMessage, readyState, sendMessage]);
+
   return (
     <OnDutyContext.Provider value={onDutyUserState}>
       <UserContext.Provider value={userState}>
         <TasksContext.Provider value={tasksState}>
-          <Grid
-            container
-            sx={{
-              height: "100%",
-              width: "100%",
-              position: "relative",
-            }}
-          >
+          <WebsocketContext.Provider value={websocketState}>
             <Grid
-              item
+              container
               sx={{
+                height: "100%",
                 width: "100%",
-                borderBottom: 1,
-                borderColor: "divider",
-                position: "absolute",
-                height: 60,
+                position: "relative",
               }}
             >
-              <Header />
+              <Grid
+                item
+                sx={{
+                  width: "100%",
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  position: "absolute",
+                  height: 60,
+                }}
+              >
+                <Header />
+              </Grid>
+              <Grid
+                item
+                sx={{
+                  width: "100%",
+                  height: "calc(100% - 60px)",
+                  position: "absolute",
+                  top: 60,
+                }}
+              >
+                <ProductList />
+              </Grid>
+              {loginModal && (
+                <Login device={device} showLoginModal={showLoginModal} />
+              )}
             </Grid>
-            <Grid
-              item
-              sx={{
-                width: "100%",
-                height: "calc(100% - 60px)",
-                position: "absolute",
-                top: 60,
-              }}
-            >
-              <ProductList />
-            </Grid>
-            {loginModal && (
-              <Login device={device} showLoginModal={showLoginModal} />
-            )}
-          </Grid>
+          </WebsocketContext.Provider>
         </TasksContext.Provider>
       </UserContext.Provider>
     </OnDutyContext.Provider>

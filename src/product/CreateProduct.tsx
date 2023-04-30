@@ -23,6 +23,9 @@ import useMessage from "../helpers/useMessage";
 import { Store } from "./ToBuyList";
 import { Checkbox } from "@mui/material";
 import { buyStatusList } from "./ProductList";
+import { WEBSOCKET_MESSAGE } from "../App";
+import { ReadyState } from "react-use-websocket";
+import WebSocketContext from "../WebSocketContext";
 
 interface CreateProductProps {
   newProduct: string;
@@ -49,6 +52,8 @@ export default function CreateProduct({
   const [Message, toggleMessage] = useMessage();
   const [store, setStore] = useState<Store>("pyatorychka");
   const [toBuy, setToBuy] = useState(true);
+  const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
+
   return (
     <Dialog
       open={true}
@@ -201,6 +206,14 @@ export default function CreateProduct({
                         newProductId: id,
                       }),
                     });
+                    if (readyState === ReadyState.OPEN && sendMessage != null) {
+                      sendMessage(
+                        JSON.stringify({
+                          action: "store",
+                          message: WEBSOCKET_MESSAGE.update,
+                        })
+                      );
+                    }
                     await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
                       method: "POST",
                       body: JSON.stringify({

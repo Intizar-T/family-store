@@ -6,6 +6,9 @@ import FetchProductList from "../product/FetchProductList";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
 import { buyStatusList } from "../product/ProductList";
+import { WEBSOCKET_MESSAGE } from "../App";
+import { ReadyState } from "react-use-websocket";
+import WebSocketContext from "../WebSocketContext";
 
 export default function BoughtPanelFooter() {
   const { products, setProducts } = useContext(ProductContext);
@@ -14,6 +17,8 @@ export default function BoughtPanelFooter() {
   const boughtProductLength = products.filter(
     ({ buyStatus }) => buyStatus === buyStatusList.BOUGHT
   ).length;
+  const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
+
   return (
     <div
       style={{
@@ -44,6 +49,14 @@ export default function BoughtPanelFooter() {
                   });
                 })
             );
+            if (readyState === ReadyState.OPEN && sendMessage != null) {
+              sendMessage(
+                JSON.stringify({
+                  action: "store",
+                  message: WEBSOCKET_MESSAGE.update,
+                })
+              );
+            }
             setProducts(await FetchProductList());
             toggle(false);
             toggleMessage(true, "success", "produktlar udalit edildi");

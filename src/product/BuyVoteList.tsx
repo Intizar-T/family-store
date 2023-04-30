@@ -27,6 +27,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditProduct from "./EditProduct";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import BaseDialog from "../helpers/BaseDialog";
+import WebSocketContext from "../WebSocketContext";
+import { ReadyState } from "react-use-websocket";
+import { WEBSOCKET_MESSAGE } from "../App";
 
 enum ACTIONS {
   ADD_LIKE = "addLike",
@@ -54,6 +57,7 @@ export default function BuyVoteList() {
     productName: string;
     productId: number | null;
   }>({ show: false, productName: "", productId: null });
+  const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
 
   return (
     <List
@@ -223,6 +227,17 @@ export default function BuyVoteList() {
                                   }),
                                 });
                               }
+                              if (
+                                readyState === ReadyState.OPEN &&
+                                sendMessage != null
+                              ) {
+                                sendMessage(
+                                  JSON.stringify({
+                                    action: "store",
+                                    message: WEBSOCKET_MESSAGE.update,
+                                  })
+                                );
+                              }
                             }
                           } catch (error) {
                             toggle(false);
@@ -274,8 +289,7 @@ export default function BuyVoteList() {
                                     }),
                                   });
                                 }
-                              }
-                              if (productIsDisliked) {
+                              } else if (productIsDisliked) {
                                 const userIndex = product.dislikes.indexOf(
                                   user.id
                                 );
@@ -297,6 +311,17 @@ export default function BuyVoteList() {
                                     userIndex,
                                   }),
                                 });
+                              }
+                              if (
+                                readyState === ReadyState.OPEN &&
+                                sendMessage != null
+                              ) {
+                                sendMessage(
+                                  JSON.stringify({
+                                    action: "store",
+                                    message: WEBSOCKET_MESSAGE.update,
+                                  })
+                                );
                               }
                             }
                           } catch (error) {

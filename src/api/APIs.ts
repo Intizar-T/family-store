@@ -5,6 +5,8 @@ export const BASE_URL =
 export const PRODUCTS_URL = `${BASE_URL}/product`;
 export const USER_URL = `${BASE_URL}/user`;
 export const SUBSCRIPTION_URL = `${BASE_URL}/subscription`;
+export const WEBSOCKET =
+  "wss://ghv77kuj4b.execute-api.ap-northeast-2.amazonaws.com/dev";
 export const SEND_NOTIFICATION_URL =
   "https://family-store-backend.onrender.com/push";
 // "http://localhost:8000/push";

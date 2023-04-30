@@ -53,18 +53,14 @@ export default function Header() {
           Tashovs' Store
         </Button>
         <Tooltip title="Account settings">
-          <IconButton
+          <Button
             onClick={handleClick}
             size="small"
             sx={{ ml: 2 }}
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
+            variant="outlined"
           >
-            <Avatar sx={{ width: 32, height: 32 }}>
-              {user != null ? user.name[0].toUpperCase() : "P"}
-            </Avatar>
-          </IconButton>
+            {user?.name || "Profile"}
+          </Button>
         </Tooltip>
       </Box>
       <Menu

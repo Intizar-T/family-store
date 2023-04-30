@@ -10,7 +10,7 @@ import {
   Grid,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
-import { PRODUCTS_URL } from "../api/APIs";
+import { PRODUCTS_URL, SEND_NOTIFICATION_URL } from "../api/APIs";
 import ImageIcon from "@mui/icons-material/Image";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useLoading from "../helpers/useLoading";
@@ -27,7 +27,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditProduct from "./EditProduct";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import BaseDialog from "../helpers/BaseDialog";
-import { User } from "../App";
 
 enum ACTIONS {
   ADD_LIKE = "addLike",
@@ -48,13 +47,13 @@ export default function BuyVoteList() {
   const [selectedProduct, setSelectedProduct] = useState<Products>();
   const [likesLimitDialog, setLikesLimitDialog] = useState<{
     show: boolean;
-    user: User | null;
     product: Products | null;
-  }>({ show: false, user: null, product: null });
+  }>({ show: false, product: null });
   const [dislikesLimitDialog, setDislikesLimitDialog] = useState<{
     show: boolean;
+    productName: string;
     productId: number | null;
-  }>({ show: false, productId: null });
+  }>({ show: false, productName: "", productId: null });
 
   return (
     <List
@@ -178,7 +177,6 @@ export default function BuyVoteList() {
                                 if (totalLikes + 1 >= LIKE_LIMIT) {
                                   setLikesLimitDialog({
                                     show: true,
-                                    user,
                                     product,
                                   });
                                 } else {
@@ -263,6 +261,7 @@ export default function BuyVoteList() {
                                 if (totalDislikes + 1 >= DISLIKE_LIMIT) {
                                   setDislikesLimitDialog({
                                     show: true,
+                                    productName: product.name,
                                     productId: product.id,
                                   });
                                 } else {
@@ -345,16 +344,15 @@ export default function BuyVoteList() {
           handleClose={() =>
             setLikesLimitDialog({
               show: false,
-              user: null,
               product: null,
             })
           }
           handleConfirm={async () => {
-            const { user: passedUser, product } = likesLimitDialog;
-            if (passedUser == null || product == null) return;
+            const { product } = likesLimitDialog;
+            if (user == null || product == null) return;
             setProducts(
               products.map((pr) => {
-                if (product.id === pr.id) pr.likes.push(passedUser.id);
+                if (product.id === pr.id) pr.likes.push(user.id);
                 return pr;
               })
             );
@@ -363,6 +361,13 @@ export default function BuyVoteList() {
               body: JSON.stringify({
                 id: product.id.toString(),
                 buyStatus: buyStatusList.BUY,
+              }),
+            });
+            await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+              method: "POST",
+              body: JSON.stringify({
+                userId: user.id,
+                message: `${product.name} ucin golosawaniya kutardy. "Almaly" lista oturmali degan netijaga gelindi`,
               }),
             });
             setProducts(await FetchProductList());
@@ -379,12 +384,21 @@ export default function BuyVoteList() {
             setDislikesLimitDialog({
               show: false,
               productId: null,
+              productName: "",
             })
           }
           handleConfirm={async () => {
-            if (dislikesLimitDialog.productId == null) return;
-            await fetch(`${PRODUCTS_URL}?id=${dislikesLimitDialog.productId}`, {
+            const { productId, productName } = dislikesLimitDialog;
+            if (productId == null || user == null) return;
+            await fetch(`${PRODUCTS_URL}?id=${productId}`, {
               method: "DELETE",
+            });
+            await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+              method: "POST",
+              body: JSON.stringify({
+                userId: user.id,
+                message: `${productName} ucin golosawaniya kutardy. Udalit etmali degan netijaga gelindi`,
+              }),
             });
             setProducts(await FetchProductList());
           }}

@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Grid } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -17,6 +18,9 @@ import BuyVoteList from "./BuyVoteList";
 import BuyVotePanelFooter from "../footers/BuyVotePanelFooter";
 import Duty from "../duty/Duty";
 import DutyFooter from "../footers/DutyFooter";
+import { WEBSOCKET } from "../api/APIs";
+import WebSocketContext from "../WebSocketContext";
+import { WEBSOCKET_MESSAGE } from "../App";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote" | "duty";
 export interface Products {
@@ -57,6 +61,7 @@ export default function ProductList() {
   const [tabValue, setTabValue] = useState<TabValueTypes>("buy");
   const [Loading, toggle] = useLoading();
   const [createModal, showCreateModal] = useState(false);
+  const { lastMessage } = useContext(WebSocketContext);
 
   useEffect(() => {
     (async () => {
@@ -64,8 +69,19 @@ export default function ProductList() {
       setProducts(await FetchProductList());
       toggle(false);
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (lastMessage == null) return;
+    (async () => {
+      console.log(lastMessage);
+      const message = JSON.parse(lastMessage.data)["message"];
+      console.log(message);
+      if (message != null && message === WEBSOCKET_MESSAGE.update) {
+        setProducts(await FetchProductList());
+      }
+    })();
+  }, [lastMessage]);
 
   const productState = useMemo(() => {
     return { products, setProducts };

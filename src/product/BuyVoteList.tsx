@@ -27,6 +27,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditProduct from "./EditProduct";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import BaseDialog from "../helpers/BaseDialog";
+import WebSocketContext from "../WebSocketContext";
+import { ReadyState } from "react-use-websocket";
+import { WEBSOCKET_MESSAGE } from "../App";
 
 enum ACTIONS {
   ADD_LIKE = "addLike",
@@ -54,6 +57,7 @@ export default function BuyVoteList() {
     productName: string;
     productId: number | null;
   }>({ show: false, productName: "", productId: null });
+  const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
 
   return (
     <List
@@ -171,6 +175,17 @@ export default function BuyVoteList() {
                         onClick={async () => {
                           try {
                             if (user == null) return;
+                            if (
+                              readyState === ReadyState.OPEN &&
+                              sendMessage != null
+                            ) {
+                              sendMessage(
+                                JSON.stringify({
+                                  action: "store",
+                                  message: WEBSOCKET_MESSAGE.update,
+                                })
+                              );
+                            }
                             if (!productIsDisliked) {
                               if (!productIsLiked) {
                                 const totalLikes = product.likes.length;
@@ -248,6 +263,17 @@ export default function BuyVoteList() {
                         color="error"
                         onClick={async () => {
                           try {
+                            if (
+                              readyState === ReadyState.OPEN &&
+                              sendMessage != null
+                            ) {
+                              sendMessage(
+                                JSON.stringify({
+                                  action: "store",
+                                  message: WEBSOCKET_MESSAGE.update,
+                                })
+                              );
+                            }
                             if (!productIsLiked) {
                               if (!productIsDisliked) {
                                 const totalDislikes = product.dislikes.length;

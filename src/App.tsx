@@ -6,12 +6,13 @@ import Login from "./login/Login";
 import ProductList from "./product/ProductList";
 import UserContext from "./context/UserContext";
 import Header from "./header/Header";
-import OnDutyContext from "./context/OnDutyContext";
 import TasksContext from "./context/TasksContext";
 import { registerServiceWorker } from "./helpers/notificationSubscription";
 import { WEBSOCKET } from "./api/APIs";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import WebsocketContext from "./context/WebSocketContext";
+import OnGeneralDutyContext from "./context/OnGeneralDutyContext";
+import OnMealDutyContext from "./context/OnMealDutyContext";
 
 export type User = {
   id: string;
@@ -48,14 +49,22 @@ function App() {
     userAgent.indexOf("(") + 1,
     userAgent.indexOf(")")
   );
-  const [onDutyUsers, setOnDutyUsers] = useState<OnDutyUsersType[]>([]);
+  const [onGeneralDutyUsers, setOnGeneralDutyUsers] = useState<
+    OnDutyUsersType[]
+  >([]);
+  const [onMealDutyUsers, setOnMealDutyUsers] = useState<OnDutyUsersType[]>([]);
   const [tasks, setTasks] = useState<string[]>([]);
   const { lastMessage, readyState, sendMessage } = useWebSocket(WEBSOCKET);
 
   useEffect(() => {
     if (user != null) return;
     (async () => {
-      const res = await CheckUser(setOnDutyUsers, setTasks, device);
+      const res = await CheckUser(
+        setOnGeneralDutyUsers,
+        setTasks,
+        device,
+        setOnMealDutyUsers
+      );
       if (res == null) return;
       const users: User[] = await Promise.all(res);
       if (users.length !== 0) setUser(users[0]);
@@ -72,9 +81,13 @@ function App() {
     return { user, setUser };
   }, [user]);
 
-  const onDutyUserState = useMemo(() => {
-    return { onDutyUsers, setOnDutyUsers };
-  }, [onDutyUsers]);
+  const onGeneralDutyUserState = useMemo(() => {
+    return { onGeneralDutyUsers, setOnGeneralDutyUsers };
+  }, [onGeneralDutyUsers]);
+
+  const onMealDutyUserState = useMemo(() => {
+    return { onMealDutyUsers, setOnMealDutyUsers };
+  }, [onMealDutyUsers]);
 
   const tasksState = useMemo(() => {
     return {
@@ -88,49 +101,51 @@ function App() {
   }, [lastMessage, readyState, sendMessage]);
 
   return (
-    <OnDutyContext.Provider value={onDutyUserState}>
-      <UserContext.Provider value={userState}>
-        <TasksContext.Provider value={tasksState}>
-          <WebsocketContext.Provider value={websocketState}>
-            <Grid
-              container
-              sx={{
-                height: "100%",
-                width: "100%",
-                position: "relative",
-              }}
-            >
+    <UserContext.Provider value={userState}>
+      <TasksContext.Provider value={tasksState}>
+        <WebsocketContext.Provider value={websocketState}>
+          <OnGeneralDutyContext.Provider value={onGeneralDutyUserState}>
+            <OnMealDutyContext.Provider value={onMealDutyUserState}>
               <Grid
-                item
+                container
                 sx={{
+                  height: "100%",
                   width: "100%",
-                  borderBottom: 1,
-                  borderColor: "divider",
-                  position: "absolute",
-                  height: 60,
+                  position: "relative",
                 }}
               >
-                <Header />
+                <Grid
+                  item
+                  sx={{
+                    width: "100%",
+                    borderBottom: 1,
+                    borderColor: "divider",
+                    position: "absolute",
+                    height: 60,
+                  }}
+                >
+                  <Header />
+                </Grid>
+                <Grid
+                  item
+                  sx={{
+                    width: "100%",
+                    height: "calc(100% - 60px)",
+                    position: "absolute",
+                    top: 60,
+                  }}
+                >
+                  <ProductList />
+                </Grid>
+                {loginModal && (
+                  <Login device={device} showLoginModal={showLoginModal} />
+                )}
               </Grid>
-              <Grid
-                item
-                sx={{
-                  width: "100%",
-                  height: "calc(100% - 60px)",
-                  position: "absolute",
-                  top: 60,
-                }}
-              >
-                <ProductList />
-              </Grid>
-              {loginModal && (
-                <Login device={device} showLoginModal={showLoginModal} />
-              )}
-            </Grid>
-          </WebsocketContext.Provider>
-        </TasksContext.Provider>
-      </UserContext.Provider>
-    </OnDutyContext.Provider>
+            </OnMealDutyContext.Provider>
+          </OnGeneralDutyContext.Provider>
+        </WebsocketContext.Provider>
+      </TasksContext.Provider>
+    </UserContext.Provider>
   );
 }
 

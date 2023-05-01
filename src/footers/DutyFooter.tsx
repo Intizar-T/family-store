@@ -1,7 +1,7 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useContext, useState } from "react";
-import OnDutyContext from "../context/OnDutyContext";
-import UserContext from "../UserContext";
+import OnDutyContext from "../context/OnGeneralDutyContext";
+import UserContext from "../context/UserContext";
 import { SEND_NOTIFICATION_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
@@ -10,7 +10,8 @@ import useMessage from "../helpers/useMessage";
 type OnDutyStatusType = "onDuty" | "reqeustedChange" | "offDuty";
 
 export default function DutyFooter() {
-  const { onDutyUsers, setOnDutyUsers } = useContext(OnDutyContext);
+  const { onGeneralDutyUsers, setOnGeneralDutyUsers } =
+    useContext(OnDutyContext);
   const { user } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
@@ -25,7 +26,7 @@ export default function DutyFooter() {
     //   })[0] as OnDutyStatusType
   );
   const [dutyChangeRequestedUser, setDutyChangeRequestedUser] = useState(
-    onDutyUsers
+    onGeneralDutyUsers
       .filter(({ onDuty }) => onDuty === "Pending")
       .map(({ name }) => name)[0] || "Intizar"
   );

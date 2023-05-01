@@ -18,7 +18,10 @@ export type APIUsers = {
   subscription: {
     S: string;
   };
-  onDuty: {
+  onGeneralDuty: {
+    S: string;
+  };
+  onMealDuty: {
     S: string;
   };
   tasks: {
@@ -29,23 +32,38 @@ export type APIUsers = {
 };
 
 export default async function CheckUser(
-  setOnDutyUsers?: (users: OnDutyUsersType[]) => void,
+  setOnGeneralDutyUsers?: (users: OnDutyUsersType[]) => void,
   setTasks?: (tasks: string[]) => void,
-  device?: string
+  device?: string,
+  setOnMealDutyUsers?: (users: OnDutyUsersType[]) => void
 ): Promise<User[] | undefined> {
   const users: APIUsers[] = await fetchWithErrorHandler(USER_URL, {
     method: "GET",
   });
-  if (setOnDutyUsers != null)
-    setOnDutyUsers(
+  if (setOnGeneralDutyUsers != null)
+    setOnGeneralDutyUsers(
       users
-        .filter(({ onDuty }) => onDuty)
-        .map(({ id, name, onDuty, device }) => {
+        .filter(({ onGeneralDuty }) => onGeneralDuty)
+        .map(({ id, name, onGeneralDuty, device }) => {
           return {
             id: id["N"],
             name: name["S"],
             device: device["S"],
-            onDuty: onDuty["S"],
+            onDuty: onGeneralDuty["S"],
+          };
+        })
+    );
+
+  if (setOnMealDutyUsers != null)
+    setOnMealDutyUsers(
+      users
+        .filter(({ onMealDuty }) => onMealDuty)
+        .map(({ id, name, device, onMealDuty }) => {
+          return {
+            id: id.N,
+            name: name.S,
+            device: device.S,
+            onDuty: onMealDuty.S,
           };
         })
     );

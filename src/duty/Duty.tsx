@@ -20,9 +20,10 @@ import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
 import CheckIcon from "@mui/icons-material/Check";
-import OnDutyContext from "../context/OnDutyContext";
+import OnDutyContext from "../context/OnGeneralDutyContext";
 import { OnDutyUsersType } from "../App";
 import CheckUser from "../login/CheckUser";
+import OnMealDutyContext from "../context/OnMealDutyContext";
 
 // enum DutyList {
 //   INTIZAR = "Intizar",
@@ -124,7 +125,9 @@ const getUserOnDuty = (
 };
 
 export default function Duty() {
-  const { onDutyUsers, setOnDutyUsers } = useContext(OnDutyContext);
+  const { onGeneralDutyUsers, setOnGeneralDutyUsers } =
+    useContext(OnDutyContext);
+  const { onMealDutyUsers, setOnMealDutyUsers } = useContext(OnMealDutyContext);
   const { tasks, setTasks } = useContext(TasksContext);
   const { user } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
@@ -168,7 +171,7 @@ export default function Duty() {
           }}
         >
           <Typography>
-            Opshi Nobatchy: <b>{getUserOnDuty(onDutyUsers, todayISO)}</b>
+            Opshi Nobatchy: <b>{getUserOnDuty(onGeneralDutyUsers, todayISO)}</b>
           </Typography>
         </Grid>
         <Grid
@@ -182,7 +185,7 @@ export default function Duty() {
           }}
         >
           <Typography>
-            Nahar Nobatcy: <b>{MEAL_DUTY_LIST[new Date().getDate() % 3]}</b>
+            Nahar Nobatcy: <b>{getUserOnDuty(onMealDutyUsers, todayISO)}</b>
           </Typography>
         </Grid>
       </Grid>

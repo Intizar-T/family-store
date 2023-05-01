@@ -166,100 +166,118 @@ export default function Duty() {
             justifyContent: "flex-end",
             alignItems: "center",
           }}
-        >
-          <Typography>List uytgat:</Typography>
-          <Switch
-            checked={editMode}
-            onChange={(e) => {
-              setEditMode(
-                (e as React.ChangeEvent<HTMLInputElement>).target.checked
-              );
-            }}
-          />
-        </Grid>
+        ></Grid>
       </Grid>
       <Grid container>
-        {editMode && (
-          <Grid
-            container
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              paddingTop: 2,
-            }}
-          >
-            <Grid item xs={3}>
-              <Typography>Taza task:</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Task:"
-                variant="outlined"
-                multiline
-                value={newTask}
-                onChange={(e) => {
-                  setNewTask(
-                    (e as React.ChangeEvent<HTMLInputElement>).target.value
-                  );
-                }}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={3}
-              sx={{
-                paddingLeft: 2,
-              }}
-            >
-              <Button
-                onClick={async () => {
-                  try {
-                    if (user == null || newTask === "") return;
-                    toggle(true);
-                    await fetchWithErrorHandler(USER_URL, {
-                      method: "PUT",
-                      body: JSON.stringify({
-                        name: user.name,
-                        device: user.device,
-                        newTask,
-                      }),
-                    });
-                    setTasks(await getTasks());
-                    await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
-                      method: "POST",
-                      body: JSON.stringify({
-                        userId: user.id,
-                        message: `${user.name} nobatchylyk lista taza ish koshdy: ${newTask}`,
-                      }),
-                    });
-                    setNewTask("");
-                    toggle(false);
-                    toggleMessage(true, "success", "Taza task koshuldy");
-                    setTimeout(() => {
-                      toggleMessage(false);
-                    }, 1000);
-                  } catch (error) {
-                    toggle(false);
-                    toggleMessage(true, "error", "Taza task koshup bilmadim");
-                    setTimeout(() => {
-                      toggleMessage(false);
-                    }, 1500);
-                  }
-                }}
-              >
-                <CheckIcon />
-              </Button>
-            </Grid>
-          </Grid>
-        )}
         <Grid item xs={12} sx={{}}>
           <List>
-            <ListItem sx={{ p: 0, m: 0 }}>
-              <ListItemText>
-                <b>Etmali zatlar:</b>
-              </ListItemText>
-            </ListItem>
+            <Grid container>
+              <Grid item xs={6}>
+                <ListItemText>
+                  <b>Etmali zatlar:</b>
+                </ListItemText>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                }}
+              >
+                <Typography>List uytgat:</Typography>
+                <Switch
+                  checked={editMode}
+                  onChange={(e) => {
+                    setEditMode(
+                      (e as React.ChangeEvent<HTMLInputElement>).target.checked
+                    );
+                  }}
+                />
+              </Grid>
+              {editMode && (
+                <Grid
+                  container
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingY: 1,
+                  }}
+                >
+                  <Grid item xs={3}>
+                    <Typography>Taza task:</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Task:"
+                      variant="outlined"
+                      size="small"
+                      multiline
+                      value={newTask}
+                      onChange={(e) => {
+                        setNewTask(
+                          (e as React.ChangeEvent<HTMLInputElement>).target
+                            .value
+                        );
+                      }}
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={3}
+                    sx={{
+                      paddingLeft: 2,
+                    }}
+                  >
+                    <Button
+                      onClick={async () => {
+                        try {
+                          if (user == null || newTask === "") return;
+                          toggle(true);
+                          await fetchWithErrorHandler(USER_URL, {
+                            method: "PUT",
+                            body: JSON.stringify({
+                              name: user.name,
+                              device: user.device,
+                              newTask,
+                            }),
+                          });
+                          setTasks(await getTasks());
+                          await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                            method: "POST",
+                            body: JSON.stringify({
+                              userId: user.id,
+                              message: `${user.name} nobatchylyk lista taza ish koshdy: ${newTask}`,
+                            }),
+                          });
+                          setNewTask("");
+                          toggle(false);
+                          toggleMessage(true, "success", "Taza task koshuldy");
+                          setTimeout(() => {
+                            toggleMessage(false);
+                          }, 1000);
+                        } catch (error) {
+                          toggle(false);
+                          toggleMessage(
+                            true,
+                            "error",
+                            "Taza task koshup bilmadim"
+                          );
+                          setTimeout(() => {
+                            toggleMessage(false);
+                          }, 1500);
+                        }
+                      }}
+                    >
+                      <CheckIcon />
+                    </Button>
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
+            {/* <ListItem sx={{ p: 0, m: 0 }}></ListItem> */}
             {tasks.map((task, index) => (
               <ListItem
                 key={index}

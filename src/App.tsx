@@ -4,14 +4,14 @@ import { useState } from "react";
 import CheckUser from "./login/CheckUser";
 import Login from "./login/Login";
 import ProductList from "./product/ProductList";
-import UserContext from "./UserContext";
+import UserContext from "./context/UserContext";
 import Header from "./header/Header";
-import OnDutyContext from "./OnDutyContext";
-import TasksContext from "./TasksContext";
+import OnDutyContext from "./context/OnDutyContext";
+import TasksContext from "./context/TasksContext";
 import { registerServiceWorker } from "./helpers/notificationSubscription";
 import { WEBSOCKET } from "./api/APIs";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import WebsocketContext from "./WebSocketContext";
+import WebsocketContext from "./context/WebSocketContext";
 
 export type User = {
   id: string;

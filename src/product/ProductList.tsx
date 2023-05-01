@@ -19,7 +19,7 @@ import BuyVotePanelFooter from "../footers/BuyVotePanelFooter";
 import Duty from "../duty/Duty";
 import DutyFooter from "../footers/DutyFooter";
 import { WEBSOCKET } from "../api/APIs";
-import WebSocketContext from "../WebSocketContext";
+import WebSocketContext from "../context/WebSocketContext";
 import { WEBSOCKET_MESSAGE } from "../App";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote" | "duty";

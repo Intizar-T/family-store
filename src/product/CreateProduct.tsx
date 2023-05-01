@@ -16,7 +16,7 @@ import { useContext, useState } from "react";
 import { PRODUCTS_URL, SEND_NOTIFICATION_URL, USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
-import UserContext from "../UserContext";
+import UserContext from "../context/UserContext";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import useMessage from "../helpers/useMessage";
@@ -25,7 +25,7 @@ import { Checkbox } from "@mui/material";
 import { buyStatusList } from "./ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
-import WebSocketContext from "../WebSocketContext";
+import WebSocketContext from "../context/WebSocketContext";
 
 interface CreateProductProps {
   newProduct: string;

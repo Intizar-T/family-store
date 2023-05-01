@@ -13,14 +13,14 @@ import FetchProductList from "./FetchProductList";
 import EditIcon from "@mui/icons-material/Edit";
 import { toggle } from "../helpers/useLoading";
 import { toggleMessageProps } from "../helpers/useMessage";
-import UserContext from "../UserContext";
+import UserContext from "../context/UserContext";
 import ProductContext from "./ProductContext";
 import ImageIcon from "@mui/icons-material/Image";
 import CheckIcon from "@mui/icons-material/Check";
 import { Products, buyStatusList } from "./ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
-import WebSocketContext from "../WebSocketContext";
+import WebSocketContext from "../context/WebSocketContext";
 
 interface ToBuyListItemProps {
   product: Products;

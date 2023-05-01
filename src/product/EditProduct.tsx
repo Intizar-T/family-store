@@ -20,11 +20,11 @@ import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import { useContext, useState } from "react";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
-import UserContext from "../UserContext";
+import UserContext from "../context/UserContext";
 import useMessage from "../helpers/useMessage";
 import { Products, buyStatusList } from "./ProductList";
 import { Store } from "./ToBuyList";
-import WebSocketContext from "../WebSocketContext";
+import WebSocketContext from "../context/WebSocketContext";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 

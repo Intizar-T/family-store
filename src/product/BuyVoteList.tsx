@@ -21,13 +21,13 @@ import { Products, buyStatusList } from "./ProductList";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import UserContext from "../UserContext";
+import UserContext from "../context/UserContext";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import EditIcon from "@mui/icons-material/Edit";
 import EditProduct from "./EditProduct";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import BaseDialog from "../helpers/BaseDialog";
-import WebSocketContext from "../WebSocketContext";
+import WebSocketContext from "../context/WebSocketContext";
 import { ReadyState } from "react-use-websocket";
 import { WEBSOCKET_MESSAGE } from "../App";
 

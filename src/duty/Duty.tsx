@@ -13,13 +13,16 @@ import {
 import React, { useContext, useState } from "react";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import { SEND_NOTIFICATION_URL, USER_URL } from "../api/APIs";
-import UserContext from "../UserContext";
-import TasksContext from "../TasksContext";
+import UserContext from "../context/UserContext";
+import TasksContext from "../context/TasksContext";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
 import CheckIcon from "@mui/icons-material/Check";
+import OnDutyContext from "../context/OnDutyContext";
+import { OnDutyUsersType } from "../App";
+import CheckUser from "../login/CheckUser";
 
 // enum DutyList {
 //   INTIZAR = "Intizar",
@@ -28,95 +31,107 @@ import CheckIcon from "@mui/icons-material/Check";
 //   HUDAYAR = "Hudayar",
 // }
 
-const ON_DUTY_LIST = ["Ovadan", "Jennet", "Hudayar", "Intizar"];
-const MEAL_DUTY_LIST = ["Jennet", "Intizar", "Ovadan"];
+const ON_DUTY_LIST = ["Intizar", "Ovadan", "Jennet", "Hudayar"];
+const MEAL_DUTY_LIST = ["Intizar", "Ovadan", "Jennet"];
 
-// async function updatePersonOnDuty(
-//   onDutyUsers: OnDutyUsersType[],
-//   setOnDutyUsers: (users: OnDutyUsersType[]) => void
-// ) {
-//   const today = new Date();
-//   const nextDay = new Date(new Date().setDate(today.getDate() + 1));
-//   const todayISO = new Date().toISOString().split("T")[0];
-//   const nextDayISO = nextDay.toISOString().split("T")[0];
-//   let nextPersonOnDuty = "";
-//   await Promise.all(
-//     onDutyUsers
-//       .filter(({ onDuty }) => onDuty !== "No")
-//       .map(async ({ name, onDuty: onDutyDate, device }) => {
-//         if (today.toString().split(" ")[0] === "Sat") {
-//           if (onDutyDate === todayISO) {
-//             await fetchWithErrorHandler(USER_URL, {
-//               method: "PUT",
-//               body: JSON.stringify({
-//                 name,
-//                 device,
-//                 onDuty: nextDayISO,
-//               }),
-//             });
-//           }
-//         } else {
-//           if (onDutyDate !== todayISO) {
-//             await fetchWithErrorHandler(USER_URL, {
-//               method: "PUT",
-//               body: JSON.stringify({
-//                 name,
-//                 device,
-//                 onDuty: "No",
-//               }),
-//             });
-//             const index = ON_DUTY_LIST.indexOf(name);
-//             nextPersonOnDuty =
-//               index === ON_DUTY_LIST.length - 1
-//                 ? ON_DUTY_LIST[0]
-//                 : ON_DUTY_LIST[index + 1];
-//           }
-//         }
-//       })
-//   );
-//   if (nextPersonOnDuty !== "") {
-//     onDutyUsers
-//       .filter(({ name }) => name === nextPersonOnDuty)
-//       .map(async ({ name, device }) => {
-//         await fetchWithErrorHandler(USER_URL, {
-//           method: "PUT",
-//           body: JSON.stringify({
-//             name,
-//             device,
-//             onDuty: todayISO,
-//           }),
-//         });
-//       });
-//     await CheckUser(setOnDutyUsers);
-//   }
-// }
+async function updatePersonOnDuty(
+  onDutyUsers: OnDutyUsersType[],
+  setOnDutyUsers: (users: OnDutyUsersType[]) => void
+) {
+  const today = new Date();
+  const nextDay = new Date(new Date().setDate(today.getDate() + 1));
+  const todayISO = new Date().toISOString().split("T")[0];
+  const nextDayISO = nextDay.toISOString().split("T")[0];
+  let nextPersonOnDuty = "";
+  await Promise.all(
+    onDutyUsers
+      .filter(({ onDuty }) => onDuty !== "No")
+      .map(async ({ name, onDuty: onDutyDate, device }) => {
+        if (today.toString().split(" ")[0] === "Sat") {
+          if (onDutyDate === todayISO) {
+            await fetchWithErrorHandler(USER_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                name,
+                device,
+                onDuty: nextDayISO,
+              }),
+            });
+          }
+        } else {
+          if (onDutyDate !== todayISO) {
+            await fetchWithErrorHandler(USER_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                name,
+                device,
+                onDuty: "No",
+              }),
+            });
+            const index = ON_DUTY_LIST.indexOf(name);
+            nextPersonOnDuty =
+              index === ON_DUTY_LIST.length - 1
+                ? ON_DUTY_LIST[0]
+                : ON_DUTY_LIST[index + 1];
+          }
+        }
+      })
+  );
+  if (nextPersonOnDuty !== "") {
+    onDutyUsers
+      .filter(({ name }) => name === nextPersonOnDuty)
+      .map(async ({ name, device }) => {
+        await fetchWithErrorHandler(USER_URL, {
+          method: "PUT",
+          body: JSON.stringify({
+            name,
+            device,
+            onDuty: todayISO,
+          }),
+        });
+      });
+    await CheckUser(setOnDutyUsers);
+  }
+}
 
-// function getPersonOnDuty(onDutyUsers: OnDutyUsersType[]): string {
-//   return onDutyUsers
-//     .filter(({ onDuty }) => onDuty !== "No")
-//     .map(({ name }) => {
-//       if (new Date().toString().split(" ")[0] === "Sat") return "Opshi uborka";
-//       return name;
-//     })[0];
-// }
+function getPersonOnDuty(onDutyUsers: OnDutyUsersType[]): string {
+  return onDutyUsers
+    .filter(({ onDuty }) => onDuty !== "No")
+    .map(({ name }) => {
+      if (new Date().toString().split(" ")[0] === "Sat") return "Opshi uborka";
+      return name;
+    })[0];
+}
 
-async function getTasks(): Promise<string[]> {
+const getTasks = async (): Promise<string[]> => {
   const {
     tasks: { L },
   }: { tasks: { L: { S: string }[] } } = await fetchWithErrorHandler(
     `${USER_URL}?id=1`
   );
   return L.map(({ S }) => S);
-}
+};
+
+const getUserOnDuty = (
+  onDutyUsers: OnDutyUsersType[],
+  todayISO: string
+): string => {
+  const userOnDuty = onDutyUsers
+    .filter(({ onDuty }) => onDuty === todayISO)
+    .map(({ name }) => name);
+  if (userOnDuty != null && userOnDuty.length > 0) return userOnDuty[0];
+  return "";
+};
 
 export default function Duty() {
-  // const { onDutyUsers, setOnDutyUsers } = useContext(OnDutyContext);
+  const { onDutyUsers, setOnDutyUsers } = useContext(OnDutyContext);
   const { tasks, setTasks } = useContext(TasksContext);
   const { user } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
   const [newTask, setNewTask] = useState("");
   const [editMode, setEditMode] = useState(false);
+  const todayISO = new Date().toISOString().split("T")[0];
   // useEffect(() => {
   //   (async () => {
   //     await updatePersonOnDuty(onDutyUsers, setOnDutyUsers);
@@ -139,34 +154,37 @@ export default function Duty() {
         container
         sx={{
           display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
+          flexDirection: "column",
         }}
       >
         <Grid
           item
-          xs={7}
+          xs={12}
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
           <Typography>
-            Opshi Nobatchy: <b>{ON_DUTY_LIST[new Date().getDate() % 4]}</b>
-          </Typography>
-          <Typography>
-            Nahar Nobatcy: <b>{MEAL_DUTY_LIST[new Date().getDate() % 3]}</b>
+            Opshi Nobatchy: <b>{getUserOnDuty(onDutyUsers, todayISO)}</b>
           </Typography>
         </Grid>
         <Grid
           item
-          xs={5}
+          xs={12}
           sx={{
             display: "flex",
-            justifyContent: "flex-end",
+            flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between",
           }}
-        ></Grid>
+        >
+          <Typography>
+            Nahar Nobatcy: <b>{MEAL_DUTY_LIST[new Date().getDate() % 3]}</b>
+          </Typography>
+        </Grid>
       </Grid>
       <Grid container>
         <Grid item xs={12} sx={{}}>

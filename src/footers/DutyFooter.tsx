@@ -1,6 +1,6 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useContext, useState } from "react";
-import OnDutyContext from "../OnDutyContext";
+import OnDutyContext from "../context/OnDutyContext";
 import UserContext from "../UserContext";
 import { SEND_NOTIFICATION_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";

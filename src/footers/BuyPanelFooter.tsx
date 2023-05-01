@@ -4,7 +4,7 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { useContext, useState } from "react";
-import UserContext from "../UserContext";
+import UserContext from "../context/UserContext";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
 import NotificationConfirmationModal from "../product/NotificationConfirmationModal";

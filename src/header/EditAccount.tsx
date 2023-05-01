@@ -11,7 +11,7 @@ import { USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
-import UserContext from "../UserContext";
+import UserContext from "../context/UserContext";
 import CheckUser from "../login/CheckUser";
 
 interface EditAccountProps {

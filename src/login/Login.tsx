@@ -10,7 +10,7 @@ import { useContext, useState } from "react";
 import { USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
-import UserContext from "../UserContext";
+import UserContext from "../context/UserContext";
 import CheckUser from "./CheckUser";
 
 interface LoginProps {

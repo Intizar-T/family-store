@@ -20,7 +20,7 @@ import useMessage from "../helpers/useMessage";
 import { buyStatusList } from "./ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
-import WebSocketContext from "../WebSocketContext";
+import WebSocketContext from "../context/WebSocketContext";
 
 export default function BoughtList() {
   const { products, setProducts } = useContext(ProductContext);

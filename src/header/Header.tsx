@@ -10,7 +10,7 @@ import {
   Button,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
-import UserContext from "../UserContext";
+import UserContext from "../context/UserContext";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import DeleteAccount from "./DeleteAccount";
 import EditAccount from "./EditAccount";

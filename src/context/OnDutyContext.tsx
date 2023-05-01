@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { OnDutyUsersType } from "./App";
+import { OnDutyUsersType } from "../App";
 
 export type OnDutyUserContextProps = {
   onDutyUsers: OnDutyUsersType[];

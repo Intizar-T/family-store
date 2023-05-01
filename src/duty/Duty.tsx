@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable array-callback-return */
 import {
   Button,
   Grid,
@@ -10,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import { SEND_NOTIFICATION_URL, USER_URL } from "../api/APIs";
 import UserContext from "../context/UserContext";
@@ -22,87 +24,11 @@ import useMessage from "../helpers/useMessage";
 import CheckIcon from "@mui/icons-material/Check";
 import OnDutyContext from "../context/OnGeneralDutyContext";
 import { OnDutyUsersType } from "../App";
-import CheckUser from "../login/CheckUser";
 import OnMealDutyContext from "../context/OnMealDutyContext";
+import CheckUser from "../login/CheckUser";
 
-// enum DutyList {
-//   INTIZAR = "Intizar",
-//   OVADAN = "Ovadan",
-//   JENNET = "Jennet",
-//   HUDAYAR = "Hudayar",
-// }
-
-const ON_DUTY_LIST = ["Intizar", "Ovadan", "Jennet", "Hudayar"];
+const GENERAL_DUTY_LIST = ["Intizar", "Ovadan", "Jennet", "Hudayar"];
 const MEAL_DUTY_LIST = ["Intizar", "Ovadan", "Jennet"];
-
-async function updatePersonOnDuty(
-  onDutyUsers: OnDutyUsersType[],
-  setOnDutyUsers: (users: OnDutyUsersType[]) => void
-) {
-  const today = new Date();
-  const nextDay = new Date(new Date().setDate(today.getDate() + 1));
-  const todayISO = new Date().toISOString().split("T")[0];
-  const nextDayISO = nextDay.toISOString().split("T")[0];
-  let nextPersonOnDuty = "";
-  await Promise.all(
-    onDutyUsers
-      .filter(({ onDuty }) => onDuty !== "No")
-      .map(async ({ name, onDuty: onDutyDate, device }) => {
-        if (today.toString().split(" ")[0] === "Sat") {
-          if (onDutyDate === todayISO) {
-            await fetchWithErrorHandler(USER_URL, {
-              method: "PUT",
-              body: JSON.stringify({
-                name,
-                device,
-                onDuty: nextDayISO,
-              }),
-            });
-          }
-        } else {
-          if (onDutyDate !== todayISO) {
-            await fetchWithErrorHandler(USER_URL, {
-              method: "PUT",
-              body: JSON.stringify({
-                name,
-                device,
-                onDuty: "No",
-              }),
-            });
-            const index = ON_DUTY_LIST.indexOf(name);
-            nextPersonOnDuty =
-              index === ON_DUTY_LIST.length - 1
-                ? ON_DUTY_LIST[0]
-                : ON_DUTY_LIST[index + 1];
-          }
-        }
-      })
-  );
-  if (nextPersonOnDuty !== "") {
-    onDutyUsers
-      .filter(({ name }) => name === nextPersonOnDuty)
-      .map(async ({ name, device }) => {
-        await fetchWithErrorHandler(USER_URL, {
-          method: "PUT",
-          body: JSON.stringify({
-            name,
-            device,
-            onDuty: todayISO,
-          }),
-        });
-      });
-    await CheckUser(setOnDutyUsers);
-  }
-}
-
-function getPersonOnDuty(onDutyUsers: OnDutyUsersType[]): string {
-  return onDutyUsers
-    .filter(({ onDuty }) => onDuty !== "No")
-    .map(({ name }) => {
-      if (new Date().toString().split(" ")[0] === "Sat") return "Opshi uborka";
-      return name;
-    })[0];
-}
 
 const getTasks = async (): Promise<string[]> => {
   const {
@@ -124,22 +50,115 @@ const getUserOnDuty = (
   return "";
 };
 
+const checkAndUpdateUserOnDuty = async (
+  onDutyUsers: OnDutyUsersType[],
+  todayISO: string,
+  dutyList: "meal" | "general",
+  setOnGeneralDutyUsers: (users: OnDutyUsersType[]) => void,
+  setOnMealDutyUsers: (users: OnDutyUsersType[]) => void
+) => {
+  let userNameToBeUpdated = "";
+  await Promise.all(
+    onDutyUsers
+      .filter(({ onDuty }) => onDuty !== "")
+      .map(async ({ onDuty, name, device }) => {
+        if (onDuty !== todayISO) {
+          if (dutyList === "general") {
+            const index = GENERAL_DUTY_LIST.indexOf(name);
+            userNameToBeUpdated =
+              index + 1 === GENERAL_DUTY_LIST.length
+                ? GENERAL_DUTY_LIST[0]
+                : GENERAL_DUTY_LIST[index + 1];
+            await fetchWithErrorHandler(USER_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                onGeneralDuty: "",
+                name,
+                device,
+              }),
+            });
+          } else if (dutyList === "meal") {
+            const index = MEAL_DUTY_LIST.indexOf(name);
+            userNameToBeUpdated =
+              index + 1 === MEAL_DUTY_LIST.length
+                ? MEAL_DUTY_LIST[0]
+                : MEAL_DUTY_LIST[index + 1];
+            await fetchWithErrorHandler(USER_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                onMealDuty: "",
+                name,
+                device,
+              }),
+            });
+          }
+        }
+      })
+  );
+  if (userNameToBeUpdated !== "") {
+    await Promise.all(
+      onDutyUsers
+        .filter(({ name }) => name === userNameToBeUpdated)
+        .map(async ({ name, device }) => {
+          if (dutyList === "general") {
+            await fetchWithErrorHandler(USER_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                name,
+                device,
+                onGeneralDuty: todayISO,
+              }),
+            });
+          } else if (dutyList === "meal") {
+            await fetchWithErrorHandler(USER_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                name,
+                device,
+                onMealDuty: todayISO,
+              }),
+            });
+          }
+        })
+    );
+    await CheckUser(
+      setOnGeneralDutyUsers,
+      undefined,
+      undefined,
+      setOnMealDutyUsers
+    );
+  }
+};
+
 export default function Duty() {
   const { onGeneralDutyUsers, setOnGeneralDutyUsers } =
     useContext(OnDutyContext);
   const { onMealDutyUsers, setOnMealDutyUsers } = useContext(OnMealDutyContext);
   const { tasks, setTasks } = useContext(TasksContext);
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
   const [newTask, setNewTask] = useState("");
   const [editMode, setEditMode] = useState(false);
   const todayISO = new Date().toISOString().split("T")[0];
-  // useEffect(() => {
-  //   (async () => {
-  //     await updatePersonOnDuty(onDutyUsers, setOnDutyUsers);
-  //   })();
-  // }, []);
+  useEffect(() => {
+    (async () => {
+      await checkAndUpdateUserOnDuty(
+        onGeneralDutyUsers,
+        todayISO,
+        "general",
+        setOnGeneralDutyUsers,
+        setOnMealDutyUsers
+      );
+      await checkAndUpdateUserOnDuty(
+        onMealDutyUsers,
+        todayISO,
+        "meal",
+        setOnGeneralDutyUsers,
+        setOnMealDutyUsers
+      );
+    })();
+  }, []);
   return (
     <Grid
       container

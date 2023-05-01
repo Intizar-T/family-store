@@ -109,7 +109,7 @@ export default function Header() {
           </ListItemIcon>
           Akkaunt uytgat
         </MenuItem>
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             handleClose();
             showDeleteAccountModal(true);
@@ -119,7 +119,7 @@ export default function Header() {
             <DeleteForeverOutlinedIcon fontSize="small" color="error" />
           </ListItemIcon>
           Udalit et
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
       {deleteAccountModal && (
         <DeleteAccount handleClose={() => showDeleteAccountModal(false)} />

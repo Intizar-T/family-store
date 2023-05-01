@@ -1,6 +1,4 @@
 TODO
-1. Fix expiring subscriptions
-2. Voting system
 3. Track geolocation and auto notification
 4. Edit duty tasks
 4. Personal space
@@ -10,3 +8,7 @@ TODO
 8. Profile picture
 9. View other people's profile
 10. 
+
+DONE:
+1. Fix expiring subscriptions
+2. Voting system

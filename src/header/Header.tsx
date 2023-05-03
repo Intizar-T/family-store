@@ -63,7 +63,7 @@ export default function Header() {
           </Button>
         </Tooltip>
       </Box>
-      <Menu
+      {/* <Menu
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -109,7 +109,7 @@ export default function Header() {
           </ListItemIcon>
           Akkaunt uytgat
         </MenuItem>
-        {/* <MenuItem
+        <MenuItem
           onClick={() => {
             handleClose();
             showDeleteAccountModal(true);
@@ -119,14 +119,14 @@ export default function Header() {
             <DeleteForeverOutlinedIcon fontSize="small" color="error" />
           </ListItemIcon>
           Udalit et
-        </MenuItem> */}
+        </MenuItem>
       </Menu>
       {deleteAccountModal && (
         <DeleteAccount handleClose={() => showDeleteAccountModal(false)} />
       )}
       {editAccountModal && (
         <EditAccount handleClose={() => showEditAccountModal(false)} />
-      )}
+      )} */}
       <Loading />
     </React.Fragment>
   );

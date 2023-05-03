@@ -39,7 +39,7 @@ export default function ToBuyListItem({
 }: ToBuyListItemProps) {
   const { user } = useContext(UserContext);
   const { setProducts } = useContext(ProductContext);
-  const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
+  const { readyState, sendMessage } = useContext(WebSocketContext);
   return (
     <ListItem
       secondaryAction={

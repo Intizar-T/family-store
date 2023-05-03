@@ -130,6 +130,10 @@ const checkAndUpdateUserOnDuty = async (
   }
 };
 
+// const getUserNames = (dutyList: OnDutyUsersType[]) => {
+//   return dutyList.map(({ name }) => name);
+// };
+
 export default function Duty() {
   const { onGeneralDutyUsers, setOnGeneralDutyUsers } =
     useContext(OnDutyContext);
@@ -143,6 +147,8 @@ export default function Duty() {
   const todayISO = new Date().toISOString().split("T")[0];
   useEffect(() => {
     (async () => {
+      // GENERAL_DUTY_LIST = getUserNames(onGeneralDutyUsers);
+      // MEAL_DUTY_LIST = getUserNames(onMealDutyUsers);
       await checkAndUpdateUserOnDuty(
         onGeneralDutyUsers,
         todayISO,

@@ -28,7 +28,7 @@ import OnMealDutyContext from "../context/OnMealDutyContext";
 import CheckUser from "../login/CheckUser";
 
 const GENERAL_DUTY_LIST = ["Intizar", "Ovadan", "Jennet", "Hudayar"];
-const MEAL_DUTY_LIST = ["Intizar", "Ovadan", "Jennet"];
+const MEAL_DUTY_LIST = ["Intizar", "Hudayar", "Jennet"];
 
 const getTasks = async (): Promise<string[]> => {
   const {
@@ -144,7 +144,8 @@ export default function Duty() {
   const [Message, toggleMessage] = useMessage();
   const [newTask, setNewTask] = useState("");
   const [editMode, setEditMode] = useState(false);
-  const todayISO = new Date().toISOString().split("T")[0];
+  const today = new Date();
+  const todayISO = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   useEffect(() => {
     (async () => {
       // GENERAL_DUTY_LIST = getUserNames(onGeneralDutyUsers);

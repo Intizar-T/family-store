@@ -50,6 +50,25 @@ const getUserOnDuty = (
   return "";
 };
 
+const getTempUserOnMealDuty = (today: string) => {
+  switch (today) {
+    case "Mon":
+      return "Intizar";
+    case "Tue":
+      return "Intizar";
+    case "Wed":
+      return "Jennet";
+    case "Thu":
+      return "Jennet";
+    case "Fri":
+      return "Burger";
+    case "Sat":
+      return "Hudayar";
+    case "Sun":
+      return "Hudayar";
+  }
+};
+
 const checkAndUpdateUserOnDuty = async (
   onDutyUsers: OnDutyUsersType[],
   todayISO: string,
@@ -157,13 +176,13 @@ export default function Duty() {
         setOnGeneralDutyUsers,
         setOnMealDutyUsers
       );
-      await checkAndUpdateUserOnDuty(
-        onMealDutyUsers,
-        todayISO,
-        "meal",
-        setOnGeneralDutyUsers,
-        setOnMealDutyUsers
-      );
+      // await checkAndUpdateUserOnDuty(
+      //   onMealDutyUsers,
+      //   todayISO,
+      //   "meal",
+      //   setOnGeneralDutyUsers,
+      //   setOnMealDutyUsers
+      // );
     })();
   }, []);
   return (
@@ -211,7 +230,8 @@ export default function Duty() {
           }}
         >
           <Typography>
-            Nahar Nobatcy: <b>{getUserOnDuty(onMealDutyUsers, todayISO)}</b>
+            Nahar Nobatcy:{" "}
+            <b>{getTempUserOnMealDuty(today.toString().split(" ")[0])}</b>
           </Typography>
         </Grid>
       </Grid>

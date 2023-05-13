@@ -246,11 +246,7 @@ export default function CreateProduct({
                     }, 1500);
                   } catch (e) {
                     toggle(false);
-                    toggleMessage(
-                      true,
-                      "error",
-                      "Ya producty koshup bilmadim ya bashgalara habar ibarip bilmadim :("
-                    );
+                    toggleMessage(true, "error", "Producty koshup bilmadim :(");
                     setTimeout(() => {
                       toggleMessage(false);
                       showCreateModal(false);

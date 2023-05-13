@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Grid,
   TextField,
@@ -12,8 +13,8 @@ import {
   FormGroup,
   FormControlLabel,
 } from "@mui/material";
-import { useContext, useState } from "react";
-import { PRODUCTS_URL, SEND_NOTIFICATION_URL, USER_URL } from "../api/APIs";
+import { useContext, useEffect, useState } from "react";
+import { PRODUCTS_URL, USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import UserContext from "../context/UserContext";
@@ -26,6 +27,7 @@ import { buyStatusList } from "./ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
+import notificationSender from "../helpers/notificationSender";
 
 interface CreateProductProps {
   newProduct: string;
@@ -52,7 +54,29 @@ export default function CreateProduct({
   const [Message, toggleMessage] = useMessage();
   const [store, setStore] = useState<Store>("pyatorychka");
   const [toBuy, setToBuy] = useState(true);
-  const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
+  const { readyState, sendMessage } = useContext(WebSocketContext);
+  const [sendNotification, setSendNotification] = useState(false);
+
+  useEffect(() => {
+    if (!sendNotification || user == null) return;
+    (async () => {
+      try {
+        await notificationSender(user.id, user.name, toBuy, newProduct);
+        setSendNotification(false);
+      } catch (e) {
+        toggleMessage(true, "error", "Bashgalara habar ibarip bilmadim :(");
+        setTimeout(() => {
+          toggleMessage(false);
+        }, 1500);
+        setSendNotification(false);
+      } finally {
+        setProducts(await FetchProductList());
+        setNewProduct("");
+        setNewProductAmount("");
+        setUnit("");
+      }
+    })();
+  }, [sendNotification, newProduct]);
 
   return (
     <Dialog
@@ -214,24 +238,7 @@ export default function CreateProduct({
                         })
                       );
                     }
-                    await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
-                      method: "POST",
-                      body: JSON.stringify({
-                        userId: user.id,
-                        message: `${user.name} ${
-                          toBuy ? "Almaly" : "Almalymy"
-                        } lista "${newProduct}" koshdy. ${
-                          toBuy
-                            ? ""
-                            : "Girip golosawat etmagi yatdan chykarman pwease"
-                        }`,
-                      }),
-                    });
-                    setProducts(await FetchProductList());
                     toggleMessage(true, "success", "taza produkt koshuldy");
-                    setNewProduct("");
-                    setNewProductAmount("");
-                    setUnit("");
                     toggle(false);
                     setTimeout(() => {
                       toggleMessage(false);
@@ -239,7 +246,6 @@ export default function CreateProduct({
                     }, 1500);
                   } catch (e) {
                     toggle(false);
-                    setProducts(await FetchProductList());
                     toggleMessage(
                       true,
                       "error",
@@ -249,6 +255,8 @@ export default function CreateProduct({
                       toggleMessage(false);
                       showCreateModal(false);
                     }, 1500);
+                  } finally {
+                    setSendNotification(true);
                   }
                 }
               }}

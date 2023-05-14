@@ -45,10 +45,11 @@ function App() {
   const [user, setUser] = useState<User>(null);
   const [loginModal, showLoginModal] = useState(false);
   const userAgent = window.navigator.userAgent;
-  const device = userAgent.substring(
-    userAgent.indexOf("(") + 1,
-    userAgent.indexOf(")")
-  );
+  const device = userAgent;
+  // .substring(
+  //   userAgent.indexOf("(") + 1,
+  //   userAgent.indexOf(")")
+  // );
   const [onGeneralDutyUsers, setOnGeneralDutyUsers] = useState<
     OnDutyUsersType[]
   >([]);

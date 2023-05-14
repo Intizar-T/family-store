@@ -206,6 +206,13 @@ export default function CreateProduct({
                         newProductId: id,
                       }),
                     });
+                    toggle(false);
+                    toggleMessage(true, "success", "taza produkt koshuldy");
+                    await cleanUp();
+                    setTimeout(() => {
+                      toggleMessage(false);
+                      showCreateModal(false);
+                    }, 1500);
                     if (readyState === ReadyState.OPEN && sendMessage != null) {
                       sendMessage(
                         JSON.stringify({

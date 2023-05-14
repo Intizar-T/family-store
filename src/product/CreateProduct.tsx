@@ -57,6 +57,13 @@ export default function CreateProduct({
   const { readyState, sendMessage } = useContext(WebSocketContext);
   const [sendNotification, setSendNotification] = useState(false);
 
+  const cleanUp = async () => {
+    setProducts(await FetchProductList());
+    setNewProduct("");
+    setNewProductAmount("");
+    setUnit("");
+  };
+
   useEffect(() => {
     if (!sendNotification || user == null) return;
     (async () => {
@@ -69,11 +76,6 @@ export default function CreateProduct({
           toggleMessage(false);
         }, 1500);
         setSendNotification(false);
-      } finally {
-        setProducts(await FetchProductList());
-        setNewProduct("");
-        setNewProductAmount("");
-        setUnit("");
       }
     })();
   }, [sendNotification, newProduct]);
@@ -230,6 +232,13 @@ export default function CreateProduct({
                         newProductId: id,
                       }),
                     });
+                    toggle(false);
+                    toggleMessage(true, "success", "taza produkt koshuldy");
+                    await cleanUp();
+                    setTimeout(() => {
+                      toggleMessage(false);
+                      showCreateModal(false);
+                    }, 1500);
                     if (readyState === ReadyState.OPEN && sendMessage != null) {
                       sendMessage(
                         JSON.stringify({
@@ -238,15 +247,10 @@ export default function CreateProduct({
                         })
                       );
                     }
-                    toggleMessage(true, "success", "taza produkt koshuldy");
-                    toggle(false);
-                    setTimeout(() => {
-                      toggleMessage(false);
-                      showCreateModal(false);
-                    }, 1500);
                   } catch (e) {
                     toggle(false);
                     toggleMessage(true, "error", "Producty koshup bilmadim :(");
+                    await cleanUp();
                     setTimeout(() => {
                       toggleMessage(false);
                       showCreateModal(false);

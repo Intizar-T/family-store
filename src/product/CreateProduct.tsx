@@ -26,6 +26,7 @@ import { buyStatusList } from "./ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
+import { t } from "i18next";
 
 interface CreateProductProps {
   newProduct: string;
@@ -62,7 +63,7 @@ export default function CreateProduct({
         showCreateModal(false);
       }}
     >
-      <DialogTitle textAlign="center">Taza produkt kosh:</DialogTitle>
+      <DialogTitle textAlign="center">{t("addNewProduct")}:</DialogTitle>
       <DialogContent>
         <Grid
           container
@@ -82,7 +83,7 @@ export default function CreateProduct({
           >
             <TextField
               size="small"
-              label="Product:"
+              label={`${t("productLabel")}:`}
               value={newProduct}
               focused
               onChange={(e) => {
@@ -106,7 +107,7 @@ export default function CreateProduct({
             <Grid item xs={7}>
               <TextField
                 size="small"
-                label="Kancha:"
+                label={`${t("amount")}:`}
                 value={newProductAmount}
                 focused
                 onChange={(e) => {
@@ -116,15 +117,17 @@ export default function CreateProduct({
             </Grid>
             <Grid item xs={5}>
               <FormControl fullWidth size="small">
-                <InputLabel id="demo-simple-select-label">Olchag</InputLabel>
+                <InputLabel id="demo-simple-select-label">
+                  {t("unit")}
+                </InputLabel>
                 <Select
                   value={unit}
-                  label="olchag"
+                  label={`${t("unit")}:`}
                   onChange={(e) => setUnit(e.target.value)}
                 >
-                  <MenuItem value={"ta"}>ta</MenuItem>
-                  <MenuItem value={"kg"}>kg</MenuItem>
-                  <MenuItem value={"litr"}>litr</MenuItem>
+                  <MenuItem value={"ta"}>{t("pieces")}</MenuItem>
+                  <MenuItem value={"kg"}>{t("kg")}</MenuItem>
+                  <MenuItem value={"litr"}>{t("litr")}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -142,16 +145,16 @@ export default function CreateProduct({
             <Grid item xs={7}>
               <FormControl fullWidth size="small">
                 <InputLabel id="demo-simple-select-label">
-                  Kaysy Magazindan
+                  {t("store")}
                 </InputLabel>
                 <Select
                   value={store}
-                  label="Kaysy Magazindan"
+                  label={`${t("store")}:`}
                   onChange={(e) => setStore(e.target.value as Store)}
                 >
-                  <MenuItem value={"pyatorychka"}>Pyatorychka</MenuItem>
-                  <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
-                  <MenuItem value={"other"}>Bashka</MenuItem>
+                  <MenuItem value={"pyatorychka"}>{t("pyatorychka")}</MenuItem>
+                  <MenuItem value={"fixPrice"}>{t("fixPrice")}</MenuItem>
+                  <MenuItem value={"other"}>{t("otherStore")}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -159,7 +162,7 @@ export default function CreateProduct({
               <FormGroup>
                 <FormControlLabel
                   control={<Checkbox checked={toBuy} />}
-                  label="Almaly"
+                  label={t("toBuy")}
                   onChange={(e) => {
                     setToBuy(
                       (e as React.ChangeEvent<HTMLInputElement>).target.checked
@@ -175,7 +178,7 @@ export default function CreateProduct({
                 showCreateModal(false);
               }}
             >
-              Nazad
+              {t("return")}
             </Button>
             <Button
               onClick={async () => {
@@ -208,7 +211,6 @@ export default function CreateProduct({
                     });
                     toggle(false);
                     toggleMessage(true, "success", "taza produkt koshuldy");
-                    await cleanUp();
                     setTimeout(() => {
                       toggleMessage(false);
                       showCreateModal(false);

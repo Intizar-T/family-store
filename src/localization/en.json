@@ -1,0 +1,20 @@
+{
+  "logo": "Tashov's Store",
+  "toBuy": "To Buy",
+  "buyVote": "Buy Vote",
+  "bought": "Bought",
+  "duty": "Duty",
+  "pyatorychka": "Pyatorychka",
+  "fixPrice": "Fix Price",
+  "otherStore": "Other",
+  "addNewProduct": "Add New Product",
+
+  "productLabel": "Product",
+  "amount": "Amount",
+  "unit": "Unit",
+  "store": "Which store",
+  "pieces": "pieces",
+  "kg": "kg",
+  "litre": "litre",
+  "return": "Return"
+}

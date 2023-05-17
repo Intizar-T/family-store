@@ -17,10 +17,10 @@ import BoughtPanelFooter from "../footers/BoughtPanelFooter";
 import BuyVoteList from "./BuyVoteList";
 import BuyVotePanelFooter from "../footers/BuyVotePanelFooter";
 import Duty from "../duty/Duty";
-import DutyFooter from "../footers/DutyFooter";
-import { WEBSOCKET } from "../api/APIs";
 import WebSocketContext from "../context/WebSocketContext";
 import { WEBSOCKET_MESSAGE } from "../App";
+import i18next, { t } from "i18next";
+import { withTranslation } from "react-i18next";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote" | "duty";
 export interface Products {
@@ -53,7 +53,7 @@ export enum voteResult {
   DISLIKE = "dislike",
 }
 
-export default function ProductList() {
+function ProductList() {
   const [products, setProducts] = useState<Products[]>([]);
   const [newProduct, setNewProduct] = useState<string>("");
   const [newProductAmount, setNewProductAmount] = useState("");
@@ -80,6 +80,13 @@ export default function ProductList() {
       }
     })();
   }, [lastMessage]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      i18next.changeLanguage("en");
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const productState = useMemo(() => {
     return { products, setProducts };
@@ -116,10 +123,10 @@ export default function ProductList() {
                 sx={{ paddingTop: 1 }}
                 variant="scrollable"
               >
-                <Tab value="buy" label="Almaly" />
-                <Tab value="buyVote" label="Almalymy" />
-                <Tab value="bought" label="Alyndy" />
-                <Tab value="duty" label="Nobatcylyk" />
+                <Tab value="buy" label={t("toBuy")} />
+                <Tab value="buyVote" label={t("buyVote")} />
+                <Tab value="bought" label={t("bought")} />
+                <Tab value="duty" label={t("duty")} />
               </TabList>
             </Box>
             <Box
@@ -199,3 +206,5 @@ export default function ProductList() {
     </ProductContext.Provider>
   );
 }
+
+export default withTranslation()(ProductList);

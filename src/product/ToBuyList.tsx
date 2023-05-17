@@ -6,6 +6,7 @@ import ProductContext from "./ProductContext";
 import useMessage from "../helpers/useMessage";
 import { Products, buyStatusList } from "./ProductList";
 import ToBuyListItem from "./ToBuyListItem";
+import { t } from "i18next";
 
 export type CreatedAt =
   | "all"
@@ -51,7 +52,7 @@ export default function ToBuyList() {
     >
       {pyatorychkaProducts.length !== 0 && (
         <React.Fragment>
-          <Divider>Pyatorychka:</Divider>
+          <Divider>{t("pyatorychka")}:</Divider>
           {pyatorychkaProducts.map((product) => (
             <ToBuyListItem
               product={product}
@@ -66,7 +67,7 @@ export default function ToBuyList() {
       )}
       {fixPriceProducts.length !== 0 && (
         <React.Fragment>
-          <Divider>Fix Price:</Divider>
+          <Divider>{t("fixPrice")}:</Divider>
           {fixPriceProducts.map((product) => (
             <ToBuyListItem
               product={product}
@@ -81,7 +82,7 @@ export default function ToBuyList() {
       )}
       {otherProducts.length !== 0 && (
         <React.Fragment>
-          <Divider>Bashka:</Divider>
+          <Divider>{t("otherStore")}:</Divider>
           {otherProducts.map((product) => (
             <ToBuyListItem
               product={product}

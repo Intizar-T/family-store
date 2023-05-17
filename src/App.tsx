@@ -13,6 +13,7 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import WebsocketContext from "./context/WebSocketContext";
 import OnGeneralDutyContext from "./context/OnGeneralDutyContext";
 import OnMealDutyContext from "./context/OnMealDutyContext";
+import { t } from "i18next";
 
 export type User = {
   id: string;

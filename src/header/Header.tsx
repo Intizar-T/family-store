@@ -1,24 +1,16 @@
-import { Settings } from "@mui/icons-material";
-import {
-  Box,
-  Tooltip,
-  IconButton,
-  Avatar,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  Button,
-} from "@mui/material";
+import { Box, Menu, MenuItem, Button } from "@mui/material";
 import React, { useContext, useState } from "react";
 import UserContext from "../context/UserContext";
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import DeleteAccount from "./DeleteAccount";
-import EditAccount from "./EditAccount";
 import ProductContext from "../product/ProductContext";
 import FetchProductList from "../product/FetchProductList";
 import useLoading from "../helpers/useLoading";
+import { useTranslation, withTranslation } from "react-i18next";
+import LanguageIcon from "@mui/icons-material/Language";
+import { changeLanguage } from "../localization/initLocalization";
+import i18next from "i18next";
 
-export default function Header() {
+function Header() {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [deleteAccountModal, showDeleteAccountModal] = useState(false);
   const [editAccountModal, showEditAccountModal] = useState(false);
@@ -39,31 +31,36 @@ export default function Header() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingX: 2,
+          paddingX: 1,
           paddingY: 1,
         }}
       >
-        <Button
-          onClick={async () => {
-            toggle(true);
-            setProducts(await FetchProductList());
-            toggle(false);
-          }}
-        >
-          Tashovs' Store
-        </Button>
-        <Tooltip title="Account settings">
+        <Box>
           <Button
-            onClick={handleClick}
-            size="small"
-            sx={{ ml: 2 }}
-            variant="outlined"
+            onClick={async () => {
+              toggle(true);
+              setProducts(await FetchProductList());
+              toggle(false);
+            }}
           >
+            {t("store")}
+          </Button>
+        </Box>
+        <Box>
+          <Button size="small" sx={{ ml: 2 }} variant="outlined">
             {user?.name || "Profile"}
           </Button>
-        </Tooltip>
+          <Button
+            onClick={handleClick}
+            sx={{
+              px: 0,
+            }}
+          >
+            <LanguageIcon />
+          </Button>
+        </Box>
       </Box>
-      {/* <Menu
+      <Menu
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -100,34 +97,39 @@ export default function Header() {
       >
         <MenuItem
           onClick={() => {
+            // i18next.changeLanguage("en");
             handleClose();
-            showEditAccountModal(true);
+            changeLanguage("en");
           }}
         >
-          <ListItemIcon style={{ minWidth: 25 }}>
-            <Settings fontSize="small" color="success" />
-          </ListItemIcon>
-          Akkaunt uytgat
+          English
         </MenuItem>
         <MenuItem
           onClick={() => {
             handleClose();
-            showDeleteAccountModal(true);
+            changeLanguage("charjew");
           }}
         >
-          <ListItemIcon style={{ minWidth: 25 }}>
-            <DeleteForeverOutlinedIcon fontSize="small" color="error" />
-          </ListItemIcon>
-          Udalit et
+          Charjew
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            changeLanguage("ru");
+          }}
+        >
+          Русский
         </MenuItem>
       </Menu>
-      {deleteAccountModal && (
+      {/* {deleteAccountModal && (
         <DeleteAccount handleClose={() => showDeleteAccountModal(false)} />
       )}
       {editAccountModal && (
         <EditAccount handleClose={() => showEditAccountModal(false)} />
       )} */}
-      <Loading />
+      {/* <Loading /> */}
     </React.Fragment>
   );
 }
+
+export default withTranslation()(Header);

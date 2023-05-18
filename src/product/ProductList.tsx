@@ -188,7 +188,7 @@ function ProductList() {
           <BuyPanelFooter showCreateModal={showCreateModal} />
         )}
         {tabValue === "bought" && <BoughtPanelFooter />}
-        {tabValue === "buyVote" && <BuyVotePanelFooter />}
+        {/* {tabValue === "buyVote" && <BuyVotePanelFooter />} */}
         {/* {tabValue === "duty" && <DutyFooter />} */}
         {createModal && (
           <CreateProduct

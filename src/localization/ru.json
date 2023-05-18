@@ -7,5 +7,22 @@
   "pyatorychka": "Пятерочка",
   "fixPrice": "Fix Price",
   "otherStore": "Другой",
-  "addNewProduct": "Добавить новый продукт"
+  "addNewProduct": "Добавить новый продукт",
+
+  "productLabel": "Продукт",
+  "amount": "Сколько",
+  "unit": "Единица",
+  "store": "Какой магазин",
+  "pieces": "Штук",
+  "kg": "кг",
+  "litre": "литр",
+  "return": "Вернуться",
+
+  "goingToWhichStore": "В какой магазин вы собираетесь",
+
+  "createdUser": "Создан",
+  "updatedUser": "Обновлено",
+  "boughtUser": "Купил",
+
+  "deleteAll": "Удалить все"
 }

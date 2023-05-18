@@ -7,7 +7,8 @@ import useLoading from "../helpers/useLoading";
 import { useTranslation, withTranslation } from "react-i18next";
 import LanguageIcon from "@mui/icons-material/Language";
 import { changeLanguage } from "../localization/initLocalization";
-import i18next from "i18next";
+import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { USER_URL } from "../api/APIs";
 
 function Header() {
   const { t } = useTranslation();
@@ -96,26 +97,52 @@ function Header() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem
-          onClick={() => {
-            // i18next.changeLanguage("en");
+          onClick={async () => {
+            if (user == null) return;
             handleClose();
             changeLanguage("en");
+            await fetchWithErrorHandler(USER_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                name: user.name,
+                device: user.device,
+                language: "en",
+              }),
+            });
           }}
         >
           English
         </MenuItem>
         <MenuItem
-          onClick={() => {
+          onClick={async () => {
+            if (user == null) return;
             handleClose();
             changeLanguage("charjew");
+            await fetchWithErrorHandler(USER_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                name: user.name,
+                device: user.device,
+                language: "charjew",
+              }),
+            });
           }}
         >
           Charjew
         </MenuItem>
         <MenuItem
-          onClick={() => {
+          onClick={async () => {
+            if (user == null) return;
             handleClose();
             changeLanguage("ru");
+            await fetchWithErrorHandler(USER_URL, {
+              method: "PUT",
+              body: JSON.stringify({
+                name: user.name,
+                device: user.device,
+                language: "ru",
+              }),
+            });
           }}
         >
           Русский

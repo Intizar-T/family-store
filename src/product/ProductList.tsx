@@ -81,13 +81,6 @@ function ProductList() {
     })();
   }, [lastMessage]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      i18next.changeLanguage("en");
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
   const productState = useMemo(() => {
     return { products, setProducts };
   }, [products]);

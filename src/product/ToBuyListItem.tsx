@@ -21,6 +21,7 @@ import { Products, buyStatusList } from "./ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
+import { t } from "i18next";
 
 interface ToBuyListItemProps {
   product: Products;
@@ -121,11 +122,11 @@ export default function ToBuyListItem({
           secondary={
             <React.Fragment>
               <Typography fontSize="small">
-                Doratdi: {product.userName}
+                {t("createdUser")}: {product.userName}
               </Typography>
               {product.editedUserName && (
                 <Typography fontSize="small" color="#1976D2">
-                  Uytgatdi: {product.editedUserName}
+                  {t("updatedUser")}: {product.editedUserName}
                 </Typography>
               )}
             </React.Fragment>

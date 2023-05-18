@@ -16,5 +16,13 @@
   "pieces": "ta",
   "kg": "kg",
   "litre": "litr",
-  "return": "Iza"
+  "return": "Iza",
+
+  "goingToWhichStore": "Kaysy magazina lok lok",
+
+  "createdUser": "Doratdi",
+  "updatedUser": "Uytgatdi",
+  "boughtUser": "Satyn aldy",
+
+  "deleteAll": "Hammasini ochur"
 }

@@ -16,5 +16,13 @@
   "pieces": "pieces",
   "kg": "kg",
   "litre": "litre",
-  "return": "Return"
+  "return": "Return",
+
+  "goingToWhichStore": "Which store are you planning to go",
+
+  "createdUser": "Created",
+  "updatedUser": "Updated",
+  "boughtUser": "Bought",
+
+  "deleteAll": "Delete All"
 }

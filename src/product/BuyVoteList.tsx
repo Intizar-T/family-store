@@ -30,6 +30,7 @@ import BaseDialog from "../helpers/BaseDialog";
 import WebSocketContext from "../context/WebSocketContext";
 import { ReadyState } from "react-use-websocket";
 import { WEBSOCKET_MESSAGE } from "../App";
+import { t } from "i18next";
 
 enum ACTIONS {
   ADD_LIKE = "addLike",
@@ -153,7 +154,7 @@ export default function BuyVoteList() {
                   >
                     <Grid item xs={12}>
                       <Typography fontSize="small" sx={{ m: 0, p: 0 }}>
-                        Doratdi: {product.userName}
+                        {t("createdUser")}: {product.userName}
                       </Typography>
                     </Grid>
                     <Grid

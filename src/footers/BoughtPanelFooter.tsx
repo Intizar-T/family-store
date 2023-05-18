@@ -9,6 +9,7 @@ import { buyStatusList } from "../product/ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
+import { t } from "i18next";
 
 export default function BoughtPanelFooter() {
   const { products, setProducts } = useContext(ProductContext);
@@ -76,7 +77,7 @@ export default function BoughtPanelFooter() {
           }
         }}
       >
-        Hammasini Ochur
+        {t("deleteAll")}
       </Button>
       <Loading />
       <Message />

@@ -21,6 +21,7 @@ import { buyStatusList } from "./ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
+import { t } from "i18next";
 
 export default function BoughtList() {
   const { products, setProducts } = useContext(ProductContext);
@@ -150,11 +151,11 @@ export default function BoughtList() {
               secondary={
                 <React.Fragment>
                   <Typography fontSize="small">
-                    Doratdi: {product.userName}
+                    {t("createdUser")}: {product.userName}
                   </Typography>
                   {product.boughtUserName && (
                     <Typography fontSize="small" color="#2e7d32">
-                      Satyn aldy: {product.boughtUserName}
+                      {t("boughtUser")}: {product.boughtUserName}
                     </Typography>
                   )}
                 </React.Fragment>

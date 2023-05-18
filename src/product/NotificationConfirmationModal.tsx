@@ -16,6 +16,7 @@ import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
 import UserContext from "../context/UserContext";
+import { t } from "i18next";
 
 interface NotificationConfirmationModalProps {
   showNotificationConfirmationModal: (show: boolean) => void;
@@ -35,7 +36,7 @@ export default function NotificationConfirmationModal({
         showNotificationConfirmationModal(false);
       }}
     >
-      <DialogTitle>Kaysy magazina lonk lonk?</DialogTitle>
+      <DialogTitle>{`${t("goingToWhichStore")}?`}</DialogTitle>
       <DialogContent>
         <Grid
           container
@@ -55,16 +56,16 @@ export default function NotificationConfirmationModal({
           >
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">
-                Kaysy Magazindan
+                {t("store")}
               </InputLabel>
               <Select
                 value={store}
-                label="Kaysy Magazindan"
+                label={t("store")}
                 onChange={(e) => setStore(e.target.value as Store)}
               >
-                <MenuItem value={"pyatorychka"}>Pyatorychka</MenuItem>
-                <MenuItem value={"fixPrice"}>Fix Price</MenuItem>
-                <MenuItem value={"other"}>Bashka</MenuItem>
+                <MenuItem value={"pyatorychka"}>{t("pyatorychka")}</MenuItem>
+                <MenuItem value={"fixPrice"}>{t("fixPrice")}</MenuItem>
+                <MenuItem value={"other"}>{t("otherStore")}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -74,7 +75,7 @@ export default function NotificationConfirmationModal({
                 showNotificationConfirmationModal(false);
               }}
             >
-              Nazad
+              {t("return")}
             </Button>
             <Button
               onClick={async () => {

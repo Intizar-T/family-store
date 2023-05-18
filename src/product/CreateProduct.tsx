@@ -186,6 +186,7 @@ export default function CreateProduct({
                   const id = new Date().getTime();
                   try {
                     toggle(true);
+
                     await fetchWithErrorHandler(PRODUCTS_URL, {
                       method: "POST",
                       body: JSON.stringify({
@@ -209,12 +210,7 @@ export default function CreateProduct({
                         newProductId: id,
                       }),
                     });
-                    toggle(false);
-                    toggleMessage(true, "success", "taza produkt koshuldy");
-                    setTimeout(() => {
-                      toggleMessage(false);
-                      showCreateModal(false);
-                    }, 1500);
+
                     if (readyState === ReadyState.OPEN && sendMessage != null) {
                       sendMessage(
                         JSON.stringify({
@@ -223,32 +219,45 @@ export default function CreateProduct({
                         })
                       );
                     }
-                    await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
-                      method: "POST",
-                      body: JSON.stringify({
-                        userId: user.id,
-                        message: `${user.name} ${
-                          toBuy ? "Almaly" : "Almalymy"
-                        } lista "${newProduct}" koshdy. ${
-                          toBuy
-                            ? ""
-                            : "Girip golosawat etmagi yatdan chykarman pwease"
-                        }`,
-                      }),
-                    });
-                    setProducts(await FetchProductList());
-                    toggleMessage(true, "success", "taza produkt koshuldy");
+
+                    try {
+                      await fetchWithErrorHandler("SEND_NOTIFICATION_URL", {
+                        method: "POST",
+                        body: JSON.stringify({
+                          userId: user.id,
+                          message: `${user.name} ${
+                            toBuy ? "Almaly" : "Almalymy"
+                          } lista "${newProduct}" koshdy. ${
+                            toBuy
+                              ? ""
+                              : "Girip golosawat etmagi yatdan chykarman pwease"
+                          }`,
+                        }),
+                      });
+                    } catch (e) {}
+
+                    // clean up and fetch new product list
                     setNewProduct("");
                     setNewProductAmount("");
                     setUnit("");
+
+                    setProducts(await FetchProductList());
+
                     toggle(false);
+                    toggleMessage(true, "success", "taza produkt koshuldy");
                     setTimeout(() => {
                       toggleMessage(false);
                       showCreateModal(false);
                     }, 1500);
                   } catch (e) {
-                    toggle(false);
+                    // clean up and fetch new product list
+                    setNewProduct("");
+                    setNewProductAmount("");
+                    setUnit("");
+
                     setProducts(await FetchProductList());
+
+                    toggle(false);
                     toggleMessage(
                       true,
                       "error",

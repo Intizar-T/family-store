@@ -221,7 +221,7 @@ export default function CreateProduct({
                     }
 
                     try {
-                      await fetchWithErrorHandler("SEND_NOTIFICATION_URL", {
+                      await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
                         method: "POST",
                         body: JSON.stringify({
                           userId: user.id,

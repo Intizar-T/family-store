@@ -44,7 +44,7 @@ function Header() {
               toggle(false);
             }}
           >
-            {t("store")}
+            {t("logo")}
           </Button>
         </Box>
         <Box>

@@ -4,6 +4,8 @@ import russian from "./ru.json";
 import english from "./en.json";
 import charjew from "./charjew.json";
 
+export type Languages = "en" | "ru" | "charjew";
+
 i18n.use(initReactI18next).init({
   resources: {
     en: {
@@ -20,6 +22,6 @@ i18n.use(initReactI18next).init({
   fallbackLng: "en",
 });
 
-export const changeLanguage = (lng: string) => {
+export const changeLanguage = (lng: Languages) => {
   i18n.changeLanguage(lng);
 };

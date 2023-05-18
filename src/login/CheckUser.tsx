@@ -1,6 +1,7 @@
 import { USER_URL } from "../api/APIs";
 import { OnDutyUsersType, User } from "../App";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { Languages } from "../localization/initLocalization";
 
 export type APIUsers = {
   name: {
@@ -28,6 +29,9 @@ export type APIUsers = {
     L: {
       S: string;
     }[];
+  };
+  language: {
+    S: Languages;
   };
 };
 
@@ -90,6 +94,7 @@ export default async function CheckUser(
           name: user.name.S,
           device: user.device.S,
           subscribed: user.subscription?.S == null ? false : true,
+          language: user.language.S,
         };
       });
 }

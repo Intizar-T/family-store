@@ -13,13 +13,15 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import WebsocketContext from "./context/WebSocketContext";
 import OnGeneralDutyContext from "./context/OnGeneralDutyContext";
 import OnMealDutyContext from "./context/OnMealDutyContext";
-import { t } from "i18next";
+import { Languages } from "./localization/initLocalization";
+import { changeLanguage } from "i18next";
 
 export type User = {
   id: string;
   subscribed: boolean;
   name: string;
   device: string;
+  language: Languages;
 } | null;
 
 export type OnDutyUsersType = {
@@ -47,10 +49,6 @@ function App() {
   const [loginModal, showLoginModal] = useState(false);
   const userAgent = window.navigator.userAgent;
   const device = userAgent;
-  // .substring(
-  //   userAgent.indexOf("(") + 1,
-  //   userAgent.indexOf(")")
-  // );
   const [onGeneralDutyUsers, setOnGeneralDutyUsers] = useState<
     OnDutyUsersType[]
   >([]);
@@ -69,8 +67,10 @@ function App() {
       );
       if (res == null) return;
       const users: User[] = await Promise.all(res);
-      if (users.length !== 0) setUser(users[0]);
-      else
+      if (users[0] != null) {
+        changeLanguage(users[0].language);
+        setUser(users[0]);
+      } else
         setTimeout(() => {
           showLoginModal(true);
         }, 1500);

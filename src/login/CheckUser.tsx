@@ -41,6 +41,7 @@ export default async function CheckUser(
   const users: APIUsers[] = await fetchWithErrorHandler(USER_URL, {
     method: "GET",
   });
+
   if (setOnGeneralDutyUsers != null)
     setOnGeneralDutyUsers(
       users
@@ -75,11 +76,11 @@ export default async function CheckUser(
     );
 
   if (setUser != null) {
+    const userId = localStorage.getItem("userId");
+    if (userId == null) return;
     const fetchedUser = users
       .filter((user) => {
-        return (
-          parseInt(user["id"]["N"]) !== 0 && parseInt(user["id"]["N"]) !== 1
-        );
+        return user["id"]["N"] === userId;
       })
       .map((user: APIUsers) => {
         return {
@@ -88,9 +89,9 @@ export default async function CheckUser(
           subscribed: user.subscription?.S == null ? false : true,
           language: user.language.S,
         };
-      })[0];
-    if (fetchedUser == null)
+      });
+    if (fetchedUser.length === 0 || fetchedUser[0] == null)
       throw new Error("Akkauntynyzy almakda bir problema boldy");
-    setUser(fetchedUser as User);
+    setUser(fetchedUser[0] as User);
   }
 }

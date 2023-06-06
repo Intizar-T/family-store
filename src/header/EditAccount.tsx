@@ -12,7 +12,6 @@ import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
 import UserContext from "../context/UserContext";
-import CheckUser from "../login/CheckUser";
 
 interface EditAccountProps {
   handleClose: () => void;
@@ -59,44 +58,42 @@ export default function EditAccount({ handleClose }: EditAccountProps) {
             </Button>
             <Button
               sx={{ width: 30 }}
-              onClick={async () => {
-                try {
-                  if (user == null) return;
-                  toggle(true);
-                  await fetchWithErrorHandler(USER_URL, {
-                    method: "PUT",
-                    body: JSON.stringify({
-                      newName: editedUserName,
-                      device: user.device,
-                      name: user.name,
-                    }),
-                  });
-                  toggle(false);
-                  const updatedUser = await CheckUser(
-                    undefined,
-                    undefined,
-                    user.device
-                  );
-                  if (updatedUser != null && updatedUser.length > 0)
-                    setUser(updatedUser[0]);
-                  else throw new Error("Uytgadip bolmady");
-                  toggleMessage(true, "success", "Uytgadildi");
-                  setTimeout(() => {
-                    toggleMessage(false);
-                    handleClose();
-                  }, 1000);
-                } catch (error) {
-                  toggle(false);
-                  toggleMessage(
-                    true,
-                    "error",
-                    "Uytgadip bolmady. Tazaldan barlan ya Intizar bn habarlashyn"
-                  );
-                  setTimeout(() => {
-                    toggleMessage(false);
-                  }, 1000);
-                }
-              }}
+              // onClick={async () => {
+              //   try {
+              //     if (user == null) return;
+              //     toggle(true);
+              //     await fetchWithErrorHandler(USER_URL, {
+              //       method: "PUT",
+              //       body: JSON.stringify({
+              //         newName: editedUserName,
+              //         name: user.name,
+              //       }),
+              //     });
+              //     toggle(false);
+              //     const updatedUser = await fetchDutyTaskProps(
+              //       undefined,
+              //       undefined,
+              //     );
+              //     if (updatedUser != null && updatedUser.length > 0)
+              //       setUser(updatedUser[0]);
+              //     else throw new Error("Uytgadip bolmady");
+              //     toggleMessage(true, "success", "Uytgadildi");
+              //     setTimeout(() => {
+              //       toggleMessage(false);
+              //       handleClose();
+              //     }, 1000);
+              //   } catch (error) {
+              //     toggle(false);
+              //     toggleMessage(
+              //       true,
+              //       "error",
+              //       "Uytgadip bolmady. Tazaldan barlan ya Intizar bn habarlashyn"
+              //     );
+              //     setTimeout(() => {
+              //       toggleMessage(false);
+              //     }, 1000);
+              //   }
+              // }}
             >
               OK
             </Button>

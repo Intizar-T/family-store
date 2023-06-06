@@ -27,7 +27,6 @@ import { buyStatusList } from "./ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
-import notificationSender from "../helpers/notificationSender";
 import { t } from "i18next";
 
 interface CreateProductProps {
@@ -212,6 +211,7 @@ export default function CreateProduct({
                   const id = new Date().getTime();
                   try {
                     toggle(true);
+
                     await fetchWithErrorHandler(PRODUCTS_URL, {
                       method: "POST",
                       body: JSON.stringify({
@@ -219,7 +219,6 @@ export default function CreateProduct({
                         name: newProduct,
                         amount: newProductAmount,
                         unit,
-                        createdUserDevice: user.device,
                         createdUserName: user.name,
                         store,
                         buyStatus: toBuy
@@ -230,18 +229,11 @@ export default function CreateProduct({
                     await fetchWithErrorHandler(USER_URL, {
                       method: "PUT",
                       body: JSON.stringify({
-                        device: user.device,
+                        id: user.id,
                         name: user.name,
                         newProductId: id,
                       }),
                     });
-                    toggle(false);
-                    toggleMessage(true, "success", "taza produkt koshuldy");
-                    await cleanUp();
-                    setTimeout(() => {
-                      toggleMessage(false);
-                      showCreateModal(false);
-                    }, 1500);
                     if (readyState === ReadyState.OPEN && sendMessage != null) {
                       sendMessage(
                         JSON.stringify({
@@ -250,10 +242,50 @@ export default function CreateProduct({
                         })
                       );
                     }
-                  } catch (e) {
+
+                    try {
+                      await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                        method: "POST",
+                        body: JSON.stringify({
+                          userId: user.id,
+                          message: `${user.name} ${
+                            toBuy ? "Almaly" : "Almalymy"
+                          } lista "${newProduct}" koshdy. ${
+                            toBuy
+                              ? ""
+                              : "Girip golosawat etmagi yatdan chykarman pwease"
+                          }`,
+                        }),
+                      });
+                    } catch (e) {}
+
+                    // clean up and fetch new product list
+                    setNewProduct("");
+                    setNewProductAmount("");
+                    setUnit("");
+
+                    setProducts(await FetchProductList());
+
                     toggle(false);
-                    toggleMessage(true, "error", "Producty koshup bilmadim :(");
-                    await cleanUp();
+                    toggleMessage(true, "success", "taza produkt koshuldy");
+                    setTimeout(() => {
+                      toggleMessage(false);
+                      showCreateModal(false);
+                    }, 1500);
+                  } catch (e) {
+                    // clean up and fetch new product list
+                    setNewProduct("");
+                    setNewProductAmount("");
+                    setUnit("");
+
+                    setProducts(await FetchProductList());
+
+                    toggle(false);
+                    toggleMessage(
+                      true,
+                      "error",
+                      "Ya producty koshup bilmadim ya bashgalara habar ibarip bilmadim :("
+                    );
                     setTimeout(() => {
                       toggleMessage(false);
                       showCreateModal(false);

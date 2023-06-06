@@ -1,7 +1,6 @@
 import { Grid } from "@mui/material";
 import { useEffect, useMemo } from "react";
 import { useState } from "react";
-import CheckUser from "./login/CheckUser";
 import Login from "./login/Login";
 import ProductList from "./product/ProductList";
 import UserContext from "./context/UserContext";
@@ -14,20 +13,20 @@ import WebsocketContext from "./context/WebSocketContext";
 import OnGeneralDutyContext from "./context/OnGeneralDutyContext";
 import OnMealDutyContext from "./context/OnMealDutyContext";
 import { Languages } from "./localization/initLocalization";
-import { changeLanguage } from "i18next";
+import CheckUser from "./login/CheckUser";
+import useLoading from "./helpers/useLoading";
+import useMessage from "./helpers/useMessage";
 
 export type User = {
   id: string;
   subscribed: boolean;
   name: string;
-  device: string;
   language: Languages;
 } | null;
 
 export type OnDutyUsersType = {
   id: string;
   name: string;
-  device: string;
   onDuty: "No" | "Pending" | string;
 };
 
@@ -47,37 +46,38 @@ export const WEBSOCKET_MESSAGE = {
 function App() {
   const [user, setUser] = useState<User>(null);
   const [loginModal, showLoginModal] = useState(false);
-  const userAgent = window.navigator.userAgent;
-  const device = userAgent;
   const [onGeneralDutyUsers, setOnGeneralDutyUsers] = useState<
     OnDutyUsersType[]
   >([]);
   const [onMealDutyUsers, setOnMealDutyUsers] = useState<OnDutyUsersType[]>([]);
   const [tasks, setTasks] = useState<string[]>([]);
   const { lastMessage, readyState, sendMessage } = useWebSocket(WEBSOCKET);
+  const [Loading, toggle] = useLoading();
+  const [Message, toggleMessage] = useMessage();
 
   useEffect(() => {
-    if (user != null) return;
     (async () => {
-      const res = await CheckUser(
-        setOnGeneralDutyUsers,
-        setTasks,
-        device,
-        setOnMealDutyUsers
-      );
-      if (res == null) return;
-      const users: User[] = await Promise.all(res);
-      if (users[0] != null) {
-        changeLanguage(users[0].language);
-        setUser(users[0]);
-      } else
-        setTimeout(() => {
-          showLoginModal(true);
-        }, 1500);
-      if (users[0] == null) return;
-      await registerServiceWorker(users[0].id, false);
+      const userId = localStorage.getItem("userId");
+      if (userId == null) {
+        showLoginModal(true);
+      } else {
+        try {
+          toggle(true);
+          await CheckUser(
+            setUser,
+            setOnGeneralDutyUsers,
+            setTasks,
+            setOnMealDutyUsers
+          );
+          toggle(false);
+        } catch (error) {
+          toggle(false);
+          const { message } = error as Error;
+          toggleMessage(true, "error", message);
+        }
+      }
     })();
-  }, [user, device]);
+  }, []);
 
   const userState = useMemo(() => {
     return { user, setUser };
@@ -139,9 +139,9 @@ function App() {
                 >
                   <ProductList />
                 </Grid>
-                {loginModal && (
-                  <Login device={device} showLoginModal={showLoginModal} />
-                )}
+                {loginModal && <Login showLoginModal={showLoginModal} />}
+                <Loading />
+                <Message />
               </Grid>
             </OnMealDutyContext.Provider>
           </OnGeneralDutyContext.Provider>

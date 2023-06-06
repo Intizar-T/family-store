@@ -5,7 +5,6 @@ import { Store } from "./ToBuyList";
 
 export type APIProducts = {
   createdAt: { S: string };
-  createdUserDevice: { S: string };
   createdUserName: { S: string };
   id: { S: string };
   buyStatus: { S: string };
@@ -14,9 +13,7 @@ export type APIProducts = {
   store: { S: string };
   amount?: { S: string };
   unit?: { S: string };
-  boughtUserDevice?: { S: string };
   boughtUserName?: { S: string };
-  editedUserDevice?: { S: string };
   editedUserName?: { S: string };
   likes?: { L: { S: string }[] };
   dislikes?: { L: { S: string }[] };
@@ -40,17 +37,14 @@ export default async function FetchProductList() {
       ({
         buyStatus,
         createdAt,
-        createdUserDevice,
         createdUserName,
         id,
         name,
         store,
         updatedAt,
         amount,
-        boughtUserDevice,
         boughtUserName,
         dislikes,
-        editedUserDevice,
         editedUserName,
         likes,
         unit,
@@ -62,7 +56,6 @@ export default async function FetchProductList() {
           store: (store ? store["S"] : "other") as Store,
           createdAt: new Date(createdAt["S"]),
           updatedAt: new Date(updatedAt["S"]),
-          userDevice: createdUserDevice["S"],
           userName: createdUserName["S"],
           likes: likes != null ? likes["L"].map(({ S }) => S) : [],
           dislikes: dislikes != null ? dislikes["L"].map(({ S }) => S) : [],
@@ -71,9 +64,7 @@ export default async function FetchProductList() {
               ? 0.0
               : parseFloat(amount["S"]),
           unit: unit && unit["S"],
-          boughtUserDevice: boughtUserDevice && boughtUserDevice["S"],
           boughtUserName: boughtUserName && boughtUserName["S"],
-          editedUserDevice: editedUserDevice && editedUserDevice["S"],
           editedUserName: editedUserName && editedUserName["S"],
         };
       }

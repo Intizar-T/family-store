@@ -7,9 +7,6 @@ export type APIUsers = {
   name: {
     S: string;
   };
-  device: {
-    S: string;
-  };
   createdProduct: {
     L: string[];
   };
@@ -36,11 +33,11 @@ export type APIUsers = {
 };
 
 export default async function CheckUser(
+  setUser?: (user: User) => void,
   setOnGeneralDutyUsers?: (users: OnDutyUsersType[]) => void,
   setTasks?: (tasks: string[]) => void,
-  device?: string,
   setOnMealDutyUsers?: (users: OnDutyUsersType[]) => void
-): Promise<User[] | undefined> {
+) {
   const users: APIUsers[] = await fetchWithErrorHandler(USER_URL, {
     method: "GET",
   });
@@ -48,11 +45,10 @@ export default async function CheckUser(
     setOnGeneralDutyUsers(
       users
         .filter(({ onGeneralDuty }) => onGeneralDuty)
-        .map(({ id, name, onGeneralDuty, device }) => {
+        .map(({ id, name, onGeneralDuty }) => {
           return {
             id: id["N"],
             name: name["S"],
-            device: device["S"],
             onDuty: onGeneralDuty["S"],
           };
         })
@@ -62,11 +58,10 @@ export default async function CheckUser(
     setOnMealDutyUsers(
       users
         .filter(({ onMealDuty }) => onMealDuty)
-        .map(({ id, name, device, onMealDuty }) => {
+        .map(({ id, name, onMealDuty }) => {
           return {
             id: id.N,
             name: name.S,
-            device: device.S,
             onDuty: onMealDuty.S,
           };
         })
@@ -79,22 +74,23 @@ export default async function CheckUser(
         .map(({ tasks }) => tasks["L"].map(({ S }) => S))[0]
     );
 
-  if (device != null)
-    return users
+  if (setUser != null) {
+    const fetchedUser = users
       .filter((user) => {
         return (
-          parseInt(user["id"]["N"]) !== 0 &&
-          parseInt(user["id"]["N"]) !== 1 &&
-          user["device"]["S"] === device
+          parseInt(user["id"]["N"]) !== 0 && parseInt(user["id"]["N"]) !== 1
         );
       })
       .map((user: APIUsers) => {
         return {
           id: user.id.N,
           name: user.name.S,
-          device: user.device.S,
           subscribed: user.subscription?.S == null ? false : true,
           language: user.language.S,
         };
-      });
+      })[0];
+    if (fetchedUser == null)
+      throw new Error("Akkauntynyzy almakda bir problema boldy");
+    setUser(fetchedUser as User);
+  }
 }

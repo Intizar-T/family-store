@@ -30,7 +30,6 @@ export default function DeleteAccount({ handleClose }: DeleteAccountProps) {
               await fetchWithErrorHandler(USER_URL, {
                 method: "DELETE",
                 body: JSON.stringify({
-                  device: user.device,
                   name: user.name,
                 }),
               });

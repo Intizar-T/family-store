@@ -66,7 +66,6 @@ export default function ToBuyListItem({
                   body: JSON.stringify({
                     id: product.id.toString(),
                     buyStatus: buyStatusList.BOUGHT,
-                    boughtUserDevice: user.device,
                     boughtUserName: user.name,
                   }),
                 });

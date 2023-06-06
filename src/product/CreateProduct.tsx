@@ -194,7 +194,6 @@ export default function CreateProduct({
                         name: newProduct,
                         amount: newProductAmount,
                         unit,
-                        createdUserDevice: user.device,
                         createdUserName: user.name,
                         store,
                         buyStatus: toBuy
@@ -205,7 +204,7 @@ export default function CreateProduct({
                     await fetchWithErrorHandler(USER_URL, {
                       method: "PUT",
                       body: JSON.stringify({
-                        device: user.device,
+                        id: user.id,
                         name: user.name,
                         newProductId: id,
                       }),

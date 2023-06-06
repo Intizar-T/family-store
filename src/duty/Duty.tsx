@@ -43,6 +43,7 @@ const getUserOnDuty = (
   onDutyUsers: OnDutyUsersType[],
   todayISO: string
 ): string => {
+  console.log(todayISO);
   const userOnDuty = onDutyUsers
     .filter(({ onDuty }) => onDuty === todayISO)
     .map(({ name }) => name);
@@ -80,7 +81,7 @@ const checkAndUpdateUserOnDuty = async (
   await Promise.all(
     onDutyUsers
       .filter(({ onDuty }) => onDuty !== "")
-      .map(async ({ onDuty, name, device }) => {
+      .map(async ({ onDuty, name }) => {
         if (onDuty !== todayISO) {
           if (dutyList === "general") {
             const index = GENERAL_DUTY_LIST.indexOf(name);
@@ -93,7 +94,6 @@ const checkAndUpdateUserOnDuty = async (
               body: JSON.stringify({
                 onGeneralDuty: "",
                 name,
-                device,
               }),
             });
           } else if (dutyList === "meal") {
@@ -107,7 +107,6 @@ const checkAndUpdateUserOnDuty = async (
               body: JSON.stringify({
                 onMealDuty: "",
                 name,
-                device,
               }),
             });
           }
@@ -118,13 +117,12 @@ const checkAndUpdateUserOnDuty = async (
     await Promise.all(
       onDutyUsers
         .filter(({ name }) => name === userNameToBeUpdated)
-        .map(async ({ name, device }) => {
+        .map(async ({ name }) => {
           if (dutyList === "general") {
             await fetchWithErrorHandler(USER_URL, {
               method: "PUT",
               body: JSON.stringify({
                 name,
-                device,
                 onGeneralDuty: todayISO,
               }),
             });
@@ -133,7 +131,6 @@ const checkAndUpdateUserOnDuty = async (
               method: "PUT",
               body: JSON.stringify({
                 name,
-                device,
                 onMealDuty: todayISO,
               }),
             });
@@ -141,8 +138,8 @@ const checkAndUpdateUserOnDuty = async (
         })
     );
     await CheckUser(
-      setOnGeneralDutyUsers,
       undefined,
+      setOnGeneralDutyUsers,
       undefined,
       setOnMealDutyUsers
     );
@@ -306,8 +303,7 @@ export default function Duty() {
                           await fetchWithErrorHandler(USER_URL, {
                             method: "PUT",
                             body: JSON.stringify({
-                              name: user.name,
-                              device: user.device,
+                              id: user.id,
                               newTask,
                             }),
                           });
@@ -360,8 +356,7 @@ export default function Duty() {
                             await fetchWithErrorHandler(USER_URL, {
                               method: "PUT",
                               body: JSON.stringify({
-                                name: user.name,
-                                device: user.device,
+                                id: user.id,
                                 taskIndex: index,
                               }),
                             });

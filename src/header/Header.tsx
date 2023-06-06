@@ -104,8 +104,8 @@ function Header() {
             await fetchWithErrorHandler(USER_URL, {
               method: "PUT",
               body: JSON.stringify({
+                id: user.id,
                 name: user.name,
-                device: user.device,
                 language: "en",
               }),
             });
@@ -121,8 +121,8 @@ function Header() {
             await fetchWithErrorHandler(USER_URL, {
               method: "PUT",
               body: JSON.stringify({
+                id: user.id,
                 name: user.name,
-                device: user.device,
                 language: "charjew",
               }),
             });
@@ -138,8 +138,8 @@ function Header() {
             await fetchWithErrorHandler(USER_URL, {
               method: "PUT",
               body: JSON.stringify({
+                id: user.id,
                 name: user.name,
-                device: user.device,
                 language: "ru",
               }),
             });

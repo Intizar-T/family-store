@@ -12,14 +12,19 @@ import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import useLoading from "../helpers/useLoading";
 import UserContext from "../context/UserContext";
 import CheckUser from "./CheckUser";
+import OnGeneralDutyContext from "../context/OnGeneralDutyContext";
+import OnMealDutyContext from "../context/OnMealDutyContext";
+import TasksContext from "../context/TasksContext";
 
 interface LoginProps {
-  device: string;
   showLoginModal: (show: boolean) => void;
 }
 
-export default function Login({ device, showLoginModal }: LoginProps) {
+export default function Login({ showLoginModal }: LoginProps) {
   const { setUser } = useContext(UserContext);
+  const { setOnGeneralDutyUsers } = useContext(OnGeneralDutyContext);
+  const { setOnMealDutyUsers } = useContext(OnMealDutyContext);
+  const { setTasks } = useContext(TasksContext);
   const [name, setName] = useState("");
   const [Loading, toggle] = useLoading();
   return (
@@ -79,22 +84,24 @@ export default function Login({ device, showLoginModal }: LoginProps) {
                 height: 40,
               }}
               onClick={async () => {
-                if (name === "") return;
+                const userId = new Date().getTime().toString();
+                localStorage.setItem("userId", userId);
+                if (name === "" || userId == null) return;
                 toggle(true);
+                localStorage.setItem("name", name);
                 await fetchWithErrorHandler(USER_URL, {
                   method: "POST",
                   body: JSON.stringify({
-                    device,
+                    id: userId,
                     name,
                   }),
                 });
-                const updatedUser = await CheckUser(
-                  undefined,
-                  undefined,
-                  device
+                await CheckUser(
+                  setUser,
+                  setOnGeneralDutyUsers,
+                  setTasks,
+                  setOnMealDutyUsers
                 );
-                if (updatedUser != null && updatedUser.length > 0)
-                  setUser(updatedUser[0]);
                 showLoginModal(false);
                 toggle(false);
               }}

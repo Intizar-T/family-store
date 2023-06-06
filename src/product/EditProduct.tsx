@@ -198,7 +198,6 @@ export default function EditProduct({
                   name: editedProductName,
                   amount: editedProductAmount,
                   unit: editedUnit,
-                  editedUserDevice: user?.device,
                   editedUserName: user?.name,
                   store: editedStore,
                   buyStatus: editedToBuy

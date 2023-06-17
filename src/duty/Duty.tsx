@@ -43,7 +43,6 @@ const getUserOnDuty = (
   onDutyUsers: OnDutyUsersType[],
   todayISO: string
 ): string => {
-  console.log(todayISO);
   const userOnDuty = onDutyUsers
     .filter(({ onDuty }) => onDuty === todayISO)
     .map(({ name }) => name);
@@ -71,6 +70,7 @@ const getTempUserOnMealDuty = (today: string) => {
 };
 
 const checkAndUpdateUserOnDuty = async (
+  userId: string,
   onDutyUsers: OnDutyUsersType[],
   todayISO: string,
   dutyList: "meal" | "general",
@@ -94,6 +94,7 @@ const checkAndUpdateUserOnDuty = async (
               body: JSON.stringify({
                 onGeneralDuty: "",
                 name,
+                id: userId,
               }),
             });
           } else if (dutyList === "meal") {
@@ -107,6 +108,7 @@ const checkAndUpdateUserOnDuty = async (
               body: JSON.stringify({
                 onMealDuty: "",
                 name,
+                id: userId,
               }),
             });
           }
@@ -124,6 +126,7 @@ const checkAndUpdateUserOnDuty = async (
               body: JSON.stringify({
                 name,
                 onGeneralDuty: todayISO,
+                id: userId,
               }),
             });
           } else if (dutyList === "meal") {
@@ -132,6 +135,7 @@ const checkAndUpdateUserOnDuty = async (
               body: JSON.stringify({
                 name,
                 onMealDuty: todayISO,
+                id: userId,
               }),
             });
           }
@@ -163,10 +167,12 @@ export default function Duty() {
   const today = new Date();
   const todayISO = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   useEffect(() => {
+    if (user == null) return;
     (async () => {
       // GENERAL_DUTY_LIST = getUserNames(onGeneralDutyUsers);
       // MEAL_DUTY_LIST = getUserNames(onMealDutyUsers);
       await checkAndUpdateUserOnDuty(
+        user.id,
         onGeneralDutyUsers,
         todayISO,
         "general",

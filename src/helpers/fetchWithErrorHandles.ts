@@ -1,15 +1,18 @@
-export const fetchWithErrorHandler = async <Data = any>(
+export const fetchWithErrorHandler = async (
   url: string,
   options?: RequestInit
-): Promise<Data> => {
-  const request = await fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-  // console.log(await request.json());
-  if (!request.ok) throw new Error(await request.text());
-  return request.json();
+) => {
+  try {
+    const request = await fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+    });
+    if (!request.ok) throw new Error(await request.text());
+    return request.json();
+  } catch (error) {
+    return "400";
+  }
 };

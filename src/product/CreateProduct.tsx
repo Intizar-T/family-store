@@ -13,14 +13,13 @@ import {
   FormGroup,
   FormControlLabel,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { PRODUCTS_URL, USER_URL } from "../api/APIs";
+import { useContext, useState } from "react";
+import { PRODUCTS_URL, SEND_NOTIFICATION_URL, USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
-import useLoading from "../helpers/useLoading";
 import UserContext from "../context/UserContext";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
-import useMessage from "../helpers/useMessage";
+import { toggleMessageProps } from "../helpers/useMessage";
 import { Store } from "./ToBuyList";
 import { Checkbox } from "@mui/material";
 import { buyStatusList } from "./ProductList";
@@ -37,6 +36,7 @@ interface CreateProductProps {
   showCreateModal: (show: boolean) => void;
   unit: string;
   setUnit: (unit: string) => void;
+  toggleMessage: toggleMessageProps;
 }
 
 export default function CreateProduct({
@@ -47,38 +47,13 @@ export default function CreateProduct({
   showCreateModal,
   setUnit,
   unit,
+  toggleMessage,
 }: CreateProductProps) {
   const { user } = useContext(UserContext);
-  const [Loading, toggle] = useLoading();
-  const { setProducts } = useContext(ProductContext);
-  const [Message, toggleMessage] = useMessage();
+  const { products, setProducts } = useContext(ProductContext);
   const [store, setStore] = useState<Store>("pyatorychka");
   const [toBuy, setToBuy] = useState(true);
   const { readyState, sendMessage } = useContext(WebSocketContext);
-  const [sendNotification, setSendNotification] = useState(false);
-
-  const cleanUp = async () => {
-    setProducts(await FetchProductList());
-    setNewProduct("");
-    setNewProductAmount("");
-    setUnit("");
-  };
-
-  useEffect(() => {
-    if (!sendNotification || user == null) return;
-    (async () => {
-      try {
-        await notificationSender(user.id, user.name, toBuy, newProduct);
-        setSendNotification(false);
-      } catch (e) {
-        toggleMessage(true, "error", "Bashgalara habar ibarip bilmadim :(");
-        setTimeout(() => {
-          toggleMessage(false);
-        }, 1500);
-        setSendNotification(false);
-      }
-    })();
-  }, [sendNotification, newProduct]);
 
   return (
     <Dialog
@@ -210,23 +185,56 @@ export default function CreateProduct({
                 if (user !== null && newProduct !== "") {
                   const id = new Date().getTime();
                   try {
-                    toggle(true);
-
-                    await fetchWithErrorHandler(PRODUCTS_URL, {
-                      method: "POST",
-                      body: JSON.stringify({
-                        id,
+                    // clean up and fetch new product list
+                    setProducts([
+                      ...products,
+                      {
+                        id: 0,
                         name: newProduct,
-                        amount: newProductAmount,
-                        unit,
-                        createdUserName: user.name,
-                        store,
                         buyStatus: toBuy
                           ? buyStatusList.BUY
                           : buyStatusList.BUY_VOTE,
-                      }),
-                    });
-                    await fetchWithErrorHandler(USER_URL, {
+                        createdAt: new Date(),
+                        likes: [],
+                        dislikes: [],
+                        store,
+                        updatedAt: new Date(),
+                        userName: user.name,
+                        amount:
+                          newProductAmount !== ""
+                            ? parseInt(newProductAmount)
+                            : undefined,
+                        unit: unit !== "" ? unit : undefined,
+                      },
+                    ]);
+
+                    setNewProduct("");
+                    setNewProductAmount("");
+                    setUnit("");
+                    showCreateModal(false);
+
+                    const postProduct = await fetchWithErrorHandler(
+                      PRODUCTS_URL,
+                      {
+                        method: "POST",
+                        body: JSON.stringify({
+                          id,
+                          name: newProduct,
+                          amount: newProductAmount,
+                          unit,
+                          createdUserName: user.name,
+                          store,
+                          buyStatus: toBuy
+                            ? buyStatusList.BUY
+                            : buyStatusList.BUY_VOTE,
+                        }),
+                      }
+                    );
+                    if (postProduct === "400") {
+                      throw new Error("Produkty koshup bilmadim :(");
+                    }
+
+                    const updateUser = await fetchWithErrorHandler(USER_URL, {
                       method: "PUT",
                       body: JSON.stringify({
                         id: user.id,
@@ -234,6 +242,9 @@ export default function CreateProduct({
                         newProductId: id,
                       }),
                     });
+                    if (updateUser === "400")
+                      throw new Error("Produkty koshup bilmadim :(");
+
                     if (readyState === ReadyState.OPEN && sendMessage != null) {
                       sendMessage(
                         JSON.stringify({
@@ -243,8 +254,11 @@ export default function CreateProduct({
                       );
                     }
 
-                    try {
-                      await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                    setProducts(await FetchProductList());
+
+                    const notificationStatus = await fetchWithErrorHandler(
+                      SEND_NOTIFICATION_URL,
+                      {
                         method: "POST",
                         body: JSON.stringify({
                           userId: user.id,
@@ -256,42 +270,17 @@ export default function CreateProduct({
                               : "Girip golosawat etmagi yatdan chykarman pwease"
                           }`,
                         }),
-                      });
-                    } catch (e) {}
-
-                    // clean up and fetch new product list
-                    setNewProduct("");
-                    setNewProductAmount("");
-                    setUnit("");
-
-                    setProducts(await FetchProductList());
-
-                    toggle(false);
-                    toggleMessage(true, "success", "taza produkt koshuldy");
-                    setTimeout(() => {
-                      toggleMessage(false);
-                      showCreateModal(false);
-                    }, 1500);
+                      }
+                    );
+                    if (notificationStatus === "400")
+                      throw new Error("Bashgalara habar berip bilmadim :(");
                   } catch (e) {
                     // clean up and fetch new product list
-                    setNewProduct("");
-                    setNewProductAmount("");
-                    setUnit("");
-
-                    setProducts(await FetchProductList());
-
-                    toggle(false);
-                    toggleMessage(
-                      true,
-                      "error",
-                      "Ya producty koshup bilmadim ya bashgalara habar ibarip bilmadim :("
-                    );
+                    const { message } = e as Error;
+                    toggleMessage(true, "error", message);
                     setTimeout(() => {
                       toggleMessage(false);
-                      showCreateModal(false);
                     }, 1500);
-                  } finally {
-                    setSendNotification(true);
                   }
                 }
               }}
@@ -305,8 +294,6 @@ export default function CreateProduct({
           </Grid>
         </Grid>
       </DialogContent>
-      <Loading />
-      <Message />
     </Dialog>
   );
 }

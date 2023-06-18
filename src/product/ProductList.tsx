@@ -21,6 +21,7 @@ import WebSocketContext from "../context/WebSocketContext";
 import { WEBSOCKET_MESSAGE } from "../App";
 import i18next, { t } from "i18next";
 import { withTranslation } from "react-i18next";
+import useMessage from "../helpers/useMessage";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote" | "duty";
 export interface Products {
@@ -59,6 +60,7 @@ function ProductList() {
   const [Loading, toggle] = useLoading();
   const [createModal, showCreateModal] = useState(false);
   const { lastMessage } = useContext(WebSocketContext);
+  const [Message, toggleMessage] = useMessage();
 
   useEffect(() => {
     (async () => {
@@ -189,9 +191,11 @@ function ProductList() {
             showCreateModal={showCreateModal}
             setUnit={setUnit}
             unit={unit}
+            toggleMessage={toggleMessage}
           />
         )}
         <Loading />
+        <Message />
       </Grid>
     </ProductContext.Provider>
   );

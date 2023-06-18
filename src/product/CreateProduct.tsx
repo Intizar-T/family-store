@@ -13,17 +13,16 @@ import {
   FormGroup,
   FormControlLabel,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { PRODUCTS_URL, SEND_NOTIFICATION_URL, USER_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
-import useLoading from "../helpers/useLoading";
 import UserContext from "../context/UserContext";
 import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
-import useMessage from "../helpers/useMessage";
+import { toggleMessageProps } from "../helpers/useMessage";
 import { Store } from "./ToBuyList";
 import { Checkbox } from "@mui/material";
-import { Products, buyStatusList } from "./ProductList";
+import { buyStatusList } from "./ProductList";
 import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
@@ -37,6 +36,7 @@ interface CreateProductProps {
   showCreateModal: (show: boolean) => void;
   unit: string;
   setUnit: (unit: string) => void;
+  toggleMessage: toggleMessageProps;
 }
 
 export default function CreateProduct({
@@ -47,11 +47,10 @@ export default function CreateProduct({
   showCreateModal,
   setUnit,
   unit,
+  toggleMessage,
 }: CreateProductProps) {
   const { user } = useContext(UserContext);
-  const [Loading, toggle] = useLoading();
   const { products, setProducts } = useContext(ProductContext);
-  const [Message, toggleMessage] = useMessage();
   const [store, setStore] = useState<Store>("pyatorychka");
   const [toBuy, setToBuy] = useState(true);
   const { readyState, sendMessage } = useContext(WebSocketContext);
@@ -215,7 +214,7 @@ export default function CreateProduct({
                     showCreateModal(false);
 
                     const postProduct = await fetchWithErrorHandler(
-                      `${PRODUCTS_URL}/adf`,
+                      PRODUCTS_URL,
                       {
                         method: "POST",
                         body: JSON.stringify({
@@ -255,8 +254,11 @@ export default function CreateProduct({
                       );
                     }
 
-                    try {
-                      await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                    setProducts(await FetchProductList());
+
+                    const notificationStatus = await fetchWithErrorHandler(
+                      SEND_NOTIFICATION_URL,
+                      {
                         method: "POST",
                         body: JSON.stringify({
                           userId: user.id,
@@ -268,20 +270,16 @@ export default function CreateProduct({
                               : "Girip golosawat etmagi yatdan chykarman pwease"
                           }`,
                         }),
-                      });
-                    } catch (e) {
+                      }
+                    );
+                    if (notificationStatus === "400")
                       throw new Error("Bashgalara habar berip bilmadim :(");
-                    }
-
-                    setProducts(await FetchProductList());
                   } catch (e) {
                     // clean up and fetch new product list
                     const { message } = e as Error;
-                    console.log(message);
                     toggleMessage(true, "error", message);
                     setTimeout(() => {
                       toggleMessage(false);
-                      // showCreateModal(false);
                     }, 1500);
                   }
                 }
@@ -296,8 +294,6 @@ export default function CreateProduct({
           </Grid>
         </Grid>
       </DialogContent>
-      <Loading />
-      <Message />
     </Dialog>
   );
 }

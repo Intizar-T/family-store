@@ -118,7 +118,7 @@ function ProductList() {
                 <Tab value="buy" label={t("toBuy")} />
                 <Tab value="buyVote" label={t("buyVote")} />
                 <Tab value="bought" label={t("bought")} />
-                <Tab value="duty" label={t("duty")} />
+                {/* <Tab value="duty" label={t("duty")} /> */}
               </TabList>
             </Box>
             <Box
@@ -162,7 +162,7 @@ function ProductList() {
               >
                 <BoughtList />
               </TabPanel>
-              <TabPanel
+              {/* <TabPanel
                 value="duty"
                 sx={{
                   padding: 0,
@@ -171,7 +171,7 @@ function ProductList() {
                 }}
               >
                 <Duty />
-              </TabPanel>
+              </TabPanel> */}
             </Box>
           </TabContext>
         </Grid>

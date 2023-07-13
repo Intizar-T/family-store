@@ -22,6 +22,7 @@ import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
 import { t } from "i18next";
+import CommentContext from "./CommentContext";
 
 interface ToBuyListItemProps {
   product: Products;
@@ -41,6 +42,7 @@ export default function ToBuyListItem({
   const { user } = useContext(UserContext);
   const { setProducts } = useContext(ProductContext);
   const { readyState, sendMessage } = useContext(WebSocketContext);
+  const { setOpenCommentDialog } = useContext(CommentContext);
   return (
     <ListItem
       secondaryAction={
@@ -105,6 +107,9 @@ export default function ToBuyListItem({
         </React.Fragment>
       }
       sx={{ width: "100%", paddingY: 1, paddingRight: 8 }}
+      onClick={() => {
+        setOpenCommentDialog(true);
+      }}
     >
       <ListItemAvatar>
         <Avatar>

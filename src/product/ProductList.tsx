@@ -22,6 +22,8 @@ import { WEBSOCKET_MESSAGE } from "../App";
 import i18next, { t } from "i18next";
 import { withTranslation } from "react-i18next";
 import useMessage from "../helpers/useMessage";
+import CommentContext from "./CommentContext";
+import Comment from "./Comment";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote" | "duty";
 export interface Products {
@@ -59,6 +61,7 @@ function ProductList() {
   const [tabValue, setTabValue] = useState<TabValueTypes>("buy");
   const [Loading, toggle] = useLoading();
   const [createModal, showCreateModal] = useState(false);
+  const [openCommentDialog, setOpenCommentDialog] = useState(false);
   const { lastMessage } = useContext(WebSocketContext);
   const [Message, toggleMessage] = useMessage();
 
@@ -84,85 +87,90 @@ function ProductList() {
     return { products, setProducts };
   }, [products]);
 
+  const commentState = useMemo(() => {
+    return { openCommentDialog, setOpenCommentDialog };
+  }, [openCommentDialog]);
+
   return (
     <ProductContext.Provider value={productState}>
-      <Grid
-        container
-        sx={{
-          width: "100%",
-          height: "calc(100% - 60px)",
-        }}
-      >
+      <CommentContext.Provider value={commentState}>
         <Grid
-          item
+          container
           sx={{
             width: "100%",
-            height: "100%",
+            height: "calc(100% - 60px)",
           }}
         >
-          <TabContext value={tabValue}>
-            <Box
-              sx={{
-                borderBottom: 1,
-                borderColor: "divider",
-                height: 59,
-              }}
-            >
-              <TabList
-                onChange={(e, value) => {
-                  setTabValue(value);
-                }}
-                sx={{ paddingTop: 1 }}
-                variant="scrollable"
-              >
-                <Tab value="buy" label={t("toBuy")} />
-                <Tab value="buyVote" label={t("buyVote")} />
-                <Tab value="bought" label={t("bought")} />
-                {/* <Tab value="duty" label={t("duty")} /> */}
-              </TabList>
-            </Box>
-            <Box
-              sx={{
-                overflowY: "scroll",
-                height: "calc(100% - 60px)",
-                borderBottom: 1,
-                borderColor: "divider",
-                marginBottom: 1,
-              }}
-            >
-              <TabPanel
-                value="buy"
+          <Grid
+            item
+            sx={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <TabContext value={tabValue}>
+              <Box
                 sx={{
-                  padding: 0,
-                  margin: 0,
-                  paddingRight: 0,
-                  height: "100%",
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  height: 59,
                 }}
               >
-                <ToBuyList />
-              </TabPanel>
-              <TabPanel
-                value="buyVote"
+                <TabList
+                  onChange={(e, value) => {
+                    setTabValue(value);
+                  }}
+                  sx={{ paddingTop: 1 }}
+                  variant="scrollable"
+                >
+                  <Tab value="buy" label={t("toBuy")} />
+                  <Tab value="buyVote" label={t("buyVote")} />
+                  <Tab value="bought" label={t("bought")} />
+                  {/* <Tab value="duty" label={t("duty")} /> */}
+                </TabList>
+              </Box>
+              <Box
                 sx={{
-                  padding: 0,
-                  margin: 0,
-                  paddingRight: 0,
+                  overflowY: "scroll",
+                  height: "calc(100% - 60px)",
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  marginBottom: 1,
                 }}
               >
-                <BuyVoteList />
-              </TabPanel>
-              <TabPanel
-                value="bought"
-                sx={{
-                  padding: 0,
-                  margin: 0,
-                  paddingRight: 0,
-                  height: "100%",
-                }}
-              >
-                <BoughtList />
-              </TabPanel>
-              {/* <TabPanel
+                <TabPanel
+                  value="buy"
+                  sx={{
+                    padding: 0,
+                    margin: 0,
+                    paddingRight: 0,
+                    height: "100%",
+                  }}
+                >
+                  <ToBuyList />
+                </TabPanel>
+                <TabPanel
+                  value="buyVote"
+                  sx={{
+                    padding: 0,
+                    margin: 0,
+                    paddingRight: 0,
+                  }}
+                >
+                  <BuyVoteList />
+                </TabPanel>
+                <TabPanel
+                  value="bought"
+                  sx={{
+                    padding: 0,
+                    margin: 0,
+                    paddingRight: 0,
+                    height: "100%",
+                  }}
+                >
+                  <BoughtList />
+                </TabPanel>
+                {/* <TabPanel
                 value="duty"
                 sx={{
                   padding: 0,
@@ -172,31 +180,33 @@ function ProductList() {
               >
                 <Duty />
               </TabPanel> */}
-            </Box>
-          </TabContext>
-        </Grid>
+              </Box>
+            </TabContext>
+          </Grid>
 
-        {tabValue === "buy" && (
-          <BuyPanelFooter showCreateModal={showCreateModal} />
-        )}
-        {tabValue === "bought" && <BoughtPanelFooter />}
-        {/* {tabValue === "buyVote" && <BuyVotePanelFooter />} */}
-        {/* {tabValue === "duty" && <DutyFooter />} */}
-        {createModal && (
-          <CreateProduct
-            newProduct={newProduct}
-            newProductAmount={newProductAmount}
-            setNewProduct={setNewProduct}
-            setNewProductAmount={setNewProductAmount}
-            showCreateModal={showCreateModal}
-            setUnit={setUnit}
-            unit={unit}
-            toggleMessage={toggleMessage}
-          />
-        )}
-        <Loading />
-        <Message />
-      </Grid>
+          {tabValue === "buy" && (
+            <BuyPanelFooter showCreateModal={showCreateModal} />
+          )}
+          {tabValue === "bought" && <BoughtPanelFooter />}
+          {/* {tabValue === "buyVote" && <BuyVotePanelFooter />} */}
+          {/* {tabValue === "duty" && <DutyFooter />} */}
+          {createModal && (
+            <CreateProduct
+              newProduct={newProduct}
+              newProductAmount={newProductAmount}
+              setNewProduct={setNewProduct}
+              setNewProductAmount={setNewProductAmount}
+              showCreateModal={showCreateModal}
+              setUnit={setUnit}
+              unit={unit}
+              toggleMessage={toggleMessage}
+            />
+          )}
+          {openCommentDialog && <Comment />}
+          <Loading />
+          <Message />
+        </Grid>
+      </CommentContext.Provider>
     </ProductContext.Provider>
   );
 }

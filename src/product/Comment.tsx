@@ -3,16 +3,21 @@ import {
   Box,
   Drawer,
   Grid,
+  IconButton,
   List,
   ListItem,
   ListItemAvatar,
+  ListItemText,
   TextField,
   Typography,
 } from "@mui/material";
 import { useContext } from "react";
 import { withTranslation } from "react-i18next";
 import CommentContext from "./CommentContext";
-import ImageIcon from "@mui/icons-material/Image";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import React from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function Comment() {
   const { comments, setOpenCommentDialog } = useContext(CommentContext);
@@ -38,13 +43,28 @@ function Comment() {
             ) : (
               <Grid>
                 <List>
-                  {comments.map(({ user, comment }) => (
-                    <ListItem>
+                  {comments.map(({ name, comment, date }) => (
+                    <ListItem
+                      secondaryAction={
+                        <React.Fragment>
+                          <IconButton color="primary" onClick={() => {}}>
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton color="error" onClick={() => {}}>
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </React.Fragment>
+                      }
+                    >
                       <ListItemAvatar>
                         <Avatar>
-                          <ImageIcon />
+                          <AccountBoxIcon />
                         </Avatar>
                       </ListItemAvatar>
+                      <ListItemText
+                        primary={comment}
+                        secondary={`${name}  |  ${date}`}
+                      />
                     </ListItem>
                   ))}
                 </List>

@@ -109,6 +109,7 @@ export default function ToBuyListItem({
       sx={{ width: "100%", paddingY: 1, paddingRight: 8 }}
       onClick={() => {
         setOpenCommentDialog(true);
+        setComments(product.comments);
       }}
     >
       <ListItemAvatar>

@@ -42,7 +42,7 @@ export default function ToBuyListItem({
   const { user } = useContext(UserContext);
   const { setProducts } = useContext(ProductContext);
   const { readyState, sendMessage } = useContext(WebSocketContext);
-  const { setOpenCommentDialog } = useContext(CommentContext);
+  const { setOpenCommentDialog, setComments } = useContext(CommentContext);
   return (
     <ListItem
       secondaryAction={

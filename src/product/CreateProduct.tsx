@@ -205,6 +205,7 @@ export default function CreateProduct({
                             ? parseInt(newProductAmount)
                             : undefined,
                         unit: unit !== "" ? unit : undefined,
+                        comments: [],
                       },
                     ]);
 

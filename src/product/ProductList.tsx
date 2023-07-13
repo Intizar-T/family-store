@@ -22,7 +22,10 @@ import { WEBSOCKET_MESSAGE } from "../App";
 import i18next, { t } from "i18next";
 import { withTranslation } from "react-i18next";
 import useMessage from "../helpers/useMessage";
-import CommentContext from "./CommentContext";
+import CommentContext, {
+  CommentContextProps,
+  CommentProps,
+} from "./CommentContext";
 import Comment from "./Comment";
 
 export type TabValueTypes = "buy" | "bought" | "buyVote" | "duty";
@@ -40,6 +43,7 @@ export interface Products {
   unit?: string;
   boughtUserName?: string;
   editedUserName?: string;
+  comments: CommentProps;
 }
 
 export enum buyStatusList {
@@ -62,6 +66,7 @@ function ProductList() {
   const [Loading, toggle] = useLoading();
   const [createModal, showCreateModal] = useState(false);
   const [openCommentDialog, setOpenCommentDialog] = useState(false);
+  const [comments, setComments] = useState([]);
   const { lastMessage } = useContext(WebSocketContext);
   const [Message, toggleMessage] = useMessage();
 
@@ -88,8 +93,13 @@ function ProductList() {
   }, [products]);
 
   const commentState = useMemo(() => {
-    return { openCommentDialog, setOpenCommentDialog };
-  }, [openCommentDialog]);
+    return {
+      comments,
+      openCommentDialog,
+      setOpenCommentDialog,
+      setComments,
+    } as unknown as CommentContextProps;
+  }, [openCommentDialog, comments]);
 
   return (
     <ProductContext.Provider value={productState}>

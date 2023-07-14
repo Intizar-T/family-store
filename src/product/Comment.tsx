@@ -19,11 +19,23 @@ import React from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UserContext from "../context/UserContext";
+import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { PRODUCTS_URL } from "../api/APIs";
+import useLoading from "../helpers/useLoading";
+import useMessage from "../helpers/useMessage";
 
 function Comment() {
-  const { comments, setOpenCommentDialog } = useContext(CommentContext);
+  const {
+    comments,
+    setOpenCommentDialog,
+    productId,
+    setProductId,
+    setComments,
+  } = useContext(CommentContext);
   const [newComment, setNewComment] = useState("");
   const { user } = useContext(UserContext);
+  const [Loading, toggle] = useLoading();
+  const [Message, toggleMessage] = useMessage();
   return (
     <Grid>
       <Drawer
@@ -31,14 +43,17 @@ function Comment() {
         open={true}
         onClose={() => {
           setOpenCommentDialog(false);
+          setProductId(undefined);
+          setComments([]);
         }}
       >
         <Grid sx={{ height: "50vh", position: "relative" }}>
           <Grid
             sx={{
               position: "absolute",
-              height: "calc(100% - 56px)",
+              height: "calc(100% - 60px)",
               width: "100%",
+              overflow: "scroll",
             }}
           >
             {comments == null || comments.length === 0 ? (
@@ -78,11 +93,37 @@ function Comment() {
           </Grid>
           <Grid>
             <form
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (newComment === "") return;
-                console.log(newComment);
-                setNewComment("");
+              onSubmit={async (event) => {
+                try {
+                  event.preventDefault();
+                  if (newComment === "" || user == null) return;
+                  const today = new Date();
+                  const body: any = {
+                    name: user.name,
+                    comment: newComment,
+                    date: `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`,
+                  };
+                  setComments([...comments, body]);
+                  body["id"] = productId;
+                  body["addComment"] = true;
+                  const updateProductStatus = await fetchWithErrorHandler(
+                    PRODUCTS_URL,
+                    {
+                      method: "PUT",
+                      body: JSON.stringify(body),
+                    }
+                  );
+                  if (updateProductStatus === "400")
+                    throw new Error("Comment koshup bilmadim :(");
+                  setNewComment("");
+                } catch (error) {
+                  setNewComment("");
+                  const { message } = error as Error;
+                  toggleMessage(true, "error", message);
+                  setTimeout(() => {
+                    toggleMessage(false);
+                  }, 1500);
+                }
               }}
             >
               <TextField
@@ -100,6 +141,8 @@ function Comment() {
           </Grid>
         </Grid>
       </Drawer>
+      <Loading />
+      <Message />
     </Grid>
   );
 }

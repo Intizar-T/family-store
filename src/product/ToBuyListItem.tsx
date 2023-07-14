@@ -42,7 +42,8 @@ export default function ToBuyListItem({
   const { user } = useContext(UserContext);
   const { setProducts } = useContext(ProductContext);
   const { readyState, sendMessage } = useContext(WebSocketContext);
-  const { setOpenCommentDialog, setComments } = useContext(CommentContext);
+  const { setOpenCommentDialog, setComments, setProductId } =
+    useContext(CommentContext);
   return (
     <ListItem
       secondaryAction={
@@ -110,6 +111,7 @@ export default function ToBuyListItem({
       onClick={() => {
         setOpenCommentDialog(true);
         setComments(product.comments);
+        setProductId(product.id);
       }}
     >
       <ListItemAvatar>

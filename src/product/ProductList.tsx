@@ -64,11 +64,12 @@ function ProductList() {
   const [unit, setUnit] = useState<string>("");
   const [tabValue, setTabValue] = useState<TabValueTypes>("buy");
   const [Loading, toggle] = useLoading();
+  const [Message, toggleMessage] = useMessage();
   const [createModal, showCreateModal] = useState(false);
   const [openCommentDialog, setOpenCommentDialog] = useState(false);
   const [comments, setComments] = useState([]);
+  const [productId, setProductId] = useState();
   const { lastMessage } = useContext(WebSocketContext);
-  const [Message, toggleMessage] = useMessage();
 
   useEffect(() => {
     (async () => {
@@ -96,10 +97,12 @@ function ProductList() {
     return {
       comments,
       openCommentDialog,
+      productId,
       setOpenCommentDialog,
       setComments,
+      setProductId,
     } as unknown as CommentContextProps;
-  }, [openCommentDialog, comments]);
+  }, [openCommentDialog, comments, productId]);
 
   return (
     <ProductContext.Provider value={productState}>

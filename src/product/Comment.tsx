@@ -154,6 +154,9 @@ function Comment() {
                   );
                   if (updateProductStatus === "400")
                     throw new Error("Comment koshup bilmadim :(");
+                  const newCommentCopied = newComment;
+                  setNewComment("");
+                  setProducts(await FetchProductList());
                   await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
                     method: "POST",
                     body: JSON.stringify({
@@ -161,14 +164,12 @@ function Comment() {
                       message: `${user.name} "${productName?.substring(
                         0,
                         25
-                      )}" produkta kommentariya koshdy: "${newComment.substring(
+                      )}..." produkta kommentariya koshdy: "${newCommentCopied.substring(
                         0,
                         25
-                      )}"`,
+                      )}..."`,
                     }),
                   });
-                  setNewComment("");
-                  setProducts(await FetchProductList());
                 } catch (error) {
                   setNewComment("");
                   setProducts(await FetchProductList());

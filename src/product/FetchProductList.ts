@@ -1,5 +1,6 @@
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { CommentProps } from "./CommentContext";
 import { Products, TabValueTypes } from "./ProductList";
 import { Store } from "./ToBuyList";
 
@@ -17,6 +18,11 @@ export type APIProducts = {
   editedUserName?: { S: string };
   likes?: { L: { S: string }[] };
   dislikes?: { L: { S: string }[] };
+  comments?: {
+    L: {
+      M: { name: { S: string }; date: { S: string }; comment: { S: string } };
+    }[];
+  };
 };
 
 const sortByDate = (a: Products, b: Products) => {
@@ -48,7 +54,14 @@ export default async function FetchProductList() {
         editedUserName,
         likes,
         unit,
+        comments,
       }) => {
+        if (comments != null) comments.L.map(({ M }) => console.log(M.name.S));
+        // Object.keys(comments.L[0].M).map((key) =>
+        //   comments.L[0].M[key].L.map(({ S }: { S: string }) =>
+        //     console.log({ key: S })
+        //   )
+        // );
         return {
           id: parseInt(id["S"]),
           name: name["S"],
@@ -66,6 +79,16 @@ export default async function FetchProductList() {
           unit: unit && unit["S"],
           boughtUserName: boughtUserName && boughtUserName["S"],
           editedUserName: editedUserName && editedUserName["S"],
+          comments:
+            comments == null
+              ? []
+              : comments.L.map(({ M }) => {
+                  return {
+                    name: M.name.S,
+                    date: M.date.S,
+                    comment: M.comment.S,
+                  };
+                }),
         };
       }
     )

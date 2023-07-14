@@ -20,7 +20,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UserContext from "../context/UserContext";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
-import { PRODUCTS_URL } from "../api/APIs";
+import { PRODUCTS_URL, SEND_NOTIFICATION_URL } from "../api/APIs";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
 import ProductContext from "./ProductContext";
@@ -33,6 +33,8 @@ function Comment() {
     productId,
     setProductId,
     setComments,
+    setProductName,
+    productName,
   } = useContext(CommentContext);
   const [newComment, setNewComment] = useState("");
   const { user } = useContext(UserContext);
@@ -47,6 +49,7 @@ function Comment() {
           setOpenCommentDialog(false);
           setProductId(undefined);
           setComments([]);
+          setProductName(undefined);
         }}
       >
         <Grid sx={{ height: "50vh", position: "relative" }}>
@@ -63,7 +66,7 @@ function Comment() {
             ) : (
               <Grid>
                 <List>
-                  {comments.map(({ name, comment, date }) => (
+                  {comments.map(({ name, comment, date }, index) => (
                     <ListItem
                       secondaryAction={
                         user?.name === name && (
@@ -71,7 +74,40 @@ function Comment() {
                             <IconButton color="primary" onClick={() => {}}>
                               <EditIcon fontSize="small" />
                             </IconButton>
-                            <IconButton color="error" onClick={() => {}}>
+                            <IconButton
+                              color="error"
+                              onClick={async () => {
+                                try {
+                                  const status = await fetchWithErrorHandler(
+                                    PRODUCTS_URL,
+                                    {
+                                      method: "PUT",
+                                      body: JSON.stringify({
+                                        removeComment: true,
+                                        id: productId,
+                                        commentIndex: index,
+                                      }),
+                                    }
+                                  );
+                                  if (status === "400")
+                                    throw new Error(
+                                      "Comment udalit edip bilmadim"
+                                    );
+                                  setProducts(await FetchProductList());
+                                  setComments(
+                                    comments.filter(
+                                      (cmmnt, idx) => index !== idx
+                                    )
+                                  );
+                                } catch (error) {
+                                  const { message } = error as Error;
+                                  toggleMessage(true, "error", message);
+                                  setTimeout(() => {
+                                    toggleMessage(false);
+                                  }, 1500);
+                                }
+                              }}
+                            >
                               <DeleteIcon fontSize="small" />
                             </IconButton>
                           </React.Fragment>
@@ -86,6 +122,7 @@ function Comment() {
                       <ListItemText
                         primary={comment}
                         secondary={`${name}  |  ${date}`}
+                        sx={{ marginRight: 4, overflowWrap: "break-word" }}
                       />
                     </ListItem>
                   ))}
@@ -117,6 +154,19 @@ function Comment() {
                   );
                   if (updateProductStatus === "400")
                     throw new Error("Comment koshup bilmadim :(");
+                  await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
+                    method: "POST",
+                    body: JSON.stringify({
+                      userId: user.id,
+                      message: `${user.name} "${productName?.substring(
+                        0,
+                        25
+                      )}" produkta kommentariya koshdy: "${newComment.substring(
+                        0,
+                        25
+                      )}"`,
+                    }),
+                  });
                   setNewComment("");
                   setProducts(await FetchProductList());
                 } catch (error) {

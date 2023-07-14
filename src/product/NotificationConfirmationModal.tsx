@@ -13,21 +13,20 @@ import { Store } from "./ToBuyList";
 import { useContext, useState } from "react";
 import { SEND_NOTIFICATION_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
-import useLoading from "../helpers/useLoading";
-import useMessage from "../helpers/useMessage";
+import { toggleMessageProps } from "../helpers/useMessage";
 import UserContext from "../context/UserContext";
 import { t } from "i18next";
 
 interface NotificationConfirmationModalProps {
   showNotificationConfirmationModal: (show: boolean) => void;
+  toggleMessage: toggleMessageProps;
 }
 
 export default function NotificationConfirmationModal({
   showNotificationConfirmationModal,
+  toggleMessage,
 }: NotificationConfirmationModalProps) {
   const [store, setStore] = useState<Store>("pyatorychka");
-  const [Loading, toggle] = useLoading();
-  const [Message, toggleMessage] = useMessage();
   const { user } = useContext(UserContext);
   return (
     <Dialog
@@ -81,20 +80,23 @@ export default function NotificationConfirmationModal({
               onClick={async () => {
                 try {
                   if (user == null) return;
-                  toggle(true);
-                  await fetchWithErrorHandler(SEND_NOTIFICATION_URL, {
-                    method: "POST",
-                    body: JSON.stringify({
-                      userId: user.id,
-                      message: `${user.name} hazyr ${
-                        store === "other"
-                          ? "bir magazina gitjak bolotran. Kaysy magazindigini bilimman toka"
-                          : store +
-                            " magazina gitjak bolotran. Garak zat bolsa store yazynlar"
-                      }`,
-                    }),
-                  });
-                  toggle(false);
+                  showNotificationConfirmationModal(false);
+                  const status = await fetchWithErrorHandler(
+                    SEND_NOTIFICATION_URL,
+                    {
+                      method: "POST",
+                      body: JSON.stringify({
+                        userId: user.id,
+                        message: `${user.name} hazyr ${
+                          store === "other"
+                            ? "bir magazina gitjak bolotran. Kaysy magazindigini bilimman toka"
+                            : store +
+                              " magazina gitjak bolotran. Garak zat bolsa store yazynlar"
+                        }`,
+                      }),
+                    }
+                  );
+                  if (status === "400") throw new Error();
                   toggleMessage(
                     true,
                     "success",
@@ -102,10 +104,8 @@ export default function NotificationConfirmationModal({
                   );
                   setTimeout(() => {
                     toggleMessage(false);
-                    showNotificationConfirmationModal(false);
                   }, 1500);
                 } catch (e) {
-                  toggle(false);
                   toggleMessage(
                     true,
                     "error",
@@ -122,8 +122,6 @@ export default function NotificationConfirmationModal({
           </Grid>
         </Grid>
       </DialogContent>
-      <Loading />
-      <Message />
     </Dialog>
   );
 }

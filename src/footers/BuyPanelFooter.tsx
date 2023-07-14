@@ -122,6 +122,7 @@ export default function BuyPanelFooter({
       {notificationConfirmationModal && (
         <NotificationConfirmationModal
           showNotificationConfirmationModal={showNotificationConfirmationModal}
+          toggleMessage={toggleMessage}
         />
       )}
       <Loading />

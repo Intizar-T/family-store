@@ -23,6 +23,8 @@ import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import { PRODUCTS_URL } from "../api/APIs";
 import useLoading from "../helpers/useLoading";
 import useMessage from "../helpers/useMessage";
+import ProductContext from "./ProductContext";
+import FetchProductList from "./FetchProductList";
 
 function Comment() {
   const {
@@ -34,8 +36,8 @@ function Comment() {
   } = useContext(CommentContext);
   const [newComment, setNewComment] = useState("");
   const { user } = useContext(UserContext);
-  const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
+  const { products, setProducts } = useContext(ProductContext);
   return (
     <Grid>
       <Drawer
@@ -116,8 +118,10 @@ function Comment() {
                   if (updateProductStatus === "400")
                     throw new Error("Comment koshup bilmadim :(");
                   setNewComment("");
+                  setProducts(await FetchProductList());
                 } catch (error) {
                   setNewComment("");
+                  setProducts(await FetchProductList());
                   const { message } = error as Error;
                   toggleMessage(true, "error", message);
                   setTimeout(() => {
@@ -141,7 +145,6 @@ function Comment() {
           </Grid>
         </Grid>
       </Drawer>
-      <Loading />
       <Message />
     </Grid>
   );

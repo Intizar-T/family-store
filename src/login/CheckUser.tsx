@@ -1,6 +1,7 @@
 import { USER_URL } from "../api/APIs";
 import { OnDutyUsersType, User } from "../App";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
+import { registerServiceWorker } from "../helpers/notificationSubscription";
 import { Languages } from "../localization/initLocalization";
 
 export type APIUsers = {
@@ -92,6 +93,11 @@ export default async function CheckUser(
       });
     if (fetchedUser.length === 0 || fetchedUser[0] == null)
       throw new Error("Akkauntynyzy almakda bir problema boldy");
-    setUser(fetchedUser[0] as User);
+    const currentUser = fetchedUser[0] as User;
+    if (currentUser != null && !currentUser?.subscribed) {
+      await registerServiceWorker(currentUser.id, true);
+      setUser({ ...currentUser, subscribed: true });
+    }
+    setUser(currentUser);
   }
 }

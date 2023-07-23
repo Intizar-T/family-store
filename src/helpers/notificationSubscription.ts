@@ -25,7 +25,7 @@ export const registerServiceWorker = async (id: string, subscribe: boolean) => {
       const registration = await navigator.serviceWorker.register(
         "/family-store/service-worker.js"
       );
-      console.log(`service worker status: ${registration.active?.state}`);
+      // console.log(`service worker status: ${registration.active?.state}`);
       if (subscribe && registration.active) {
         await Notification.requestPermission(async (result) => {
           if (result === "granted") {
@@ -40,9 +40,9 @@ export const registerServiceWorker = async (id: string, subscribe: boolean) => {
                 id,
               }),
             });
-            registration.showNotification("Habarlashyga yazyldynyz", {
-              body: "Indi kim magazina birzat koshsa soobsheniya geladi shundey",
-            });
+            // registration.showNotification("Habarlashyga yazyldynyz", {
+            //   body: "Indi kim magazina birzat koshsa soobsheniya geladi shundey",
+            // });
           }
         });
       }

@@ -90,7 +90,7 @@ export default function BuyPanelFooter({
           </Button>
         </Tooltip>
       </div>
-      {!user?.subscribed && (
+      {/* {!user?.subscribed && (
         <div
           style={{
             position: "absolute",
@@ -118,7 +118,7 @@ export default function BuyPanelFooter({
             </Button>
           </Tooltip>
         </div>
-      )}
+      )} */}
       {notificationConfirmationModal && (
         <NotificationConfirmationModal
           showNotificationConfirmationModal={showNotificationConfirmationModal}

@@ -6,7 +6,6 @@ import ProductList from "./product/ProductList";
 import UserContext from "./context/UserContext";
 import Header from "./header/Header";
 import TasksContext from "./context/TasksContext";
-import { registerServiceWorker } from "./helpers/notificationSubscription";
 import { WEBSOCKET } from "./api/APIs";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import WebsocketContext from "./context/WebSocketContext";

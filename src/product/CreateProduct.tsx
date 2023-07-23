@@ -277,6 +277,7 @@ export default function CreateProduct({
                       throw new Error("Bashgalara habar berip bilmadim :(");
                   } catch (e) {
                     // clean up and fetch new product list
+                    setProducts(await FetchProductList());
                     const { message } = e as Error;
                     toggleMessage(true, "error", message);
                     setTimeout(() => {

@@ -5,6 +5,7 @@ import {
   Avatar,
   ListItemText,
   Typography,
+  Button,
 } from "@mui/material";
 import React, { useContext } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
@@ -23,6 +24,7 @@ import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
 import { t } from "i18next";
 import CommentContext from "./CommentContext";
+import CommentIcon from "@mui/icons-material/Comment";
 
 interface ToBuyListItemProps {
   product: Products;
@@ -42,23 +44,24 @@ export default function ToBuyListItem({
   const { user } = useContext(UserContext);
   const { setProducts } = useContext(ProductContext);
   const { readyState, sendMessage } = useContext(WebSocketContext);
-  const { setOpenCommentDialog, setComments, setProductId } =
+  const { setOpenCommentDialog, setComments, setProductId, setProductName } =
     useContext(CommentContext);
   return (
     <ListItem
       secondaryAction={
         <React.Fragment>
           <IconButton
+            sx={{ m: 0, p: 0, marginRight: "6px" }}
             color="primary"
             onClick={() => {
               setSelectedProduct(product);
               showEditModal(true);
             }}
           >
-            <EditIcon />
+            <EditIcon fontSize="small" />
           </IconButton>
           <IconButton
-            sx={{ mr: 1 }}
+            sx={{ m: 0, p: 0, marginRight: "6px" }}
             color="success"
             onClick={async () => {
               try {
@@ -103,44 +106,65 @@ export default function ToBuyListItem({
               }
             }}
           >
-            <CheckIcon />
+            <CheckIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              setOpenCommentDialog(true);
+              setComments(product.comments);
+              setProductId(product.id);
+            }}
+            sx={{ m: 0, p: 0, marginRight: "6px" }}
+          >
+            <CommentIcon fontSize="small" />
           </IconButton>
         </React.Fragment>
       }
       sx={{ width: "100%", paddingY: 1, paddingRight: 8 }}
-      onClick={() => {
-        setOpenCommentDialog(true);
-        setComments(product.comments);
-        setProductId(product.id);
-      }}
     >
-      <ListItemAvatar>
-        <Avatar>
-          <ImageIcon />
-        </Avatar>
-      </ListItemAvatar>
-      {product && (
-        <ListItemText
-          primary={`${product.name} ${
-            product.amount !== 0 && product.unit != null
-              ? "- " + product.amount + " " + product.unit
-              : ""
-          }`}
-          secondary={
-            <React.Fragment>
-              <Typography fontSize="small">
-                {t("createdUser")}: {product.userName}
-              </Typography>
-              {product.editedUserName && (
-                <Typography fontSize="small" color="#1976D2">
-                  {t("updatedUser")}: {product.editedUserName}
+      <Button
+        sx={{
+          m: 0,
+          p: 0,
+          textTransform: "none",
+          textAlign: "left",
+          color: "black",
+        }}
+        onClick={() => {
+          setOpenCommentDialog(true);
+          setComments(product.comments);
+          setProductId(product.id);
+          setProductName(product.name);
+        }}
+      >
+        <ListItemAvatar>
+          <Avatar>
+            <ImageIcon />
+          </Avatar>
+        </ListItemAvatar>
+        {product && (
+          <ListItemText
+            primary={`${product.name} ${
+              product.amount !== 0 && product.unit != null
+                ? "- " + product.amount + " " + product.unit
+                : ""
+            }`}
+            secondary={
+              <React.Fragment>
+                <Typography fontSize="small">
+                  {t("createdUser")}: {product.userName}
                 </Typography>
-              )}
-            </React.Fragment>
-          }
-          sx={{ marginRight: 4, overflowWrap: "break-word" }}
-        />
-      )}
+                {product.editedUserName && (
+                  <Typography fontSize="small" color="#1976D2">
+                    {t("updatedUser")}: {product.editedUserName}
+                  </Typography>
+                )}
+              </React.Fragment>
+            }
+            sx={{ marginRight: 4, overflowWrap: "break-word" }}
+          />
+        )}
+      </Button>
     </ListItem>
   );
 }

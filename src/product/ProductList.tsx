@@ -69,6 +69,7 @@ function ProductList() {
   const [openCommentDialog, setOpenCommentDialog] = useState(false);
   const [comments, setComments] = useState([]);
   const [productId, setProductId] = useState();
+  const [productName, setProductName] = useState();
   const { lastMessage } = useContext(WebSocketContext);
 
   useEffect(() => {
@@ -98,11 +99,13 @@ function ProductList() {
       comments,
       openCommentDialog,
       productId,
+      productName,
       setOpenCommentDialog,
       setComments,
       setProductId,
+      setProductName,
     } as unknown as CommentContextProps;
-  }, [openCommentDialog, comments, productId]);
+  }, [openCommentDialog, comments, productId, productName]);
 
   return (
     <ProductContext.Provider value={productState}>

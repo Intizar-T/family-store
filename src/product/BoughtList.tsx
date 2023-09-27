@@ -7,7 +7,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import ImageIcon from "@mui/icons-material/Image";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -22,13 +22,19 @@ import { WEBSOCKET_MESSAGE } from "../App";
 import { ReadyState } from "react-use-websocket";
 import WebSocketContext from "../context/WebSocketContext";
 import { t } from "i18next";
+import { avatarPhotos } from "../helpers/constants";
+import BaseDialog from "../helpers/BaseDialog";
 
 export default function BoughtList() {
   const { products, setProducts } = useContext(ProductContext);
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
   const { lastMessage, readyState, sendMessage } = useContext(WebSocketContext);
-
+  const [openProfileDialog, setOpenProfileDialog] = useState(false);
+  const [profileDialogContents, setProfileDialogContents] = useState<{
+    userName: string;
+    imgUrl: string;
+  }>();
   return (
     <List
       sx={{
@@ -136,10 +142,18 @@ export default function BoughtList() {
             }
             sx={{ width: "100%" }}
           >
-            <ListItemAvatar>
-              <Avatar>
-                <ImageIcon />
-              </Avatar>
+            <ListItemAvatar
+              onClick={() => {
+                setOpenProfileDialog(true);
+                setProfileDialogContents({
+                  imgUrl: avatarPhotos[product.userName.toLowerCase()],
+                  userName: product.userName,
+                });
+              }}
+            >
+              <Avatar
+                src={avatarPhotos[product.userName.toLowerCase()] || undefined}
+              />
             </ListItemAvatar>
             <ListItemText
               primary={`${product.name} ${
@@ -147,22 +161,35 @@ export default function BoughtList() {
                   ? "- " + product.amount + " " + product.unit
                   : ""
               }`}
-              secondary={
-                <React.Fragment>
-                  <Typography fontSize="small">
-                    {t("createdUser")}: {product.userName}
-                  </Typography>
-                  {product.boughtUserName && (
-                    <Typography fontSize="small" color="#2e7d32">
-                      {t("boughtUser")}: {product.boughtUserName}
-                    </Typography>
-                  )}
-                </React.Fragment>
-              }
+              // secondary={
+              //   <React.Fragment>
+              //     <Typography fontSize="small">
+              //       {t("createdUser")}: {product.userName}
+              //     </Typography>
+              //     {product.boughtUserName && (
+              //       <Typography fontSize="small" color="#2e7d32">
+              //         {t("boughtUser")}: {product.boughtUserName}
+              //       </Typography>
+              //     )}
+              //   </React.Fragment>
+              // }
               sx={{ marginRight: 4, overflowWrap: "break-word" }}
             />
           </ListItem>
         ))}
+      {openProfileDialog && profileDialogContents && (
+        <BaseDialog
+          handleClose={() => setOpenProfileDialog(false)}
+          dialogText={profileDialogContents.userName}
+          showNavigationButtons={false}
+        >
+          <img
+            alt={profileDialogContents.userName}
+            src={profileDialogContents.imgUrl}
+            width={250}
+          />
+        </BaseDialog>
+      )}
       <Loading />
       <Message />
     </List>

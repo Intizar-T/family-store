@@ -25,6 +25,7 @@ import WebSocketContext from "../context/WebSocketContext";
 import { t } from "i18next";
 import CommentContext from "./CommentContext";
 import CommentIcon from "@mui/icons-material/Comment";
+import { avatarPhotos } from "../helpers/constants";
 
 interface ToBuyListItemProps {
   product: Products;
@@ -138,9 +139,9 @@ export default function ToBuyListItem({
         }}
       >
         <ListItemAvatar>
-          <Avatar>
-            <ImageIcon />
-          </Avatar>
+          <Avatar
+            src={avatarPhotos[product.userName.toLowerCase()] || undefined}
+          />
         </ListItemAvatar>
         {product && (
           <ListItemText
@@ -149,18 +150,18 @@ export default function ToBuyListItem({
                 ? "- " + product.amount + " " + product.unit
                 : ""
             }`}
-            secondary={
-              <React.Fragment>
-                <Typography fontSize="small">
-                  {t("createdUser")}: {product.userName}
-                </Typography>
-                {product.editedUserName && (
-                  <Typography fontSize="small" color="#1976D2">
-                    {t("updatedUser")}: {product.editedUserName}
-                  </Typography>
-                )}
-              </React.Fragment>
-            }
+            // secondary={
+            //   <React.Fragment>
+            //     <Typography fontSize="small">
+            //       {t("createdUser")}: {product.userName}
+            //     </Typography>
+            //     {product.editedUserName && (
+            //       <Typography fontSize="small" color="#1976D2">
+            //         {t("updatedUser")}: {product.editedUserName}
+            //       </Typography>
+            //     )}
+            //   </React.Fragment>
+            // }
             sx={{ marginRight: 4, overflowWrap: "break-word" }}
           />
         )}

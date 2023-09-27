@@ -30,7 +30,7 @@ export default function BaseDialog({
   const [Loading, toggle] = useLoading();
   const [Message, toggleMessage] = useMessage();
   return (
-    <Dialog open={true} keepMounted onClose={handleClose}>
+    <Dialog open={true} keepMounted onClose={handleClose} fullWidth>
       <DialogTitle sx={{ textAlign: "center" }}>{dialogText}</DialogTitle>
       <DialogContent
         sx={{

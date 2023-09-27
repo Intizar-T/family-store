@@ -169,7 +169,7 @@ export default function ToBuyListItem({
             secondary={
               <React.Fragment>
                 <Box display="flex">
-                  <Typography color="green" fontSize="small">
+                  <Typography color="green" fontSize={15}>
                     {product.amount !== 0 && product.unit != null
                       ? "- " + product.amount + " " + product.unit
                       : ""}

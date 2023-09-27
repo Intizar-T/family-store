@@ -6,6 +6,7 @@ import {
   ListItemText,
   Typography,
   Button,
+  Box,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
@@ -151,23 +152,45 @@ export default function ToBuyListItem({
       >
         {product && (
           <ListItemText
-            primary={`${product.name} ${
-              product.amount !== 0 && product.unit != null
-                ? "- " + product.amount + " " + product.unit
-                : ""
-            }`}
-            // secondary={
-            //   <React.Fragment>
-            //     <Typography fontSize="small">
-            //       {t("createdUser")}: {product.userName}
-            //     </Typography>
-            //     {product.editedUserName && (
-            //       <Typography fontSize="small" color="#1976D2">
-            //         {t("updatedUser")}: {product.editedUserName}
-            //       </Typography>
-            //     )}
-            //   </React.Fragment>
-            // }
+            primary={
+              <React.Fragment>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "flex-end",
+                    height: "100%",
+                  }}
+                >
+                  <Typography sx={{ mr: 0, pr: 0 }}>{product.name}</Typography>
+                </Box>
+              </React.Fragment>
+            }
+            secondary={
+              <React.Fragment>
+                <Box display="flex">
+                  <Typography color="green" fontSize="small">
+                    {product.amount !== 0 && product.unit != null
+                      ? "- " + product.amount + " " + product.unit
+                      : ""}
+                  </Typography>
+                  {product.comments && product.comments.length > 0 && (
+                    <IconButton
+                      onClick={() => {
+                        setOpenCommentDialog(true);
+                        setComments(product.comments);
+                        setProductId(product.id);
+                      }}
+                      sx={{ m: 0, p: 0, pl: 1 }}
+                      style={{ height: "100%" }}
+                      color="error"
+                    >
+                      <CommentIcon sx={{ fontSize: "14px" }} />
+                    </IconButton>
+                  )}
+                </Box>
+              </React.Fragment>
+            }
             sx={{ marginRight: 4, overflowWrap: "break-word" }}
           />
         )}

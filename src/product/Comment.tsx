@@ -27,6 +27,7 @@ import ProductContext from "./ProductContext";
 import FetchProductList from "./FetchProductList";
 import BaseDialog from "../helpers/BaseDialog";
 import TelegramIcon from "@mui/icons-material/Telegram";
+import { avatarPhotos } from "../helpers/constants";
 
 function Comment() {
   const {
@@ -112,9 +113,7 @@ function Comment() {
                 sx={{ m: 0, p: 0 }}
               >
                 <ListItemAvatar>
-                  <Avatar>
-                    <AccountBoxIcon />
-                  </Avatar>
+                  <Avatar src={avatarPhotos[name.toLowerCase()] || undefined} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={comment}

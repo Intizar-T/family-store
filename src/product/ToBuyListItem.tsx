@@ -142,6 +142,7 @@ export default function ToBuyListItem({
           textTransform: "none",
           textAlign: "left",
           color: "black",
+          width: "100%",
         }}
         onClick={() => {
           setOpenCommentDialog(true);
@@ -160,6 +161,7 @@ export default function ToBuyListItem({
                     flexDirection: "row",
                     alignItems: "flex-end",
                     height: "100%",
+                    width: "100%",
                   }}
                 >
                   <Typography sx={{ mr: 0, pr: 0 }}>{product.name}</Typography>

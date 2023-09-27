@@ -59,10 +59,10 @@ export default function ToBuyListItem({
               showEditModal(true);
             }}
           >
-            <EditIcon fontSize="small" />
+            <EditIcon fontSize="medium" />
           </IconButton>
           <IconButton
-            sx={{ m: 0, p: 0, marginRight: "6px" }}
+            sx={{ m: 0, p: 0, pl: 1, marginRight: "6px" }}
             color="success"
             onClick={async () => {
               try {
@@ -107,9 +107,9 @@ export default function ToBuyListItem({
               }
             }}
           >
-            <CheckIcon fontSize="small" />
+            <CheckIcon fontSize="medium" />
           </IconButton>
-          <IconButton
+          {/* <IconButton
             onClick={() => {
               setOpenCommentDialog(true);
               setComments(product.comments);
@@ -118,11 +118,16 @@ export default function ToBuyListItem({
             sx={{ m: 0, p: 0, marginRight: "6px" }}
           >
             <CommentIcon fontSize="small" />
-          </IconButton>
+          </IconButton> */}
         </React.Fragment>
       }
       sx={{ width: "100%", paddingY: 1, paddingRight: 8 }}
     >
+      <ListItemAvatar>
+        <Avatar
+          src={avatarPhotos[product.userName.toLowerCase()] || undefined}
+        />
+      </ListItemAvatar>
       <Button
         sx={{
           m: 0,
@@ -138,11 +143,6 @@ export default function ToBuyListItem({
           setProductName(product.name);
         }}
       >
-        <ListItemAvatar>
-          <Avatar
-            src={avatarPhotos[product.userName.toLowerCase()] || undefined}
-          />
-        </ListItemAvatar>
         {product && (
           <ListItemText
             primary={`${product.name} ${

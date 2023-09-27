@@ -7,7 +7,7 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { PRODUCTS_URL } from "../api/APIs";
 import { fetchWithErrorHandler } from "../helpers/fetchWithErrorHandles";
 import FetchProductList from "./FetchProductList";
@@ -26,6 +26,7 @@ import { t } from "i18next";
 import CommentContext from "./CommentContext";
 import CommentIcon from "@mui/icons-material/Comment";
 import { avatarPhotos } from "../helpers/constants";
+import BaseDialog from "../helpers/BaseDialog";
 
 interface ToBuyListItemProps {
   product: Products;
@@ -47,6 +48,7 @@ export default function ToBuyListItem({
   const { readyState, sendMessage } = useContext(WebSocketContext);
   const { setOpenCommentDialog, setComments, setProductId, setProductName } =
     useContext(CommentContext);
+  const [openProfileDialog, setOpenProfileDialog] = useState(false);
   return (
     <ListItem
       secondaryAction={
@@ -123,7 +125,11 @@ export default function ToBuyListItem({
       }
       sx={{ width: "100%", paddingY: 1, paddingRight: 8 }}
     >
-      <ListItemAvatar>
+      <ListItemAvatar
+        onClick={() => {
+          setOpenProfileDialog(true);
+        }}
+      >
         <Avatar
           src={avatarPhotos[product.userName.toLowerCase()] || undefined}
         />
@@ -166,6 +172,19 @@ export default function ToBuyListItem({
           />
         )}
       </Button>
+      {openProfileDialog && (
+        <BaseDialog
+          handleClose={() => setOpenProfileDialog(false)}
+          dialogText={product.userName}
+          showNavigationButtons={false}
+        >
+          <img
+            alt={product.userName}
+            src={avatarPhotos[product.userName.toLowerCase()] || undefined}
+            width={250}
+          />
+        </BaseDialog>
+      )}
     </ListItem>
   );
 }
